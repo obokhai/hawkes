@@ -14,7 +14,16 @@ import {
   RadialBar,
   RadialBarChart,
 } from "recharts";
-
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import {
   Card,
   CardContent,
@@ -61,43 +70,7 @@ const taskDetails = {
   description: "",
 };
 
-const steps = [
-  // {
-  //   "stepNumber": 1,
-  //   "title": "DD on Asset Holding Party",
-  //   "status": "completed"
-  // },
-  // {
-  //   "stepNumber": 2,
-  //   "title": "Potential Partners Inview",
-  //   "status": "completed"
-  // },
-  // {
-  //   "stepNumber": 3,
-  //   "title": "DD on Potential Partner",
-  //   "status": "pending"
-  // },
-  // {
-  //   "stepNumber": 4,
-  //   "title": "Heads of Agreement",
-  //   "status": "pending"
-  // },
-  // {
-  //   "stepNumber": 5,
-  //   "title": "Definitive Agreement",
-  //   "status": "pending"
-  // },
-  // {
-  //   "stepNumber": 6,
-  //   "title": "Project Commencement Meeting",
-  //   "status": "pending"
-  // },
-  // {
-  //   "stepNumber": 7,
-  //   "title": "Groundbreaking",
-  //   "status": "pending"
-  // }
-]
+
 
 const PropertyDetails = () => {
   
@@ -105,9 +78,9 @@ const PropertyDetails = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get('property');
   console.log(id)
-  const totalSteps = steps.length;
-  const completedSteps = steps.filter(step => step.status === "completed").length;
-  const progressValue = (completedSteps / totalSteps) * 100;
+  // const totalSteps = steps.length;
+  // const completedSteps = steps.filter(step => step.status === "completed").length;
+  // const progressValue = (completedSteps / totalSteps) * 100;
   const router = useRouter()
   const [property, setProperty] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
@@ -125,6 +98,9 @@ const PropertyDetails = () => {
   const [roleData, setRoleData] = useState([])
   const [roleValue, setRoleValue] = useState("")
   const [userSelected, setUserSelected] = useState(false);
+  const [stageSteps, setStageSteps] = useState([])
+  const [saveStageId, setSavedStageId] = useState("")
+  const [getStageData, setGetStageData] = useState([])
   
   const [file, setFile] = useState(null);
   const [updateId, setUpdateId] = useState("")
@@ -164,7 +140,7 @@ const PropertyDetails = () => {
        const [stage, setStage] = useState({
       stageName: "",
       description: "",
-      stagePosition: "",
+      stagePosition: 0,
       assetId: id
     });
     const  [tasks, setTasks] = useState({
@@ -173,18 +149,37 @@ const PropertyDetails = () => {
     description: '',
     dueDate: '',
     status: 'pending',
-    stageId: '475b0137-14b6-45b7-8313-02c50c0f1ac2',
+    stageId: '',
+    priority:''
     })
 
+  const [editedTask, setEditedTask] = useState({
+  taskName: '',
+  description: '',
+  dueDate: '',
+  status: 'pending',
+  stageId: '',
+  priority: '',
+  id: '', // needed for update
+});
+      const [updateStage, setUpdateStage] = useState({
+        id: '',
+        stagePosition: 1
+      })
     const [attachments, setAttachments] = useState([]);
 
    const handleTaskChange = (e) => {
     const { name, value } = e.target;
     setTasks(prev => ({ ...prev, [name]: value }));
   };
+  const handleTaskUpdate = (e) => {
+    const { name, value } = e.target;
+    setEditedTask(prev => ({ ...prev, [name]: value }));
+  }
+
       const taskFileChange = (e) => {
     setAttachments(e.target.files); // multiple files
-  };
+      };
 
      const getAllUsers = async () => {
        try {
@@ -207,9 +202,9 @@ const PropertyDetails = () => {
         }
       };
 
-       const getStageTasks = async () => {
+       const getStageTasks = async (stageId) => {
        try {
-         const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/475b0137-14b6-45b7-8313-02c50c0f1ac2", {
+         const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/${stageId}`, {
            headers: {
              'Content-Type': 'application/json',
              'Authorization': `Bearer ${token}`,
@@ -217,11 +212,12 @@ const PropertyDetails = () => {
           });
           
           const data = await response.json();
-          console.log("Tasks response:", data);
+          setGetStageData(data.data.tasks)
+          console.log(stageId)
           
         } catch (error) {
           console.error("Failed to fetch Tasks:", error);
-          setUsers([]);
+          // setUsers([]);
         }
       };
       
@@ -232,7 +228,7 @@ const PropertyDetails = () => {
      
           const response = axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/create-stage',stage, {
                 headers: {
-                  'Content-Type': 'application/json',
+                  'Content-Type': 'multipart/form-data',
                   'Authorization': `Bearer ${token}`
                 }}
               )  .then(function (response) {
@@ -243,6 +239,38 @@ const PropertyDetails = () => {
           console.log(stage)
           console.error("Error:", err);
         }
+      }
+
+      const handleManageStage = (e) => {
+        const { name, value } = e.target;
+        setUpdateStage(prev => ({ ...prev,  [name]: name === 'stagePosition' ? parseInt(value, 10) : value}));
+      }
+
+      const manageStage = async(stage) =>{
+          console.log("manage stages Id",stage)
+          const id = stage?.id
+
+          const update = {
+              stageUpdates: [
+                {
+                  ...updateStage,
+                  id // override or confirm ID from the clicked stage
+                }
+              ]
+            };
+            console.log(update)
+          try {
+            const res  =  await axios.post(`https://propertyapi-monolithic.onrender.com/api/v1/stage/manage-stages/`,update,
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  }
+                })
+             console.log("Response data:", res.data);
+          } catch (err) {
+             console.error("Error:", err.response?.data?.errors || err.message);
+          }
       }
 
        const addTask = async (e) =>{
@@ -267,13 +295,53 @@ const PropertyDetails = () => {
           console.error("Error:", err.response?.data?.errors || err.message);
         }
       }
+        const updateTask = async () =>{
+      
+          console.log("editedTask",editedTask)
+          const id = editedTask?.id
+          console.log(id)
+          const preparedTask = {
+              ...editedTask,
+              dueDate: new Date(editedTask.dueDate).toISOString()
+              };
+           console.log(preparedTask);
+           try {
+          const response = await axios.put(`https://propertyapi-monolithic.onrender.com/api/v1/stage/task/${id}`,preparedTask, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                }}
+              )
+              console.log("Task Successfully Updated")
+
+        } catch (err) {
+          console.error("Error:", err.response?.data?.errors || err.message);
+        }
+      }
 
        const getStages = async () => {
-      
+        // https://propertyapi-monolithic.onrender.com/api/v1/stage/
+        if(!id) console.log("missing Id ")
+        try {
+           const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/${id}`, {
+           headers: {
+             'Content-Type': 'application/json',
+             'Authorization': `Bearer ${token}`,
+            },
+          });
+
+          const data = await response.json()
+          setStageSteps(data.data.stages)
+
+        } catch (error) {
+          
+        }
+        
+          console.log("Stage Steps",stageSteps)
       };
 
       
-       useEffect(() => {
+      useEffect(() => {
             if (!id) return  // 👈 prevent call if id is undefined
           
             async function fetchProperty() {
@@ -304,7 +372,8 @@ const PropertyDetails = () => {
             getAllUsers()
             fetchProperty()
             getRoles()
-            getStageTasks()
+            // getStageTasks()
+            getStages()
           }, [id])
 
       
@@ -330,20 +399,20 @@ const PropertyDetails = () => {
         }
       };
           
-  const handleChange = (e) => {
+        const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+       };
 
-    const handleFileChange = (e) => {
-      setFile(e.target.files[0]);
-    };
+      const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+      };
 
-    const handleCreateAssign = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    console.log(formData)
-  };
+      const handleCreateAssign = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      console.log(formData)
+      };
 
 
 // to here
@@ -706,9 +775,68 @@ const assignAsset = async () => {
             </div>
           </div>
           <div className='w-full bg-white min-h-2/3 p-12 space-y-8 shadow-xl rounded-xl'>
-          <p className='flex text-sm items-center'>Manage Stages <ChevronRight className='h-5' /> </p>
-          <div className="flex justify-between items-center w-full max-w-6xl mx-auto py-8">
-          {steps ==0 &&(
+             <Dialog className="w-[1200px]">
+                  <DialogTrigger asChild>
+                        <p className='flex text-sm items-center'>Manage Stages <ChevronRight className='h-5' /> </p>
+                  </DialogTrigger>
+                   <DialogContent className="w-full  bg-white">
+                    <DialogHeader className="">
+                      <DialogTitle className="flex justify-between items-center">
+                        <h3>Manage Stages: </h3>
+                        <PlusIcon/>
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="min-w-[450px] mx-auto mt-10 bg-white rounded-xl">
+                      <Table>
+                        <TableHeader className="bg-[#5051F9] text-white ">
+                          <TableRow className="rounded-tr-xl rounded-tl-xl">
+                            <TableHead className="text-white">Position</TableHead>
+                            <TableHead className="text-white">Name</TableHead>
+                            <TableHead className="text-white">Description</TableHead>
+                            <TableHead className="text-right text-white">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {stageSteps.map((stage) => (
+                            <TableRow key={stage.stageId} className="min-h-12">
+                              <TableCell className="font-medium">{stage.stagePosition}</TableCell>
+                              <TableCell>{stage.stageName}</TableCell>
+                              <TableCell>{stage.description}</TableCell>
+                              <TableCell className="text-right">
+                                <span className='flex '>
+                                    <Dialog className="w-[1200px]">
+                                      <DialogTrigger asChild>
+                                          <Image src="/stage_edit.svg" width={20} height={40}/>
+                                      </DialogTrigger>
+                                      <DialogContent className="w-60  bg-white">
+                                        <div className='flex flex-col justify-center'>
+                                          <h3 className='my-2 font-bold text-left'>Update Stage</h3>
+                                          <label className="text-xs w-full">
+                                              <input name="stagePosition"
+                                                value={updateStage.stagePosition}
+                                                onChange={handleManageStage}
+                                                placeholder="Enter Stage Position" className="w-full mb-2 border p-3 rounded" />
+                                            </label>
+                                           
+                                          <button onClick={() => manageStage(stage)} className='w-44 h-10 rounded bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Update Stage</button>
+                                        </div>
+                                      </DialogContent>
+                                      </Dialog>
+                                  <Image src="/stage_delete.svg" width={20} height={40}/>
+                                </span>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </DialogContent>
+             </Dialog>
+          <div className="flex  justify-between items-center w-full max-w-6xl mx-auto py-8">
+             <div className='flex flex-col w-full'>
+            <div className='flex  gap-x-12'>
+          {stageSteps ==0 &&(
             <>
             <div className='flex justify-center w-full items-center'>
               <div className='flex-col flex w-60 gap-y-2 items-center'>
@@ -762,26 +890,32 @@ const assignAsset = async () => {
             </div>
             </>
           )}
-
-          {steps.map((step) => (
-            <div key={step.stepNumber} className="flex  flex-col items-center">
+         
+          {stageSteps.map((step) => (
+            <div className='flex  gap-x-4'>
+            <div key={step.id} onClick={() =>getStageTasks(step.id)} className="flex flex-col items-center">
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                  step.status === "completed" ? "bg-indigo-700 text-white " : "border-[1px] border-indigo-700 text-indigo-700"
+                  step.stageStatus === "completed" ? "bg-indigo-700 text-white " : "border-[1px] border-indigo-700 text-indigo-700"
                 }`}
               >
-                {step.stepNumber}
+                {step.stagePosition}
               </div>
               <span
                 className={`mt-2 text-center text-sm ${
-                  step.status === "completed" ? "text-indigo-800 font-semibold" : "text-indigo-700"
+                  step.stageStatus === "completed" ? "text-indigo-800 font-semibold" : "text-indigo-700"
                 }`}
               >
-                {step.title}
+                {step.stageName}
               </span>
-              <Progress value={progressValue} className="h-4 [&>div]:bg-indigo-600 " />
+            </div>
             </div>
           ))}
+          </div>
+          {stageSteps!=0 &&(
+            <Progress value={13} className="h-4 mt-2 [&>div]:bg-indigo-600 " />
+          )}
+          </div>
           </div>
       
       <div className='flex flex-col space-y-4 lg:w-[1000px]'>
@@ -806,6 +940,7 @@ const assignAsset = async () => {
                                   value={tasks.taskName}
                                   onChange={handleTaskChange}
                                   placeholder="Enter Position" className="w-full mb-2 border p-3 rounded" />
+                                  <input type="file" accept="image/*" capture="enviroment" />
                               </label>
 
                               <label className="text-xs w-full">Description
@@ -824,17 +959,7 @@ const assignAsset = async () => {
                                   placeholder="Enter due date " className="w-full mb-2 border p-3 rounded" />
                               </label>
                               <div className='flex gap-x-8'>
-                                    {/* <label className="text-xs w-full">Priority
-                                <select name="stagePosition"
                                   
-                                  value={stage.stagePosition}
-                                  onChange={(e) => setStage({ ...stage, [e.target.name]: e.target.value })}
-                                  placeholder="Enter Position" className="w-full mt-2 border p-3 rounded" >
-                                    <option>Select</option>
-                                    <option>High</option>
-                                    <option>Low</option>
-                                  </select>
-                              </label> */}
                                   <label className="text-xs w-full">Status
                                  <select name="status"
                                   
@@ -848,18 +973,6 @@ const assignAsset = async () => {
                                   </select>
                               </label>
                               </div>
-                                 {/* <label className="text-xs w-full flex flex-col">Set Reminder
-                                 <select name="stagePosition"
-                                  
-                                  value={stage.stagePosition}
-                                  onChange={(e) => setStage({ ...stage, [e.target.name]: e.target.value })}
-                                  placeholder="Enter Position" className="w-1/2 mt-2 border p-3 rounded" >
-                                    <option>Select</option>
-                                    <option>Today</option>
-                                    <option>Tomorrow</option>
-                                    <option>Never</option>
-                                  </select>
-                              </label> */}
                              
                             </div>
                             <button type='submit' className='w-44 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Add</button>
@@ -872,13 +985,10 @@ const assignAsset = async () => {
         </span>
         
         <div className='flex gap-x-8'>
-        <TaskCard title="Meeting with Mr Paul" description="Create content for peceland App" status="Completed" date="Sep 20, 2021" commentsCount={4} linksCount={11} />
-        <TaskCard title="Listing deliverables checklist" description="Create content for peceland App" status="In Progress" date="Sep 20, 2021" commentsCount={4} linksCount={11} />
-        <TaskCard title="Update requirement list" description="Create content for peceland App" status="Pending" date="Sep 20, 2021" commentsCount={4} linksCount={11} />
-        
-          <Dialog className="w-full">
+          {getStageData.map((task) => (
+          <Dialog className="w-full" key={task.id}>
             <DialogTrigger>
-            <TaskCard title="Meeting with Mr Paul" description="Create content for peceland App" status="Pending" date="Sep 20, 2021" commentsCount={4} linksCount={11} />
+               <TaskCard title={task.taskName} onClick={() =>getTaskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
             </DialogTrigger>
             <DialogContent className="w-full overflow-auto bg-white">
               <DialogHeader className=''>
@@ -887,34 +997,117 @@ const assignAsset = async () => {
               </DialogHeader>
               <div className="flex flex-col h-16 space-y-3 space-x-2 mx-2 mt-5 rounded-xl p-2 min-h-96">
               <table className="table-auto w-full shrink text-sm text-left">
-                <tbody>
-                  <tr className="h-2">
+                <tbody className='space-y-3'>
+                  <tr className="h-2 text-xs">
                     <td className="text-gray-400 text-xs font-bold pr-3 py-1">Created date</td>
-                    <td className="text-gray-900 font-medium py-1">{taskDetails.createdDate}</td>
+                    <td className="text-gray-900 font-medium py-1">{new Date(task.createdAt).toLocaleDateString("en-GB", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                          </td>
+                           <Dialog className="w-[1200px]">
+                                    <DialogTrigger asChild>
+                                  <td className='bg-blue-400 text-white font-bold rounded text-center ' onClick={() => setEditedTask(task)}>Update</td>
+                            </DialogTrigger>
+                                    <DialogContent className="w-full  bg-white">
+                                    
+                        <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
+                                <h4 className='font-bold text-xl'>Update Task</h4>
+                                <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
+                          
+                                <div className="space-y-4">
+                                  <div className="flex-col gap-x-5">
+                                    {/* <input hidden name='id' value={task.id} /> */}
+                                    <label className="text-xs w-full">Task name
+                                            <input name="taskName"
+                                            value={editedTask.taskName}
+                                            onChange={handleTaskUpdate}
+                                        placeholder="Enter Task Name"  className="w-full mb-2 border p-3 rounded" />
+                                    </label>
+
+                                    <label className="text-xs w-full">Description
+                                      <textarea name="description"
+                                        value={editedTask.description}
+                                        rows={2}
+                                        onChange={handleTaskUpdate}
+                                        placeholder="Enter Task Name"  className="w-full mb-2 border p-3 rounded" />
+                                    </label>
+                                  
+                                        <label className="text-xs w-full">Due Date
+                                      <input name="dueDate"
+                                      type='date'
+                                      value={editedTask.dueDate}
+                                      onChange={handleTaskUpdate}
+                                        placeholder="Enter due date"  className="w-full mb-2 border p-3 rounded" />
+                                    </label>
+                                    <div className='flex gap-x-8'>
+
+                                         <label className="text-xs w-full">Priority
+                                      <select name="priority"
+                                        
+                                        value={editedTask.priority}
+                                        onChange={handleTaskUpdate}
+                                        placeholder="Enter Position" className="w-full mb-2 border p-3 rounded" >
+                                          <option value=''>Select</option>
+                                          <option value='low'>Low</option>
+                                          <option value='medium'>Medium</option>
+                                          <option value='high'>High</option>
+                                        </select>
+                                    </label>
+
+
+
+                                        <label className="text-xs w-full">Status
+                                      <select name="status"
+                                        
+                                        value={editedTask.status}
+                                        onChange={handleTaskUpdate}
+                                        placeholder="Enter Position" className="w-full mb-2 border p-3 rounded" >
+                                          <option value='' disabled>Select</option>
+                                          <option value='pending'>pending</option>
+                                          <option value='in_progress'>In progress</option>
+                                          <option value='completed'>completed</option>
+                                        </select>
+                                    </label>
+                                    </div>
+                                      
+                                  
+                                  </div>
+                                  <button type='button' onClick={updateTask} className='w-32 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Update</button>
+                                </div>
+                            </div>
+                                      </div>
+                            </DialogContent>
+                            </Dialog>
                   </tr>
-                  <tr className="h-2">
+                  <tr className="h-2 text-xs">
                     <td className="text-gray-400 pr-3 py-1">Due date</td>
-                    <td className="text-gray-900 font-medium py-1">{taskDetails.dueDate}</td>
+                    <td className="text-gray-900 font-medium py-1">{new Date(task.dueDate).toLocaleDateString("en-GB", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}</td>
                   </tr>
-                  <tr className="h-2">
+                  <tr className="h-2 text-xs">
                     <td className="text-gray-400 pr-3 py-1">Status</td>
                     <td className="py-1">
-                      <span className="bg-orange-100 text-orange-600 px-2 py-[1px] rounded text-xs font-medium">
-                        {taskDetails.status}
+                      <span className="bg-orange-100 capitalize  text-orange-600 px-2 py-1 rounded text-xs font-medium">
+                        {task.status}
                       </span>
                     </td>
                   </tr>
-                  <tr className="h-2">
+                  <tr className="h-2 text-xs">
                     <td className="text-gray-400 pr-3 py-1">Priority</td>
                     <td className="py-1">
-                      <span className="bg-blue-100 text-blue-600 px-3 py-2 rounded text-xs font-medium">
-                        {taskDetails.priority}
+                      <span className="bg-blue-100 text-blue-600 px-3 capitalize py-1 rounded text-xs font-medium">
+                        {task.priority}
                       </span>
                     </td>
                   </tr>
-                  <tr className="h-2">
+                  <tr className="h-2 text-xs">
                     <td className="text-gray-400 pr-3 py-1">Description</td>
-                    <td className="text-gray-900 font-medium py-1">{taskDetails.description || '-'}</td>
+                    <td className="text-gray-900 font-medium py-1">{task.description || '-'}</td>
                   </tr>
                 </tbody>
               </table>
@@ -1013,6 +1206,9 @@ const assignAsset = async () => {
               </div>
             </DialogContent>
         </Dialog>
+         ) )}
+        
+        
             </div>
         </div>
         </div>

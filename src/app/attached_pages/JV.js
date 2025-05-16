@@ -84,7 +84,7 @@ const fetchUsersByRole = async () => {
   try {
     if (!token) throw new Error("No token found.");
 
-    const response = await fetch('https://propertyapi-api-gateway.onrender.com/api/v1/user/role?roleId=3', {
+    const response = await fetch('https://propertyapi-monolithic.onrender.com/api/v1/user/role?roleId=2', {
       method: 'GET',
       headers: {
         "Authorization": `Bearer ${token}`
@@ -98,7 +98,7 @@ const fetchUsersByRole = async () => {
     console.log("Fetched Users:", data);
   } catch (error) {
     console.error("Fetch Error:", error);
-    alert("Failed to load users. Check console for more details.");
+    // alert("Failed to load users. Check console for more details.");
   }
 };
 
@@ -135,7 +135,7 @@ const handleSubmit = async (e) => {
       document: file ? file.name : '',
     };
 
-    const response = await fetch("https://propertyapi-api-gateway.onrender.com/api/v1/user/create", {
+    const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/create", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

@@ -1,6 +1,6 @@
 "use client"
 import { Airplay, ArrowUp, Monitor, SquarePlus, TrendingDown, UserRoundCheck, UsersRound } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
@@ -63,6 +63,44 @@ const chartConfig = {
 };
 
 const AdminDashboard = () => {
+const [totalProperties, setTotalProperties] = useState('')
+const [totalClients, setTotalClients] =useState('')
+const [totalJV, setTotalJV ] = useState('')
+
+useEffect(() => {
+   const token = localStorage.getItem("token")
+        async function fetchPosts() {  
+     try {
+       const res = await fetch('https://propertyapi-monolithic.onrender.com/api/v1/dashboard/admin?clientId=3&JvId=2', {
+         headers: {
+           'Content-Type': 'application/json',
+           'Authorization': `Bearer ${token}`,
+         }
+       });
+      
+       const data = await res.json();
+
+       console.log(data?.data);
+       if (data?.data) {
+          setTotalProperties(data.data.totalProperties)
+          setTotalJV(data.data.Joint_ventures)
+          setTotalClients(data.data.clients)
+          
+       } else {
+         console.error("No activeAsset found in the response");
+        //  setProperties([]); // Or handle the empty case accordingly
+       }
+       // setProperties(data.data.activeAsset);
+     } catch (err) {
+       console.error(err);
+     }
+   }
+   fetchPosts();
+   
+ }, []); 
+
+
+
   return (
     <section className="mt-18 ms-28 me-10 min-h-screen flex flex-col gap-y-4 px-4 py-12 rounded-2xl mb-4" >
         <div className='flex gap-5'>
@@ -79,7 +117,7 @@ const AdminDashboard = () => {
                         <p className='text-sm text-gray-600'> Total Properties</p>
                         <span className='bg-green-200 rounded-full h-12 w-12 flex justify-center items-center'><Monitor/></span>
                       </span>
-                      <h4 className='text-6xl'>210</h4>
+                      <h4 className='text-6xl'>{totalProperties}</h4>
                       <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p>
                   </div>
                   <div className='flex flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 min-w-60'>
@@ -87,7 +125,7 @@ const AdminDashboard = () => {
                         <p className='text-sm text-gray-600'> Total Clients</p>
                         <span className='bg-green-200 rounded-full h-12 w-12 font-light flex justify-center items-center'><UserRoundCheck/></span>
                       </span>
-                      <h4 className='text-6xl'>5,423</h4>
+                      <h4 className='text-6xl'>{totalClients}</h4>
                       <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p>
                   </div>
                   <div className='flex flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 min-w-60'>
@@ -95,7 +133,7 @@ const AdminDashboard = () => {
                         <p className='text-sm text-gray-600'> Total JV Partners</p>
                         <span className='bg-green-200 rounded-full h-12 w-12 font-light flex justify-center items-center'><UsersRound/></span>
                       </span>
-                      <h4 className='text-6xl'>1,893</h4>
+                      <h4 className='text-6xl'>{totalJV}</h4>
                       <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p>
                   </div>
 

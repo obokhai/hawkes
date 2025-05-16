@@ -26,6 +26,8 @@ const PropertyListing = () => {
   const [userType, setUserType] = useState("");
   const token = localStorage.getItem("token");
   const [total, setTotal] = useState('')
+  const [activeAssetCount, setActiveAssetCount] = useState('')
+   const [inActiveAssetCount, setInActiveAssetCount] = useState('')
   const [users, setUsers] = useState([]);
   const [file, setFile] = useState(null);
 
@@ -149,10 +151,15 @@ async function fetchPosts() {
         });
        
         const data = await res.json();
-        setProperties(data.data)
+        // setProperties(data.data)
+       
+        console.log(total)
         console.log(data?.data);
         if (data?.data) {
           setProperties(data.data.activeAsset);
+           setTotal(data.data.total)
+           setActiveAssetCount(data.data.activeAssetsCount)
+           setInActiveAssetCount(data.data.inactiveAssetsCount)
         } else {
           console.error("No activeAsset found in the response");
           setProperties([]); // Or handle the empty case accordingly
@@ -178,7 +185,7 @@ async function fetchPosts() {
                 <Image src="/chevron_admin.svg" width={10} height={10} />
                   1.2%
                 </p>
-                <p className='text-6xl font-bold -mt-7'>10</p>
+                <p className='text-6xl font-bold -mt-7'>{total}</p>
               </span>
               </span>
               <span className=' shadow-xl p-4 flex flex-col justify-between rounded-xl bg-[#5A48F9] text-white h-40 w-60  '>
@@ -188,7 +195,7 @@ async function fetchPosts() {
                 <Image src="/chevron_admin.svg" width={10} height={10} />
                   1.2%
                 </p>
-                <p className='text-6xl font-bold -mt-7'>7 </p>
+                <p className='text-6xl font-bold -mt-7'>{activeAssetCount} </p>
               </span>
               </span>
               <span className=' shadow-xl p-4 flex flex-col justify-between rounded-xl bg-[#312787] text-white h-40 w-60  '>
@@ -198,7 +205,7 @@ async function fetchPosts() {
                 <Image src="/chevron_admin.svg" width={10} height={10} />
                   1.2%
                 </p>
-                <p className='text-6xl font-bold -mt-7'>3 </p>
+                <p className='text-6xl font-bold -mt-7'>{inActiveAssetCount} </p>
               </span>
               </span>
           </aside>

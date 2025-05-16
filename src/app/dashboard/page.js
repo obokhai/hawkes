@@ -57,7 +57,7 @@ export default function Dashboard(){
                   
                  </div>
            <div className="flex flex-col flex-1 bg-gray-100">
-             <div className="w-full h-20 z-20 bg-white text-gray-500 fixed left-20 flex items-center justify-between px-12  pb-1">
+             <div className="w-full h-20 z-50 bg-white text-gray-500 fixed left-20 flex items-center justify-between px-12  pb-1">
              <span className="font-semibold text-xs">{active}</span>
                          <div className="flex justify-between bg-gray-200 px-3 rounded-lg">
                              <input
