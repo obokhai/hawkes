@@ -940,7 +940,7 @@ const assignAsset = async () => {
                                   value={tasks.taskName}
                                   onChange={handleTaskChange}
                                   placeholder="Enter Position" className="w-full mb-2 border p-3 rounded" />
-                                  <input type="file" accept="image/*" capture="enviroment" />
+                                  {/* <input type="file" accept="image/*" capture="enviroment" /> */}
                               </label>
 
                               <label className="text-xs w-full">Description
