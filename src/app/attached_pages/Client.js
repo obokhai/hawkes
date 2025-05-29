@@ -66,7 +66,7 @@ const Client = () => {
         document: file ? file.name : ''
       };
   
-      const response = await fetch("https://propertyapi-api-gateway.onrender.com/api/v1/user/create", {
+      const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/create", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,

@@ -161,323 +161,329 @@ const PropertyDetails = () => {
   stageId: '',
   priority: '',
   id: '', // needed for update
-});
-      const [updateStage, setUpdateStage] = useState({
-        id: '',
-        stagePosition: 1
-      })
-    const [attachments, setAttachments] = useState([]);
+  });
+  
+  const [updateStage, setUpdateStage] = useState({
+    id: '',
+    stagePosition: 1
+  })
+  
+  const [attachments, setAttachments] = useState([]);
 
-   const handleTaskChange = (e) => {
+  const handleTaskChange = (e) => {
     const { name, value } = e.target;
     setTasks(prev => ({ ...prev, [name]: value }));
   };
+  const [stageTaskId, setStageTaskId] = useState("")
   const handleTaskUpdate = (e) => {
     const { name, value } = e.target;
     setEditedTask(prev => ({ ...prev, [name]: value }));
   }
 
-      const taskFileChange = (e) => {
-    setAttachments(e.target.files); // multiple files
-      };
+  const taskFileChange = (e) => {
+setAttachments(e.target.files); // multiple files
+  };
 
-     const getAllUsers = async () => {
-       try {
-         const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/role?roleId=1", {
-           headers: {
-             'Content-Type': 'application/json',
-             'Authorization': `Bearer ${token}`,
-            },
-          });
-          
-          const data = await response.json();
-          console.log("Users API response:", data);
-          
-          const fetchedUsers = data?.data.users;
-          console.log(fetchedUsers) // Adjust this based on actual API structure
-          setUsers(Array.isArray(fetchedUsers) ? fetchedUsers : []);
-        } catch (error) {
-          console.error("Failed to fetch users:", error);
-          setUsers([]);
-        }
-      };
-
-       const getStageTasks = async (stageId) => {
-       try {
-         const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/${stageId}`, {
-           headers: {
-             'Content-Type': 'application/json',
-             'Authorization': `Bearer ${token}`,
-            },
-          });
-          
-          const data = await response.json();
-          setGetStageData(data.data.tasks)
-          console.log(stageId)
-          
-        } catch (error) {
-          console.error("Failed to fetch Tasks:", error);
-          // setUsers([]);
-        }
-      };
+  const getAllUsers = async () => {
+    try {
+      const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/role?roleId=1", {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
       
-      const addStage = async (e) =>{
-        e.preventDefault()
-        console.log(stage)
-           try {
-     
-          const response = axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/create-stage',stage, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  'Authorization': `Bearer ${token}`
-                }}
-              )  .then(function (response) {
-                  console.log(response);
-                })
-
-        } catch (err) {
-          console.log(stage)
-          console.error("Error:", err);
-        }
-      }
-
-      const handleManageStage = (e) => {
-        const { name, value } = e.target;
-        setUpdateStage(prev => ({ ...prev,  [name]: name === 'stagePosition' ? parseInt(value, 10) : value}));
-      }
-
-      const manageStage = async(stage) =>{
-          console.log("manage stages Id",stage)
-          const id = stage?.id
-
-          const update = {
-              stageUpdates: [
-                {
-                  ...updateStage,
-                  id // override or confirm ID from the clicked stage
-                }
-              ]
-            };
-            console.log(update)
-          try {
-            const res  =  await axios.post(`https://propertyapi-monolithic.onrender.com/api/v1/stage/manage-stages/`,update,
-                {
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                  }
-                })
-             console.log("Response data:", res.data);
-          } catch (err) {
-             console.error("Error:", err.response?.data?.errors || err.message);
-          }
-      }
-
-       const addTask = async (e) =>{
-        e.preventDefault()
-          const preparedTask = {
-              ...tasks,
-              dueDate: new Date(tasks.dueDate).toISOString()
-              };
-
-           console.log(preparedTask);
-           try {
-          const response = await axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/create-task',preparedTask, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-                }}
-              )
-              console.log("Task Successfully Added")
-              router.push(`/dashboard?property=${id}`)
-
-        } catch (err) {
-          console.error("Error:", err.response?.data?.errors || err.message);
-        }
-      }
-        const updateTask = async () =>{
+      const data = await response.json();
+      console.log("Users API response:", data);
       
-          console.log("editedTask",editedTask)
-          const id = editedTask?.id
-          console.log(id)
-          const preparedTask = {
-              ...editedTask,
-              dueDate: new Date(editedTask.dueDate).toISOString()
-              };
-           console.log(preparedTask);
-           try {
-          const response = await axios.put(`https://propertyapi-monolithic.onrender.com/api/v1/stage/task/${id}`,preparedTask, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-                }}
-              )
-              console.log("Task Successfully Updated")
+      const fetchedUsers = data?.data.users;
+      console.log(fetchedUsers) // Adjust this based on actual API structure
+      setUsers(Array.isArray(fetchedUsers) ? fetchedUsers : []);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      setUsers([]);
+    }
+  };
 
-        } catch (err) {
-          console.error("Error:", err.response?.data?.errors || err.message);
-        }
-      }
-
-       const getStages = async () => {
-        // https://propertyapi-monolithic.onrender.com/api/v1/stage/
-        if(!id) console.log("missing Id ")
+  const getStageTasks = async (stageId) => {
+    setStageTaskId(stageId)
+    console.log("This is the Stage ID for adding a new task ",stageTaskId)
+    console.log(stageId)
+    try {
+      const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/${stageId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      const data = await response.json();
+      setGetStageData(data.data.tasks)
+      console.log("Curent Stage Id",stageId)
+      
+    } catch (error) {
+      console.error("Failed to fetch Tasks:", error);
+      // setUsers([]);
+    }
+  };
+      
+  const addStage = async (e) =>{
+    e.preventDefault()
+    console.log(stage)
         try {
-           const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/${id}`, {
-           headers: {
-             'Content-Type': 'application/json',
-             'Authorization': `Bearer ${token}`,
-            },
-          });
+  
+      const response = axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/create-stage',stage, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `Bearer ${token}`
+            }}
+          )  .then(function (response) {
+              console.log(response);
+            })
 
-          const data = await response.json()
-          setStageSteps(data.data.stages)
+    } catch (err) {
+      console.log(stage)
+      console.error("Error:", err);
+    }
+  }
 
-        } catch (error) {
-          
-        }
-        
-          console.log("Stage Steps",stageSteps)
-      };
-
-      
-      useEffect(() => {
-            if (!id) return  // 👈 prevent call if id is undefined
-          
-            async function fetchProperty() {
-              const token = localStorage.getItem("token");
-              try {
-                const res = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/assets/${id}`, {
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                  },
-                })
-          
-                if (!res.ok) {
-                  throw new Error(`HTTP error! status: ${res.status}`)
-                }
-          
-                const data = await res.json()
-                console.log(data)
-                setProperty(data.data.asset)
-                console.log(property)
-              } catch (error) {
-                console.error("Error fetching property:", error)
-              }
-            }
-             if (id) {
-                  setFormState((prev) => ({ ...prev, assetId: id }));
-                }
-            getAllUsers()
-            fetchProperty()
-            getRoles()
-            // getStageTasks()
-            getStages()
-          }, [id])
-
-      
-      
-      const handleSubmit = async (e) => {
-        console.log(formState)
-        e.preventDefault();
-        
-        try {
-     
-          const response = axios.post('https://propertyapi-monolithic.onrender.com/api/v1/user/create-and-assign',formState, {
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-                }}
-              )  .then(function (response) {
-    console.log(response);
-  })
-
-        } catch (err) {
-          console.log(formState)
-          console.error("Error:", err);
-        }
-      };
-          
-        const handleChange = (e) => {
+  const handleManageStage = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-       };
+    setUpdateStage(prev => ({ ...prev,  [name]: name === 'stagePosition' ? parseInt(value, 10) : value}));
+  }
 
-      const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
-      };
+  const manageStage = async(stage) =>{
+      console.log("manage stages Id",stage)
+      const id = stage?.id
 
-      const handleCreateAssign = (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
-      console.log(formData)
-      };
+      const update = {
+          stageUpdates: [
+            {
+              ...updateStage,
+              id // override or confirm ID from the clicked stage
+            }
+          ]
+        };
+        console.log(update)
+      try {
+        const res  =  await axios.post(`https://propertyapi-monolithic.onrender.com/api/v1/stage/manage-stages/`,update,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              }
+            })
+          console.log("Response data:", res.data);
+      } catch (err) {
+          console.error("Error:", err.response?.data?.errors || err.message);
+      }
+  }
 
+  const addTask = async (e) =>{
+  e.preventDefault()
+    const preparedTask = {
+        ...tasks,
+        dueDate: new Date(tasks.dueDate).toISOString(),
+        };
+
+      console.log("Prepared Traning",preparedTask);
+      try {
+    const response = await axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/create-task',preparedTask, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }}
+        )
+        console.log("Task Successfully Added")
+        router.push(`/dashboard?property=${id}`)
+
+  } catch (err) {
+    console.error("Error:", err.response?.data?.errors || err.message);
+  }
+  }
+
+  const updateTask = async () =>{
+
+    console.log("editedTask",editedTask)
+    const id = editedTask?.id
+    console.log(id)
+    const preparedTask = {
+        ...editedTask,
+        dueDate: new Date(editedTask.dueDate).toISOString()
+        };
+      console.log(preparedTask);
+      try {
+    const response = await axios.put(`https://propertyapi-monolithic.onrender.com/api/v1/stage/task/${id}`,preparedTask, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }}
+        )
+        console.log("Task Successfully Updated")
+
+  } catch (err) {
+    console.error("Error:", err.response?.data?.errors || err.message);
+  }
+  }
+
+  const getStages = async () => {
+  // https://propertyapi-monolithic.onrender.com/api/v1/stage/
+  if(!id) console.log("missing Id ")
+  try {
+      const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json()
+    setStageSteps(data.data.stages)
+
+  } catch (error) {
+    
+  }
+  
+    console.log("Stage Steps",stageSteps)
+  };
+      
+  useEffect(() => {
+        if (!id) return  // 👈 prevent call if id is undefined
+      
+        async function fetchProperty() {
+          const token = localStorage.getItem("token");
+          try {
+            const res = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/assets/${id}`, {
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              },
+            })
+      
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status}`)
+            }
+      
+            const data = await res.json()
+            console.log(data)
+            setProperty(data.data.asset)
+            console.log(property)
+          } catch (error) {
+            console.error("Error fetching property:", error)
+          }
+        }
+          if (id) {
+              setFormState((prev) => ({ ...prev, assetId: id }));
+            }
+        getAllUsers()
+        fetchProperty()
+        getRoles()
+        // getStageTasks()
+        getStages()
+      }, [id])
+
+      
+      
+  const handleSubmit = async (e) => {
+    console.log(formState)
+    e.preventDefault();
+    
+    try {
+  
+      const response = axios.post('https://propertyapi-monolithic.onrender.com/api/v1/user/create-and-assign',formState, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }}
+          )  .then(function (response) {
+console.log(response);
+})
+
+    } catch (err) {
+      console.log(formState)
+      console.error("Error:", err);
+    }
+  };
+          
+  const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleCreateAssign = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+  console.log(formData)
+  };
 
 // to here
-const assignAsset = async () => {
-  const assetId = id;
+  const assignAsset = async () => {
+    const assetId = id;
 
-  // Ensure you are accessing the correct user ID value
-  const assignedUserId = userId.userId; // or just `userId` if it's a string
+    // Ensure you are accessing the correct user ID value
+    const assignedUserId = userId.userId; // or just `userId` if it's a string
 
-  try {
-    const response = await fetch(
-      "https://propertyapi-monolithic.onrender.com/api/v1/user/assign-asset",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: assignedUserId,
-          assetId: assetId,
-        }),
+    try {
+      const response = await fetch(
+        "https://propertyapi-monolithic.onrender.com/api/v1/user/assign-asset",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: assignedUserId,
+            assetId: assetId,
+          }),
+        }
+      );
+    
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Failed to assign asset:", errorData.message || response.statusText);
+        return;
       }
-    );
-  
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Failed to assign asset:", errorData.message || response.statusText);
-      return;
+      const result = await response.json();
+      console.log("Asset successfully assigned:", result);
+    } catch (error) {
+      console.error("Error assigning asset:", error);
     }
-
-    const result = await response.json();
-    console.log("Asset successfully assigned:", result);
-  } catch (error) {
-    console.error("Error assigning asset:", error);
-  }
-};
+  };
 
   const nextStep = () => setCurrentStep((prev) => prev + 1);
   const prevStep = () => setCurrentStep((prev) => prev - 1);
    
-      const getRoles = async () => {
-        try {
-          const response = await fetch(
-            "https://propertyapi-monolithic.onrender.com/api/v1/roles",
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-              },
-            }
-          );
-      
-          if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-          }
-      
-          const data = await response.json();
-          setRoleData(data.data);
-          console.log(data.data);
-        } catch (error) {
-          console.error("Failed to fetch roles:", error);
+  const getRoles = async () => {
+    try {
+      const response = await fetch(
+        "https://propertyapi-monolithic.onrender.com/api/v1/roles",
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
         }
-      };
+      );
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      setRoleData(data.data);
+      console.log(data.data);
+    } catch (error) {
+      console.error("Failed to fetch roles:", error);
+    }
+  };
+
   return (
     <section className="mt-18 ms-28 me-10 min-h-screen flex flex-col gap-y-4 px-4 py-12">
       <div className='lg:w-full  bg-white min-h-1/3 flex justify-between shadow-xl rounded-lg  items-center'>
@@ -932,7 +938,7 @@ const assignAsset = async () => {
                       </DialogTitle>
                     </DialogHeader>
                   <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
-                     <form onSubmit={addTask}>
+                     <form onSubmit={addTask} >
                           <div className="space-y-4">
                             <div className="flex-col gap-x-5">
                               <label className="text-xs w-full">Task name
@@ -972,6 +978,7 @@ const assignAsset = async () => {
                                     <option value='completed'>completed</option>
                                   </select>
                               </label>
+                              <input type='hidden' value={stageTaskId} name='stageID' onChange={(e) => setTasks({...tasks, [e.target.name]: e.target.value})} />
                               </div>
                              
                             </div>
