@@ -281,9 +281,12 @@ setAttachments(e.target.files); // multiple files
 
   const addTask = async (e) =>{
   e.preventDefault()
+  console.log(stageTaskId)
     const preparedTask = {
         ...tasks,
         dueDate: new Date(tasks.dueDate).toISOString(),
+        stageId:stageTaskId
+        
         };
 
       console.log("Prepared Traning",preparedTask);
