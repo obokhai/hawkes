@@ -14,7 +14,7 @@ import {
 const Otp = () => {
     const [otp, setOTP] = useState("");
    const router = useRouter();
-   const email =''
+   const email = localStorage.getItem("userEmail")
  
    const verifyOTP = async (event) => {
     event.preventDefault();
@@ -22,7 +22,7 @@ const Otp = () => {
         const response = await axios.post(
             "https://propertyapi-api-gateway.onrender.com/api/v1/auth/validate-otp",
             { 
-              email: localStorage.getItem("userEmail"),
+              email,
               otp
              },
             {
@@ -44,7 +44,7 @@ const Otp = () => {
     </div>
     <div className='space-y-4'>
         <h2 className="font-extrabold text-3xl " onClick={() =>{router.push("?screen=reset")}}>Check your email</h2>
-        <p className="mb-14 w-96">We sent a reset link to aibormoses1997@gmail.com Enter 6 digit code that was mentioned in the email</p>
+        <p className="mb-14 w-96">We sent a reset link to {email} Enter 6 digit code that was mentioned in the email</p>
         <div className="w-full  lg:w-[369px]">
           <form className="space-y-6 flex flex-col items-center" onSubmit={verifyOTP}>
    

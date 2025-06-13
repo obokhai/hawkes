@@ -255,7 +255,7 @@ setAttachments(e.target.files); // multiple files
   }
 
   const manageStage = async(stage) =>{
-      console.log("manage stages Id",stage)
+      console.log("manage stage Id",stage)
       const id = stage?.id
 
       const update = {
@@ -276,8 +276,9 @@ setAttachments(e.target.files); // multiple files
               }
             })
           console.log("Response data:", res.data);
+          if(!res) console.log(res.data)
       } catch (err) {
-          console.error("Error:", err.response?.data?.errors || err.message);
+          console.error("Error:", err.response);
       }
   }
 

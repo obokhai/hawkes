@@ -11,6 +11,7 @@ const Login = () => {
    const [password, setPassword] = useState("");
    const router = useRouter();
  
+   
    const handleSubmit = async (event) => {
      event.preventDefault(); // Prevent default form submission
  
@@ -36,6 +37,7 @@ const Login = () => {
           Cookies.set('token', token);
           localStorage.setItem("token", token)
        }
+
       //  const token = localStorage.setItem("authToken", email);
        console.log("Login Successful:", response.data);
        router.push("/dashboard");

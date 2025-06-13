@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import CustomCalendar from "@/components/CustomCalendar"
+import axios from "axios"
 import {
   Dialog,
   DialogClose,
@@ -66,13 +67,14 @@ const [usersByRole, setUsersByRole] = useState([]);
 const [userType, setUserType] = useState('');
 const [companyState, setCompanyState] = useState('');
 const [file, setFile] = useState(null);
+const [totalJV, setTotalJV] = useState(0)
 const [formData, setFormData] = useState({
   firstName: '',
   lastName: '',
   address: '',
   email: '',
   phoneNumber: '',
-  role: 3,
+  role: 2,
   document: '',
   companyName: '',
 });
@@ -95,6 +97,7 @@ const fetchUsersByRole = async () => {
 
     const data = await response.json();
     setUsersByRole(data?.data?.users || []);
+    setTotalJV(usersByRole.length)
     console.log("Fetched Users:", data);
   } catch (error) {
     console.error("Fetch Error:", error);
@@ -135,19 +138,16 @@ const handleSubmit = async (e) => {
       document: file ? file.name : '',
     };
 
-    const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/create", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
 
-    if (!response.ok) throw new Error("Failed to submit");
+     const response= await axios.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload,{
+        headers:{
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      })
 
-    const result = await response.json();
-    console.log("Submitted:", result);
+    // const result = await response.json();
+    console.log("Submitted:", response.data);
     alert("JV Partner successfully added.");
   } catch (error) {
     console.error("Submission Error:", error);
@@ -160,7 +160,7 @@ const handleSubmit = async (e) => {
   return (
     <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
                   <div className="flex justify-between mb-14 text-black items-center">
-                        <h3 className="text-2xl ">JV Partners : 4</h3>
+                        <h3 className="text-2xl ">JV Partners : {totalJV} </h3>
                         <div className="flex space-x-6">
                             <div className="flex items-center cursor-pointer space-x-2 bg-gray-100  border-gray-300 rounded-xs border-[1px] lg:w-32 justify-center  py-3 px-4">
                                 <Image src="/arrow_up.svg"  alt="arrow up" width={13} height={13} />

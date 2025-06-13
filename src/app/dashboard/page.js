@@ -3,8 +3,9 @@
 // import Sidebar from "@/components/Sidebar";
 import PropertyListing from "@/components/PropertyListing";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Properties from "../attached_pages/Properties";
 import JV from "../attached_pages/JV";
 import Files from "../attached_pages/Files";
@@ -29,7 +30,7 @@ const options = [
 
 export default function Dashboard(){
 
-    // const router = useRouter()
+    const router = useRouter()
 
      const logout = () => {
             console.log('Logout Triggered')
@@ -39,7 +40,13 @@ export default function Dashboard(){
     
             router.push('/');
           };
-
+       
+                  useEffect(() => {
+                const token = Cookies.get("token") || localStorage.getItem("token");
+                if (!token) {
+                router.push("/");
+                }
+            }, [router]);
     const [active, setActive] = useState("Dashboard")
     console.log("Current active tab:", active);
     return(
@@ -90,7 +97,6 @@ export default function Dashboard(){
                     case 'Clients' :
                     return <Client/>    
                     case 'Properties':
-                        
                     return <Properties/>
                     case 'JV':
                     return <JV/>

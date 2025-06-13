@@ -26,7 +26,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Copy } from "lucide-react"
 import Link from "next/link"
-
+import axios from "axios"
 const Client = () => {
     const [userType, setUserType] = useState('');
     const [usersByRole, setUsersByRole] = useState([]);
@@ -37,7 +37,7 @@ const Client = () => {
       address: '',
       email: '',
       phoneNumber: '',
-      role: 2,
+      role: 3,
       document: '',
       companyName: '',
     });
@@ -97,18 +97,23 @@ const Client = () => {
         document: file ? file.name : ''
       };
   console.log(payload)
-      const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/create", {
-        method: "POST",
-        headers: {
+      // const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/create", {
+      //   method: "POST",
+      //   headers: {
+      //     "Authorization": `Bearer ${token}`,
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(payload),
+      // });
+      const response= await axios.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload,{
+        headers:{
           "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+        }
+      })
   
-      if (!response.ok) throw new Error("Failed to submit");
+      // if (!response.ok) throw new Error("Failed to submit");
   
-      const result = await response.json();
+      console.log(response)
       console.log("Submitted:", result);
     } catch (error) {
       console.error("Submission Error:", error);
