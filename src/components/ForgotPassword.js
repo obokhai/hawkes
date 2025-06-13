@@ -15,7 +15,7 @@ const ForgotPassword = () => {
      try {
        const response = await axios.post(
         // https://propertyapi-api-gateway.onrender.com/api/v1/auth/validate-otp
-         " https://propertyapi-monolithic.onrender.com/api/v1/auth/forgot-password",
+         "https://propertyapi-monolithic.onrender.com/api/v1/auth/forgot-password",
          { 
            email, 
         },

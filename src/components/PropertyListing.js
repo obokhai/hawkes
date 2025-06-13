@@ -27,7 +27,7 @@ const PropertyListing = () => {
   const token = localStorage.getItem("token");
   const [total, setTotal] = useState('')
   const [activeAssetCount, setActiveAssetCount] = useState('')
-   const [inActiveAssetCount, setInActiveAssetCount] = useState('')
+  const [inActiveAssetCount, setInActiveAssetCount] = useState('')
   const [users, setUsers] = useState([]);
   const [file, setFile] = useState(null);
 
@@ -136,8 +136,8 @@ const handleFileChange = (e) => {
       alert("Submission failed. Check console for details.");
     }
   };
-  
-  useEffect(() => {
+
+   useEffect(() => {
      
     setMounted(true);
 async function fetchPosts() {  
@@ -168,7 +168,7 @@ async function fetchPosts() {
       } catch (err) {
         console.error(err);
       }
-    }
+    } 
     fetchPosts();
     
   }, []); 

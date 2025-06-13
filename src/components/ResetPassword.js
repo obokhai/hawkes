@@ -20,7 +20,7 @@ const ResetPassword = () => {
      try {
        const response = await axios.post(
          
-        " https://propertyapi-api-gateway.onrender.com/api/v1/auth/update-password",
+        "https://propertyapi-monolithic.onrender.com/api/v1/auth/update-password",
          { 
           email:localStorage.getItem("userEmail"),
            password,

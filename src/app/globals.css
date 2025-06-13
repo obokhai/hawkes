@@ -3,6 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.fc .fc-button{
+  border:1px solid #666 !important;
+  background-color:#fff !important;
+  color:#333 !important
+}
+.fc .fc-AddNewEvent-button {
+  background-color: #2563eb !important; /* Tailwind blue-600 */
+  color: #fff !important;
+  border: none !important;
+  padding:10px 24px !important
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

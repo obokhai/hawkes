@@ -101,10 +101,10 @@ const PropertyDetails = () => {
   const [stageSteps, setStageSteps] = useState([])
   const [saveStageId, setSavedStageId] = useState("")
   const [getStageData, setGetStageData] = useState([])
-  
+  const [assignUserId,setAssignUserId] = useState("")  
   const [file, setFile] = useState(null);
   const [updateId, setUpdateId] = useState("")
-  
+  const [isOwner, setIsowner] = useState(false)
   const handleUserChange = (e) => {
     const { name, value } = e.target;
     setUserId(prev => ({ ...prev, [name]: value }));
@@ -205,6 +205,7 @@ setAttachments(e.target.files); // multiple files
     }
   };
 
+
   const getStageTasks = async (stageId) => {
     setStageTaskId(stageId)
     console.log("This is the Stage ID for adding a new task ",stageTaskId)
@@ -229,20 +230,21 @@ setAttachments(e.target.files); // multiple files
       
   const addStage = async (e) =>{
     e.preventDefault()
-    console.log(stage)
+    const addNewStage ={
+      ...stage,
+      stagePosition: Number(stage.stagePosition)
+    }
+    console.log(addNewStage)
         try {
-  
-      const response = axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/create-stage',stage, {
+      const response = await axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/create-stage',addNewStage, {
             headers: {
-              'Content-Type': 'multipart/form-data',
+              'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             }}
-          )  .then(function (response) {
-              console.log(response);
-            })
-
+          ) 
+          console.log(response)
     } catch (err) {
-      console.log(stage)
+      console.log(addNewStage)
       console.error("Error:", err);
     }
   }
@@ -399,19 +401,19 @@ setAttachments(e.target.files); // multiple files
               'Authorization': `Bearer ${token}`
             }}
           )  .then(function (response) {
-console.log(response);
-})
+  console.log(response);
+  })
 
     } catch (err) {
       console.log(formState)
       console.error("Error:", err);
     }
-  };
+};
           
   const handleChange = (e) => {
   const { name, value } = e.target;
   setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+};
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -423,12 +425,9 @@ console.log(response);
   console.log(formData)
   };
 
-// to here
   const assignAsset = async () => {
     const assetId = id;
-
-    // Ensure you are accessing the correct user ID value
-    const assignedUserId = userId.userId; // or just `userId` if it's a string
+    const assignedUserId = assignUserId;
 
     try {
       const response = await fetch(
@@ -442,13 +441,16 @@ console.log(response);
           body: JSON.stringify({
             userId: assignedUserId,
             assetId: assetId,
+            isOwner
           }),
         }
       );
     
+      console.log(assignedUserId,assetId)
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.log(response)
         console.error("Failed to assign asset:", errorData.message || response.statusText);
         return;
       }
@@ -560,7 +562,7 @@ console.log(response);
                        {currentStep === 1 && (
                     <>
                       <div className="grid gap-4">
-                      <select name="userRole" onChange={handleUserChange}   placeholder="Assign User" className="border p-2 rounded w-full">
+                      <select name="userRole" onChange={e => setAssignUserId(e.target.value)}   placeholder="Assign User" className="border p-2 rounded w-full">
                         <option value="Select user">Select User</option>
                           {users.map((user) => (
                               <option key={user.id} value={user.id}>{user.firstName}</option>
@@ -789,10 +791,54 @@ console.log(response);
                         <p className='flex text-sm items-center'>Manage Stages <ChevronRight className='h-5' /> </p>
                   </DialogTrigger>
                    <DialogContent className="w-full  bg-white">
-                    <DialogHeader className="">
+                    <DialogHeader className="mt-2">
                       <DialogTitle className="flex justify-between items-center">
                         <h3>Manage Stages: </h3>
-                        <PlusIcon/>
+                        {/*  */}
+                           <Dialog className="w-[1200px]">
+                  <DialogTrigger asChild>
+                    <PlusIcon className='cursor-pointer'/>
+                  </DialogTrigger>
+                  <DialogContent className="w-full  bg-white">
+                    <DialogHeader>
+                      <DialogTitle>
+                        Add Stage    
+                      </DialogTitle>
+                    </DialogHeader>
+                  <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
+                     <form onSubmit={addStage}>
+                          <div className="space-y-4">
+                            <div className="flex-col gap-x-5">
+                              <label className="text-xs w-full">Stage Position
+                                <input name="stagePosition"
+                                  value={stage.stagePosition}
+                                  onChange={(e) => setStage({ ...stage, [e.target.name]: e.target.value })}
+                                  placeholder="Enter Position" className="w-full mt-2 border p-3 rounded" />
+                              </label>
+
+                               <label className="text-xs w-full">Stage Name
+                                <input name="stageName"
+                                  value={stage.stageName}
+                                  onChange={(e) => setStage({ ...stage, [e.target.name]: e.target.value })}
+                                  placeholder="Enter Name" className="w-full mt-2 border p-3 rounded" />
+                              </label>
+
+                              <label className="text-xs w-full">Stage description
+                                <textarea name="description"
+                                  value={stage.description}
+                                  rows={4}
+                                  onChange={(e) => setStage({ ...stage, [e.target.name]: e.target.value })}
+                                  placeholder="Enter Name" className="w-full mt-2 border p-3 rounded" />
+                              </label>
+                             
+                            </div>
+                            <button type='submit' className='w-44 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Add</button>
+                          </div>
+                     </form>
+                      </div>
+                  </DialogContent>
+                  </Dialog>
+                        {/*  */}
                       </DialogTitle>
                     </DialogHeader>
                     <div className="min-w-[450px] mx-auto mt-10 bg-white rounded-xl">
@@ -948,7 +994,7 @@ console.log(response);
                                 <input name="taskName"
                                   value={tasks.taskName}
                                   onChange={handleTaskChange}
-                                  placeholder="Enter Position" className="w-full mb-2 border p-3 rounded" />
+                                  placeholder="Enter Name" className="w-full mb-2 border p-3 rounded" />
                                   {/* <input type="file" accept="image/*" capture="enviroment" /> */}
                               </label>
 
@@ -957,7 +1003,7 @@ console.log(response);
                                   value={tasks.description}
                                   rows={2}
                                   onChange={handleTaskChange}
-                                  placeholder="Enter Name" className="w-full mb-2 border p-3 rounded" />
+                                  placeholder="Enter Description" className="w-full mb-2 border p-3 rounded" />
                               </label>
                             
                                   <label className="text-xs w-full">Due Date

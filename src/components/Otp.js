@@ -44,18 +44,10 @@ const Otp = () => {
     </div>
     <div className='space-y-4'>
         <h2 className="font-extrabold text-3xl " onClick={() =>{router.push("?screen=reset")}}>Check your email</h2>
-        <p className="mb-14 w-96">We sent a reset link to aibormoses1997@gmail.com Enter 5 digit code that was mentioned in the email</p>
+        <p className="mb-14 w-96">We sent a reset link to aibormoses1997@gmail.com Enter 6 digit code that was mentioned in the email</p>
         <div className="w-full  lg:w-[369px]">
           <form className="space-y-6 flex flex-col items-center" onSubmit={verifyOTP}>
-            {/* <div className="flex border-[1px] border-[#eee] rounded-full py-5 px-5 space-x-6"> */}
-              {/* <Image src="/email.svg" width={25} height={25} alt="Email Icon" /> */}
-              {/* <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOTP(e.target.value)}
-                className="outline-none focus:outline-none border-none text-black"
-                placeholder="Email"
-              /> */}
+   
               <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS} value={otp}
                 onChange={(value) => setOTP(value)} className="w-full">
                 <InputOTPGroup className="flex-1 space-x-2">
