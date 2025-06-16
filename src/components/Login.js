@@ -84,7 +84,7 @@ return(
                 />
                 <Image src="/eye.svg" width={25} height={25} alt="Eye Icon" onClick={toggleShowPassword} className="absolute placeholder:text-[#eee] cursor-pointer right-6" />
               </div>
-              <p onClick={() => router.push("?screen=forgot", { scroll: false })} className="float-right text-[#eee]">Forget Password</p>
+              <p onClick={() => router.push("?screen=forgot", { scroll: false })} className="float-right text-[#333]">Forget Password</p>
               <button className="w-full cursor-pointer bg-[#312787] text-center text-white py-5 rounded-full">
                 Login
               </button>
