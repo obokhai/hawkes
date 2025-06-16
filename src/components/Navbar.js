@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 export default function Navbar({setActive}){
     const router = useRouter()
 
-    const logout = () => {
+    const logout = (e) => {
         console.log('Logout Triggered')
         Cookies.remove('token');
         localStorage.removeItem('token');

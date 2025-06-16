@@ -57,7 +57,7 @@ export default function Dashboard(){
                    <div className="flex flex-col items-center space-y-6 py-6 bg-[#6434F8] rounded-tr-xl rounded-br-xl me-3">
                         {options.map((data, index)=>
                             <div key={index}  className="text-white opacity-80 hover:opacity-100 cursor-pointer`" onClick={()=>setActive(data.name)}>
-                                 <Image src={`${data.icon}`} className="w-5 h-5 mb-4" alt="property" width={12} height={12} />
+                                <Image src={`${data.icon}`} className="w-5 h-5 mb-4" alt="property" width={12} height={12} />
                             </div> 
                         )}
                    </div>

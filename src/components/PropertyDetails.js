@@ -243,6 +243,7 @@ setAttachments(e.target.files); // multiple files
             }}
           ) 
           console.log(response)
+          router.push(`/dashboard?property=${id}`)
     } catch (err) {
       console.log(addNewStage)
       console.error("Error:", err);
@@ -277,6 +278,7 @@ setAttachments(e.target.files); // multiple files
             })
           console.log("Response data:", res.data);
           if(!res) console.log(res.data)
+            router.push(`/dashboard?property=${id}`)
       } catch (err) {
           console.error("Error:", err.response);
       }
@@ -326,6 +328,7 @@ setAttachments(e.target.files); // multiple files
           }}
         )
         console.log("Task Successfully Updated")
+        router(`/dashboard?property=${id}`)
 
   } catch (err) {
     console.error("Error:", err.response?.data?.errors || err.message);
@@ -409,6 +412,7 @@ setAttachments(e.target.files); // multiple files
       console.log(formState)
       console.error("Error:", err);
     }
+    router.push(`/dashboard?property=${id}`)
 };
           
   const handleChange = (e) => {
@@ -424,6 +428,7 @@ setAttachments(e.target.files); // multiple files
   const { name, value } = e.target;
   setFormData((prev) => ({ ...prev, [name]: value }));
   console.log(formData)
+  router.push(`/dashboard?property=${id}`)
   };
 
   const assignAsset = async () => {
