@@ -64,11 +64,14 @@ const chartConfig = {
 
 const AdminDashboard = () => {
 const [totalProperties, setTotalProperties] = useState('')
-const [totalClients, setTotalClients] =useState('')
+const [totalClients, setTotalClients] = useState('')
 const [totalJV, setTotalJV ] = useState('')
 
 useEffect(() => {
    const token = localStorage.getItem("token")
+   if (!token) {
+    console.log("there is no token available")
+   }
         async function fetchPosts() {  
      try {
        const res = await fetch('https://propertyapi-monolithic.onrender.com/api/v1/dashboard/admin?clientId=3&JvId=2', {
