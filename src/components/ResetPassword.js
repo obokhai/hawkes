@@ -34,7 +34,7 @@ const ResetPassword = () => {
        );
  
        console.log("Login Successful:", response.data);
-       router.push("/dashboard");
+       router.push("?screen=reset", { scroll: false });
      } catch (error) {
        console.log(email)
        console.log(password)

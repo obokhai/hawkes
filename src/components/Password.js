@@ -41,7 +41,7 @@ const Password = () => {
   }
 
   return (
-    <form className='px-24 relative pb-12 w-full space-y-12' onSubmit={handleSubmit}>
+    <form className='px-24 relative pb-12 mt-16 w-full space-y-12' onSubmit={handleSubmit}>
       <ul className='my-8 leading-9'>
         <li>Password must be at least 5 characters long.</li>
         <li>Password must contain at least 1 letter and 1 digit.</li>

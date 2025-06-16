@@ -10,6 +10,7 @@ import ForgotPassword from "@/components/ForgotPassword";
 import { useSearchParams } from "next/navigation";
 import Otp from "@/components/Otp";
 import ResetPassword from "@/components/ResetPassword";
+import PasswordSuccess from "@/components/PasswordSuccess";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -40,6 +41,8 @@ export default function Home() {
                   return <ResetPassword/>
                 case 'login':
                   return <Login/>
+                  case 'success':
+                  return <PasswordSuccess/>
                 default:
                   return null
               }

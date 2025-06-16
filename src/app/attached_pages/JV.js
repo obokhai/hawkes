@@ -97,7 +97,7 @@ const fetchUsersByRole = async () => {
 
     const data = await response.json();
     setUsersByRole(data?.data?.users || []);
-    setTotalJV(usersByRole.length)
+    // setTotalJV(data?.data?.users)
     console.log("Fetched Users:", data);
   } catch (error) {
     console.error("Fetch Error:", error);
@@ -160,7 +160,7 @@ const handleSubmit = async (e) => {
   return (
     <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
                   <div className="flex justify-between mb-14 text-black items-center">
-                        <h3 className="text-2xl ">JV Partners : {totalJV} </h3>
+                        {/* <h3 className="text-2xl ">JV Partners : {totalJV} </h3> */}
                         <div className="flex space-x-6">
                             <div className="flex items-center cursor-pointer space-x-2 bg-gray-100  border-gray-300 rounded-xs border-[1px] lg:w-32 justify-center  py-3 px-4">
                                 <Image src="/arrow_up.svg"  alt="arrow up" width={13} height={13} />
@@ -277,7 +277,7 @@ const handleSubmit = async (e) => {
                       <TableBody className="border-l-2 border-gray-200 border-r-2 ">
                       
        
-                       {Array.isArray(usersByRole) && usersByRole.map((user, index) => (
+                       { usersByRole.map((user,index) => (
                           <TableRow key={user.id} className="text-xs truncate border-gray-200 px-8">
                             <TableCell>{index + 1}</TableCell>
                             <TableCell className="font-medium gap-x-5 flex items-center">
