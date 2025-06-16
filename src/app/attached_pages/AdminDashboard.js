@@ -118,7 +118,7 @@ useEffect(() => {
                         <span className='bg-green-200 rounded-full h-12 w-12 flex justify-center items-center'><Monitor/></span>
                       </span>
                       <h4 className='text-6xl'>{totalProperties}</h4>
-                      <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p>
+                      {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
                   </div>
                   <div className='flex flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 min-w-60'>
                       <span className='flex justify-between items-center w-full'>
@@ -126,7 +126,7 @@ useEffect(() => {
                         <span className='bg-green-200 rounded-full h-12 w-12 font-light flex justify-center items-center'><UserRoundCheck/></span>
                       </span>
                       <h4 className='text-6xl'>{totalClients}</h4>
-                      <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p>
+                      {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
                   </div>
                   <div className='flex flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 min-w-60'>
                       <span className='flex justify-between items-center w-full'>
@@ -134,7 +134,7 @@ useEffect(() => {
                         <span className='bg-green-200 rounded-full h-12 w-12 font-light flex justify-center items-center'><UsersRound/></span>
                       </span>
                       <h4 className='text-6xl'>{totalJV}</h4>
-                      <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p>
+                      {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
                   </div>
 
 

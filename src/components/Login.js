@@ -12,6 +12,12 @@ const Login = () => {
    const [password, setPassword] = useState("");
    const router = useRouter();
  
+     useEffect(() => {
+    const token = localStorage.getItem("token")
+    if(token){
+      router.push("/dashboard")
+    }
+  }, [])
    const toggleShowPassword = () =>{
     setShowPassword(!showPassword)
    }

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useEffect } from "next/navigation";
 import axios from "axios";
 import Login from "@/components/Login";
 import ForgotPassword from "@/components/ForgotPassword";
@@ -11,11 +11,14 @@ import { useSearchParams } from "next/navigation";
 import Otp from "@/components/Otp";
 import ResetPassword from "@/components/ResetPassword";
 import PasswordSuccess from "@/components/PasswordSuccess";
+// import { useRouter } from "next/navigation";
 
 export default function Home() {
   const searchParams = useSearchParams();
+  // const router = useRouter
   const screen = searchParams.get("screen") || "login"; // Default to login screen
 
+  
   return (
    
   
