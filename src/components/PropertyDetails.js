@@ -500,7 +500,7 @@ setAttachments(e.target.files); // multiple files
       <div className='lg:w-full  bg-white min-h-1/3 flex justify-between shadow-xl rounded-lg  items-center'>
          {}
           <div className='flex flex-col flex-1 w-1/3 border-r-2 justify-center gap-y-3 items-center border-gray-100 px-12 h-full' >
-          <button className="text-blue-600 underline mb-4" onClick={() => router.push("/dashboard")}>← Back to Properties</button>
+          <button className="text-blue-600 underline mb-4 cursor-pointer" onClick={() => router.push("/dashboard")}>← Back to Properties</button>
             <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
             <h3 className='text-3xl text-clip font-bold'>{ property?.propertyName}</h3>
            <p className='text-xs'>{property?.address}</p> 
