@@ -953,8 +953,8 @@ setAttachments(e.target.files); // multiple files
           )}
          
           {stageSteps.map((step) => (
-            <div className='flex  gap-x-4'>
-            <div key={step.id} onClick={() =>getStageTasks(step.id)} className="flex flex-col items-center">
+            <div className='flex gap-x-4'>
+            <div key={step.id} onClick={() =>getStageTasks(step.id)} className="flex cursor-pointer flex-col items-center">
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
                   step.stageStatus === "completed" ? "bg-indigo-700 text-white " : "border-[1px] border-indigo-700 text-indigo-700"
