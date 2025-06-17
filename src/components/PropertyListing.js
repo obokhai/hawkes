@@ -15,6 +15,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { toast } from 'sonner';
+import { Skeleton } from './ui/skeleton';
+// import { ClipLoader } from 'react-spinners';
+import {BeatLoader} from "react-spinners"
 
 const PropertyListing = () => {   
   
@@ -30,6 +34,7 @@ const PropertyListing = () => {
   const [inActiveAssetCount, setInActiveAssetCount] = useState('')
   const [users, setUsers] = useState([]);
   const [file, setFile] = useState(null);
+  const [loading,  setLoading] = useState(false)
 
 const handleFileChange = (e) => {
   setFile(e.target.files[0]);
@@ -128,17 +133,19 @@ const handleFileChange = (e) => {
       );
   
     
+      toast.success(response.data.message)
      console.log(response)
       setIsOpen(false); // Close modal
      
     } catch (error) {
+      toast.error("Error Submitting Asset")
       console.error("Submission Error:", error);
       alert("Submission failed. Check console for details.");
     }
   };
 
    useEffect(() => {
-     
+     setLoading(true)
     setMounted(true);
 async function fetchPosts() {  
       try {
@@ -160,6 +167,7 @@ async function fetchPosts() {
            setTotal(data.data.total)
            setActiveAssetCount(data.data.activeAssetsCount)
            setInActiveAssetCount(data.data.inactiveAssetsCount)
+           setLoading(false)
         } else {
           console.error("No activeAsset found in the response");
           setProperties([]); // Or handle the empty case accordingly
@@ -225,8 +233,8 @@ async function fetchPosts() {
               </div>
             </div>
             {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center min-h-96 bg-black/40 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full relative">
+        <div className="fixed inset-0 flex  items-center justify-center min-h-96 bg-black/40 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-[450px] relative">
             {/* Close button */}
             <button
               onClick={() => setIsOpen(false)}
@@ -239,21 +247,36 @@ async function fetchPosts() {
                     <>
                       <h2 className="text-xl font-semibold mb-4">Add Asset</h2>
                       <div className="grid gap-4">
-                        <input name="propertyName" onChange={handleAssetChange} value={assetData.propertyName} placeholder="Asset Name" className="border p-2 rounded w-full" />
-                        <input name="address" onChange={handleAssetChange} value={assetData.address} placeholder="Address" className="border p-2 rounded w-full" />
-                        <input name="authorizedUse" onChange={handleAssetChange} value={assetData.authorizedUse} placeholder="Authorized Use" className="border p-2 rounded w-full" />
-                        <input name="size" onChange={handleAssetChange} value={assetData.size} placeholder="Size" className="border p-2 rounded w-full" />
-                        <div className='flex gap-x-6'>
+                        <label className='text-xs '>
+                          Asset Name
+                        <input name="propertyName" onChange={handleAssetChange} value={assetData.propertyName} placeholder="Asset Name" className=" mt-1 border p-2 rounded w-full" />
+                        </label>
+                        <label className='text-xs '>
+                          Address
+                        <input name="address" onChange={handleAssetChange} value={assetData.address} placeholder="Address" className="border p-2 mt-1  rounded w-full" />
+                        </label>
+                        <label className='text-xs '>
+                          Authorized Use
+                        <input name="authorizedUse" onChange={handleAssetChange} value={assetData.authorizedUse} placeholder="Authorized Use" className=" mt-1 border p-2 rounded w-full" />
+                        </label>
+                        <label className='text-xs '>
+                          Size
+                        <input name="size" onChange={handleAssetChange} value={assetData.size} placeholder="Size" className="border p-2 rounded mt-1  w-full" />
+                        </label>
+                        <label className='text-xs'>
+                         Status
+                        <div className='flex gap-x-6 w-1/2'>
                             {/* <input name="dateAdded" type="date" onChange={handleAssetChange} value={assetData.dateAdded} className="border p-2 rounded w-full" /> */}
-                            <select name="status" onChange={handleAssetChange} value={assetData.status} className="border p-2 rounded w-full">
+                            <select name="status" onChange={handleAssetChange} value={assetData.status} placeholder="Select Status" className="border p-2 rounded w-full">
                               <option value="">Select Status</option>
                               <option value="active">active</option>
                               <option value="pending">pending</option>
                             </select>
                         </div>
+                        </label>
                       </div>
                       <div className="flex justify-end mt-6">
-                        <button onClick={handleSubmit} className="bg-[#2C1C92] cursor-pointer text-white px-6 py-2 rounded">Submit</button>
+                        <button onClick={handleSubmit} className="bg-[#2C1C92] cursor-pointer text-white px-6 py-2 rounded-full">Submit</button>
                       </div>
                     </>
                   )}
@@ -266,30 +289,37 @@ async function fetchPosts() {
           
         
       )}
-             {Array.isArray(properties) && properties.length === 0 ? (
-              <div className="flex flex-col items-center justify-center text-sm text-gray-500">
-                <Image src="/empty_assets.svg" width={200} height={200} />
-                <h5 className='font-bold'>No Active Assets</h5>
-                <p className=''>Get started by adding an asset.</p>
-              </div>
-            ) : (
+          {loading ? (
+            <div className="flex justify-center items-center">
+            {/* <Skeleton className="w-full h-[100px] rounded mb-7 shadow blur-3xl" />
+             <Skeleton className="w-full h-[100px] rounded mb-7 shadow blur-3xl" />
+              <Skeleton className="w-full h-[100px] rounded mb-7 shadow blur-3xl" /> */}
+              <BeatLoader />
+            </div>
+          ) : Array.isArray(properties) && properties.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-sm text-gray-500">
+              <Image src="/empty_assets.svg" width={200} height={200} />
+              <h5 className='font-bold'>No Active Assets</h5>
+              <p className=''>Get started by adding an asset.</p>
+            </div>
+          ) : (
               properties.map((property) => (
             <div  className="flex justify-between py-8 w-full px-16 my-3 bg-gray-200 rounded-xl"
               key={property.id}
             >
-              <div className="flex items-center space-x-4 cursor-pointer" onClick={() => router.push(`?property=${property.id}`)}>
-                <div className="bg-white border-[1px] border-gray-500 py-5 px-6 w-32 text-[#6434F8] text-center rounded-full h-6 flex items-center justify-center">
+              <div className="flex items-center gap-x-6 space-x-4 cursor-pointer" onClick={() => router.push(`?property=${property.id}`)}>
+                <div className="bg-white border-[1px] border-gray-500 py-3 h-16 px-6 w-44 text-[#6434F8] text-center text-xl rounded-full flex items-center justify-center">
                   <h4 className="font-bold truncate text-ellipsis">{property.id}</h4>
                 </div>
                 <div className="w-full space-y-2 cursor-pointer">
                   <div className="flex flex-col justify-center text-gray-800">
                     <h4 className="flex gap-x-5 text-xl font-extrabold">
-                      {property.propertyName} <span>{property.progress || 0}%</span>
+                      {property.propertyName} <span>{property.progress || 30}%</span>
                     </h4>
                   </div>
                   <div className="flex w-full gap-x-2">
                     <Image src="/location.svg" alt="" width={14} height={14} />
-                    <p className="text-xs text-gray-500">{property.address}</p>
+                    <p className="text-sm truncate text-gray-500">{property.address}</p>
                   </div>
                 </div>
               </div>

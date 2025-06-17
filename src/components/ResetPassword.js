@@ -5,18 +5,21 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import axios from "axios";
 import Image from 'next/image';
+import { toast } from 'sonner';
+import { ClipLoader } from 'react-spinners';
 const ResetPassword = () => {
    
    const [password, setPassword] = useState("");
    const [confirmPassword, setConfirmPassword] = useState("");
    const [showPassword, setShowPassword] = useState(false)
    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+   const [loading, setLoading] = useState(false)
    const email =''
    const router = useRouter();
  
    const handleSubmit = async (event) => {
      event.preventDefault(); // Prevent default form submission
- 
+      setLoading(true)
      try {
        const response = await axios.post(
          
@@ -33,11 +36,19 @@ const ResetPassword = () => {
          }
        );
  
-       console.log("Login Successful:", response.data);
-       router.push("?screen=reset", { scroll: false });
+      setLoading(false)
+      if (response.data.statusCode == 400 && response.data.success == false) {
+        toast.error(response.data.message)
+      }else{
+        toast.success(response.data.message)
+        router.push("?screen=success", { scroll: false });
+        console.log("Login Passo:", response.data);
+      }
      } catch (error) {
-       console.log(email)
-       console.log(password)
+      setLoading(false)
+      toast.error( error.response?.data?.message || error.message)
+      //  console.log(email)
+      //  console.log(password)
        console.error("Login failed:", error.response?.data?.message || error.message);
      }
    };
@@ -77,8 +88,18 @@ return(
               </div>
               </div>
               <p onClick={() => router.push("?screen=reset", { scroll: false })} className="float-right text-[#eee]">Forget Password</p>
-              <button className="w-full cursor-pointer bg-[#312787] text-center text-white py-5 rounded-full">
-                Login
+              <button type='submit' className={`w-full cursor-pointer ${loading ? 'disabled' : ''} bg-[#312787] text-center text-white py-5 rounded-full`}>
+                {loading ?(
+                  <ClipLoader
+                  color="#fff"
+                  loading={loading}
+                  // cssOverride={override}
+                  size={20}
+                  aria-label="Loadingr"
+                  data-testid="loader"
+                />
+                ) : (<p>Submit</p>)
+                }
               </button>
             </form>
           </div>

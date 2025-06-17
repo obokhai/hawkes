@@ -1,5 +1,6 @@
 import './globals.css'
 import { raleway } from './fonts'
+import { Toaster } from '@/components/ui/sonner'
 import { Suspense } from 'react'
 
 export const metadata = {
@@ -13,7 +14,7 @@ export default function RootLayout({ children }) {
       <body className={ raleway.className}>
         <Suspense>
         {children}
-
+            <Toaster />
         </Suspense>
         </body>    
     </html>

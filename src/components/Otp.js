@@ -3,21 +3,25 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { ClipLoader } from 'react-spinners';
+import { toast } from 'sonner';
 import axios from "axios";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
- 
+
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 const Otp = () => {
-    const [otp, setOTP] = useState("");
+  const [otp, setOTP] = useState("");
+  const [loading, setLoading] = useState(false)
    const router = useRouter();
-   const email = localStorage.getItem("userEmail")
+   const email = localStorage.getItem("forgotEmail")
  
    const verifyOTP = async (event) => {
     event.preventDefault();
+    setLoading(true)
     try {
         const response = await axios.post(
             "https://propertyapi-api-gateway.onrender.com/api/v1/auth/validate-otp",
@@ -29,10 +33,14 @@ const Otp = () => {
                 headers: { "Content-Type": "application/json" },
             }
         );
+        toast.success(response.data.message)
+        setLoading(false)
         console.log("Reset password OTP sent successfully", response.data);
         router.push("?screen=reset", { scroll: false });
     } catch (error) {
+        setLoading(false)
         console.log(email);
+        toast.error(error.response?.data?.message || error.message)
         console.error("OTP verification Failed:", error.response?.data?.message || error.message);
     }
 };
@@ -61,9 +69,19 @@ const Otp = () => {
                 </InputOTPGroup>
               </InputOTP>
             {/* </div> */}
-            <button className="w-full cursor-pointer bg-[#312787] text-center text-white py-5 rounded-full"type='submit'>
-              Submit
-            </button>
+           <button type='submit' className={`w-full cursor-pointer ${loading ? 'disabled' : ''} bg-[#312787] text-center text-white py-5 rounded-full`}>
+                        {loading ?(
+                          <ClipLoader
+                          color="#fff"
+                          loading={loading}
+                          // cssOverride={override}
+                          size={20}
+                          aria-label="Loadingr"
+                          data-testid="loader"
+                        />
+                        ) : (<p>Submit</p>)
+                        }
+                      </button>
           </form>
         </div>
       </div>

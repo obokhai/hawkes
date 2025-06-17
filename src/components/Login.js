@@ -2,15 +2,18 @@
 import React from 'react'
 import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner"
 import Link from 'next/link';
 import axios from "axios";
 import Image from 'next/image';
 import Cookies from 'js-cookie'
+import { ClipLoader } from 'react-spinners';
 const Login = () => {
    const [email, setEmail] = useState("");
    const [showPassword, setShowPassword] = useState(false)
    const [password, setPassword] = useState("");
    const router = useRouter();
+   const [loading, setLoading] = useState(false)
  
      useEffect(() => {
     const token = localStorage.getItem("token")
@@ -21,41 +24,73 @@ const Login = () => {
    const toggleShowPassword = () =>{
     setShowPassword(!showPassword)
    }
-   
    const handleSubmit = async (event) => {
-     event.preventDefault(); // Prevent default form submission
- 
-     try {
-       const response = await axios.post(
-         
-        "https://propertyapi-monolithic.onrender.com/api/v1/auth/admin/login",
-         { 
-           email, 
-           password
-        },
-         {
-           headers: {
-             "Content-Type": "application/json",
-           },
-         }
-       )
-       const saveEmail = localStorage.setItem("userEmail", email);
-       const token = response.data.data.accessToken
-       const id = response.data.data.id
-       localStorage.setItem("id",id)
-       if(token){
-          Cookies.set('token', token);
-          localStorage.setItem("token", token)
-       }
-
-      //  const token = localStorage.setItem("authToken", email);
-       console.log("Login Successful:", response.data);
-       router.push("/dashboard");
-     } catch (error) {
-       
-       console.error("Login failed:", error.response?.data?.message || error.message);
-     }
+  event.preventDefault();
+  setLoading(true);
+  try {
+    const response = await axios.post(
+      "https://propertyapi-monolithic.onrender.com/api/v1/auth/admin/login",
+      { email, password },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    console.log(response.data); // Check the structure
+    const token = response.data.data?.accessToken;
+    const id = response.data.data?.id;
+    if (token) {
+      Cookies.set("token", token);
+      localStorage.setItem("token", token);
+      localStorage.setItem("id", id);
+      localStorage.setItem("userEmail", email);
+      toast.success("Login Successful");
+      setLoading(false);
+      router.push("/dashboard");
+      return;
+    } else {
+      throw new Error("No token returned from API");
+    }
+  } catch (error) {
+    setLoading(false);
+    toast.error(error.response?.data?.message || "Login failed");
+    console.error("Login failed:", error.response?.data?.message || error.message);
+  }
 };
+   
+//    const handleSubmit = async (event) => {
+//      event.preventDefault(); // Prevent default form submission
+//       setLoading(true)
+//      try {
+//        const response = await axios.post(
+         
+//         "https://propertyapi-monolithic.onrender.com/api/v1/auth/admin/login",
+//          { 
+//            email, 
+//            password
+//         },
+//          {
+//            headers: {
+//              "Content-Type": "application/json",
+//            },
+//          }
+//        )
+//        const saveEmail = localStorage.setItem("userEmail", email);
+//        const token = response.data.data.accessToken
+//        const id = response.data.data.id
+//        localStorage.setItem("id",id)
+//        if(token){
+//           Cookies.set('token', token);
+//           localStorage.setItem("token", token)
+//        }
+
+//        setLoading(false)
+//       //  const token = localStorage.setItem("authToken", email);
+//       toast.success("Login Successful")
+//        router.push("/dashboard");
+//      } catch (error) {
+       
+//       toast.error(error.response?.data.message)
+//        console.error("Login failed:", error.response?.data?.message || error.message);
+//      }
+// };
 
 return(
     <div className="flex-col space-y-4">
@@ -84,9 +119,19 @@ return(
                 />
                 <Image src="/eye.svg" width={25} height={25} alt="Eye Icon" onClick={toggleShowPassword} className="absolute placeholder:text-[#eee] cursor-pointer right-6" />
               </div>
-              <p onClick={() => router.push("?screen=forgot", { scroll: false })} className="float-right text-[#333]">Forget Password</p>
-              <button className="w-full cursor-pointer bg-[#312787] text-center text-white py-5 rounded-full">
-                Login
+              <p onClick={() => router.push("?screen=forgot", { scroll: false })} className="float-right cursor-pointer text-[#333]">Forget Password</p>
+              <button type='submit' className={`w-full cursor-pointer ${loading ? 'disabled' : ''} bg-[#312787] text-center text-white py-5 rounded-full`}>
+                {loading ?(
+                  <ClipLoader
+                  color="#fff"
+                  loading={loading}
+                  // cssOverride={override}
+                  size={20}
+                  aria-label="Loadingr"
+                  data-testid="loader"
+                />
+                ) : (<p>Submit</p>)
+                }
               </button>
             </form>
           </div>

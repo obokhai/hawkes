@@ -1,17 +1,20 @@
 "use client";
-import React from 'react'
+import React, { Suspense } from 'react'
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
+import { ClipLoader } from 'react-spinners';
+import { toast } from 'sonner';
 import axios from "axios";
 import Image from 'next/image';
 const ForgotPassword = () => {
    const [email, setEmail] = useState("");
+   const [loading, setLoading] = useState(false)
    const router = useRouter();
  
    const forgotPassword = async (event) => {
      event.preventDefault(); // Prevent default form submission
- 
+     setLoading(true);
      try {
        const response = await axios.post(
         // https://propertyapi-api-gateway.onrender.com/api/v1/auth/validate-otp
@@ -25,13 +28,16 @@ const ForgotPassword = () => {
            },
          }
        );
- 
-       console.log("Reset password OTP sent successfully", response.data);
+       localStorage.setItem("forgotMail", email)
+        toast.success(response?.data.message);
+        setLoading(false);
        router.push("?screen=otp", { scroll: false })
      } catch (error) {
-       console.log(email)
-       console.log(password)
-       console.error("Login failed:", error.response?.data?.message || error.message);
+      setLoading(false)
+      //  console.log(email)
+      //  console.log(password)
+       toast.error( error.response?.data?.message || error.message)
+      //  console.error("Login failed:",);
      }
    };
 
@@ -56,10 +62,18 @@ return(
                   placeholder="Email"
                 />
               </div>
-              
-              <Link href="/" className="float-right text-[#eee]">Forget Password</Link>
-              <button className="w-full cursor-pointer bg-[#312787] text-center text-white py-5 rounded-full"type='submit'>
-                Submit
+                <button type='submit' className={`w-full cursor-pointer ${loading ? 'disabled' : ''} bg-[#312787] text-center text-white py-5 rounded-full`}>
+                {loading ?(
+                  <ClipLoader
+                  color="#fff"
+                  loading={loading}
+                  // cssOverride={override}
+                  size={20}
+                  aria-label="Loadingr"
+                  data-testid="loader"
+                />
+                ) : (<p>Submit</p>)
+                }
               </button>
             </form>
           </div>
