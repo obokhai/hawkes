@@ -497,15 +497,16 @@ setAttachments(e.target.files); // multiple files
 
   return (
     <section className="mt-18 ms-28 me-10 min-h-screen flex flex-col gap-y-4 px-4 py-12">
-      <div className='lg:w-full  bg-white min-h-1/3 flex justify-between shadow-xl rounded-lg  items-center'>
+      <div className='lg:w-full  bg-white min-h-1/3 flex w-1/4 justify-between shadow-xl rounded-lg  items-center'>
          {}
-          <div className='flex flex-col flex-1 w-1/3 border-r-2 justify-center gap-y-3 items-center border-gray-100 px-12 h-full' >
+          <div className='flex flex-col flex-1 min-w-1/4 border-r-2 relative justify-center gap-y-3 items-center border-gray-100 px-12 h-full' >
+            
           <button className="text-blue-600 underline mb-4 cursor-pointer" onClick={() => router.push("/dashboard")}>← Back to Properties</button>
             <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
             <h3 className='text-3xl text-clip font-bold'>{ property?.propertyName}</h3>
            <p className='text-xs'>{property?.address}</p> 
           </div>
-          <div className='w-1/3 px-4 space-y-'>
+          {/* <div className='w-1/3 px-4 space-y-'>
               <table className='table-auto sapce-y-3'>
                 <thead>
                   <tr></tr>
@@ -550,13 +551,20 @@ setAttachments(e.target.files); // multiple files
                   </tr>
               </tbody>
               </table>
-          </div>
-          <div className='w-1/3 border-l-2 p-3 border-gray-100'>
-            <div className='flex justify-between items-center'>
-              <h4 className='text-xl font-bold z-20'>Progress Report
-                <Dialog className="w-[1200px]">
+          </div> */}
+     
+  
+            <div className='grid grid-cols-2 w-2/4 text-sm px-4 space-y-3 relative'>
+              
+              <span className='font-bold'>Asset Id:</span>
+              <span className='grid grid-cols-2space-x-2'>
+                <span className='w-28 truncate'>{property.id}</span>
+                <span className=''>  
+                  <Dialog className="w-[1200px] ">
                   <DialogTrigger asChild>
-                      <Image src='/inviteuser.svg' width={120} height={20} />
+                    <div className='flex w-full justify-end absolute top-0 right-0 -mt-10 cursor-pointer pe-4'>
+                      <Image src='/inviteuser.svg' className='' width={100} height={20} />
+                    </div>
                   </DialogTrigger>
                   <DialogContent className="w-full  bg-white">
                     <DialogHeader>
@@ -713,7 +721,26 @@ setAttachments(e.target.files); // multiple files
                       
                       </div>
                   </DialogContent>
-                  </Dialog>
+                  </Dialog></span>
+                </span>
+              <span className='font-bold '>Authorized Use:</span><span>{property.authorizedUse}</span>
+              <span className='font-bold'>Size:</span><span>{property.size}</span>
+              <span className='font-bold'>Client:</span><span>{property.client || '-'}</span>
+              <span className='font-bold'>JV PArtner:</span><span>{property.jv || '-'}</span>
+              <span className='font-bold'>Assigned Legal Rep:</span><span>{property.legal || '-'}</span>
+              <span className='font-bold'>Date Added:</span><span> {new Date(property.createdAt).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}</span>
+              <span className='font-bold'>Status:</span><span>{property.status}</span>
+            
+
+          </div>
+          <div className='w-1/4 border-l-2 p-3 border-gray-100'>
+            <div className='flex justify-between items-center'>
+              <h4 className='text-xl font-bold z-20'>Progress Report
+               <div className='h-2 w-16 rounded-full mt-1 bg-amber-400'/>
                 {/* <Image src='/inviteuser.svg' width={120} height={20} /> */}
               </h4>
               <select className='border-2 z-20 p-2 px-6 rounded-lg'>

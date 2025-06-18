@@ -92,7 +92,7 @@ const Password = () => {
 
       <button
         type="submit"
-        className='text-white bg-[#5051F9] cursor-pointer rounded-xl text-sm h-16 w-44 mt-12 sticky -top-60 right-12 '
+        className='text-white bg-[#5051F9] cursor-pointer rounded-xl text-sm h-16 w-44 mt-12 absolute -top-60 right-12 '
       >
         Update Password
       </button>

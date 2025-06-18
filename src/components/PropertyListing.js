@@ -18,7 +18,7 @@ import {
 import { toast } from 'sonner';
 import { Skeleton } from './ui/skeleton';
 // import { ClipLoader } from 'react-spinners';
-import {BeatLoader} from "react-spinners"
+import {BeatLoader, GridLoader} from "react-spinners"
 
 const PropertyListing = () => {   
   
@@ -290,11 +290,30 @@ async function fetchPosts() {
         
       )}
           {loading ? (
-            <div className="flex justify-center items-center">
-            {/* <Skeleton className="w-full h-[100px] rounded mb-7 shadow blur-3xl" />
-             <Skeleton className="w-full h-[100px] rounded mb-7 shadow blur-3xl" />
-              <Skeleton className="w-full h-[100px] rounded mb-7 shadow blur-3xl" /> */}
-              <BeatLoader />
+            <div className="flex flex-col justify-center gap-y-4 items-center my-auto">
+
+        
+              <div className='w-full h-32 px-4 shadow-md gap-x-6 items-center flex'>
+                <Skeleton className="rounded-full w-44 h-10 bg-[#eee]" />
+                <div className='flex flex-col w-full gap-y-3'>
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                </div>
+              </div>
+               <div className='w-full h-32 px-4 shadow-md gap-x-6 items-center flex'>
+                <Skeleton className="rounded-full w-44 h-10 bg-[#eee]" />
+                <div className='flex flex-col w-full gap-y-3'>
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                </div>
+              </div>
+               <div className='w-full h-32 px-4 shadow-md gap-x-6 items-center flex'>
+                <Skeleton className="rounded-full w-44 h-10 bg-[#eee]" />
+                <div className='flex flex-col w-full gap-y-3'>
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                </div>
+              </div>
             </div>
           ) : Array.isArray(properties) && properties.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-sm text-gray-500">
