@@ -193,7 +193,7 @@ async function fetchPosts() {
                 <Image src="/chevron_admin.svg" width={10} height={10} />
                   1.2%
                 </p>
-                <p className='text-6xl font-bold -mt-7'>{total}</p>
+                <p className='text-6xl font-bold -mt-7'>{total || ( <Skeleton className='w-full  bg-[#333]' />)} </p>
               </span>
               </span>
               <span className=' shadow-xl p-4 flex flex-col justify-between rounded-xl bg-[#5A48F9] text-white h-40 w-60  '>
@@ -203,7 +203,7 @@ async function fetchPosts() {
                 <Image src="/chevron_admin.svg" width={10} height={10} />
                   1.2%
                 </p>
-                <p className='text-6xl font-bold -mt-7'>{activeAssetCount} </p>
+                <p className='text-6xl font-bold -mt-7'>{!activeAssetCount ? ( <Skeleton className='w-full  bg-[#333] h-12' />) :activeAssetCount} </p>
               </span>
               </span>
               <span className=' shadow-xl p-4 flex flex-col justify-between rounded-xl bg-[#312787] text-white h-40 w-60  '>
@@ -213,8 +213,8 @@ async function fetchPosts() {
                 <Image src="/chevron_admin.svg" width={10} height={10} />
                   1.2%
                 </p>
-                <p className='text-6xl font-bold -mt-7'>{inActiveAssetCount} </p>
-              </span>
+                  <p className='text-6xl font-bold -mt-7'>{!inActiveAssetCount ? (<Skeleton className='w-full bg-[#333]' /> ) : ( inActiveAssetCount < 1 ? 0 : inActiveAssetCount )}</p>  
+               </span>
               </span>
           </aside>
           <aside className='bg-white shadow-xl rounded-2xl min-h-80 p-12 pb-20'>
@@ -223,13 +223,13 @@ async function fetchPosts() {
                 <p><span className='font-bold text-xl'>Active Assets | </span> You have {total} assets listed </p>
               </div>
               <div className='flex justify-around gap-4'>
-              <Image src="/add_asset.svg" onClick={() => setIsOpen(true)} width={120} height={100} />
+              <Image src="/add_asset.svg" className='cursor-pointer' onClick={() => setIsOpen(true)} width={120} height={100} />
                 
-                <Image src="/export_data.svg" width={150} height={100} />
-                <span className='flex justify-center p-[2px] rounded-sm px-2 border-gray-200 border-[1px]'>
+                <Image src="/export_data.svg" className='cursor-pointer' width={150} height={100} />
+                <span className='flex justify-center cursor-pointer p-[2px] rounded-sm px-2 border-gray-200 border-[1px]'>
                   <Image src="/filter.svg" width={30} height={10} />
                 </span>
-                <Image src="/sort.svg" width={40} height={10} />
+                <Image src="/sort.svg" className='cursor-pointer' width={40} height={10} />
               </div>
             </div>
             {isOpen && (
@@ -323,16 +323,16 @@ async function fetchPosts() {
             </div>
           ) : (
               properties.map((property) => (
-            <div  className="flex justify-between py-8 w-full px-16 my-3 bg-gray-200 rounded-xl"
+            <div  className="flex justify-between items-center py-4 w-full px-6 my-3 bg-gray-200 rounded"
               key={property.id}
             >
               <div className="flex items-center gap-x-6 space-x-4 cursor-pointer" onClick={() => router.push(`?property=${property.id}`)}>
-                <div className="bg-white border-[1px] border-gray-500 py-3 h-16 px-6 w-44 text-[#6434F8] text-center text-xl rounded-full flex items-center justify-center">
+                <div className="bg-white border-[1px] border-gray-500 py-3 h-12 px-6 w-44 text-[#6434F8] text-center text-xl rounded-full flex items-center justify-center">
                   <h4 className="font-bold truncate text-ellipsis">{property.id}</h4>
                 </div>
                 <div className="w-full space-y-2 cursor-pointer">
                   <div className="flex flex-col justify-center text-gray-800">
-                    <h4 className="flex gap-x-5 text-xl font-extrabold">
+                    <h4 className="flex gap-x-5 text-lg font-bold">
                       {property.propertyName} <span>{property.progress || 30}%</span>
                     </h4>
                   </div>
@@ -342,10 +342,10 @@ async function fetchPosts() {
                   </div>
                 </div>
               </div>
-              <div id="second_part" className="flex space-x-5">
-                <div className="rounded-full border-[1px] items-center border-gray-500 text-gray-600 text-xs flex px-6 py-2 gap-x-2">
+              <div id="second_part" className="flex space-x-5 items-center">
+                <div className="rounded-full border-[1px] items-center border-gray-500 text-gray-600 text-xs py-2 flex px-6 gap-x-2">
                   <Image src="/resolution.svg" alt="resolution" width={20} height={20} />
-                  <p>{property.size}</p>
+                  <p>{property.size}</p>  
                 </div>
                 <div className="rounded-full border-[1px] items-center border-gray-500 text-gray-600 text-xs flex px-6 py-2 gap-x-2">
                   <Image src="/avatar.svg" alt="avatar" width={20} height={20} />

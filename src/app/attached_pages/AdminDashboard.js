@@ -101,21 +101,19 @@ useEffect(() => {
    fetchPosts();
    
  }, []); 
-
-
-
+ 
   return (
     <section className="mt-18 ms-28 me-10 min-h-screen flex flex-col gap-y-4 px-4 py-12 rounded-2xl mb-4" >
-        <div className='flex gap-5'>
-            <aside className='w-3/5 p-8 flex flex-col shadow-xl justify-around gap-y-14 rounded-2xl bg-white'>
+        <div className='lg:flex-row  flex flex-col gap-5'>
+            <aside className=' lg:w-3/5 max-lg:block p-8 flex flex-col shadow-xl justify-around gap-y-14 rounded-2xl bg-white'>
                 <div className='flex justify-between items-center'>
                   <span className='flex-col flex text-3xl font-bold'>Hello Alexander
                     <p className='text-lg mt-3 font-normal'>Here's Your Overview</p>
                   </span>
                   <Image src='/add_dashboard.svg' width={44} height={24} />
                 </div>
-                <div className='flex w-full gap-x-4'>
-                  <div className='flex flex-col rounded-xl shadow-lg min-h-36 justify-between p-4 min-w-60'>
+                <div className='grid grid-cols-1 lg:grid-cols-3 w-full gap-x-4'>
+                  <div className='flex flex-col max-md:block max-md:w-20 rounded-xl shadow-lg min-h-36 justify-between p-4 min-w-60'>
                       <span className='flex justify-between items-center w-full'>
                         <p className='text-sm text-gray-600'> Total Properties</p>
                         <span className='bg-green-200 rounded-full h-12 w-12 flex justify-center items-center'><Monitor/></span>
@@ -143,7 +141,7 @@ useEffect(() => {
 
                 </div>
             </aside>  
-            <aside className='w-2/5 p-8 rounded-2xl bg-white'>
+            <aside className='lg:w-2/5 max-lg:block p-8 rounded-2xl bg-white'>
             <Card>
               <CardHeader>
                 <CardTitle className='flex justify-between items-center'>Task Completion Rate <Image src='/thisweek.svg' className='' width={111} height={60} /> </CardTitle>

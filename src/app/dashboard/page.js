@@ -41,25 +41,46 @@ export default function Dashboard(){
             router.push('/');
           };
        
-                  useEffect(() => {
-                const token = Cookies.get("token") || localStorage.getItem("token");
-                if (!token) {
-                router.push("/");
-                }
-            }, [router]);
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const tab = params.get("tab");
+  if (tab && options.some(opt => opt.name === tab)) {
+    setActive(tab);
+  } else {
+    setActive("Dashboard"); // Default to Dashboard if no tab param
+  }
+}, []);
+
     const [active, setActive] = useState("Dashboard")
-    console.log("Current active tab:", active);
+    // console.log("Current active tab:", active);
+const handleTabChange = (tabName) => {
+  setActive(tabName);
+  if (tabName === "Dashboard") {
+    router.push("/dashboard"); // No query param for Dashboard
+  } else {
+    router.push(`/dashboard?tab=${encodeURIComponent(tabName)}`);
+  }
+};
     return(
         <main className="flex h-full relative">
             <Image src='/hawkes_stripe.svg' className="absolute top-0 right-0 -z-10" width={500} height={60} />
            <div className="w-20 min-h-screen z-10  bg-white flex flex-col py-4 gap-y-14 fixed top-0">
                    <Image src="/logo.svg" alt="Logo" className="w-12 h-12 mb-6 ms-3" width={12} height={12} />
                    <div className="flex flex-col items-center space-y-6 py-6 bg-[#6434F8] rounded-tr-xl rounded-br-xl me-3">
-                        {options.map((data, index)=>
+                        {/* {options.map((data, index)=>
                             <div key={index}  className="text-white opacity-80 hover:opacity-100 cursor-pointer`" onClick={()=>setActive(data.name)}>
                                 <Image src={`${data.icon}`} className="w-5 h-5 mb-4" alt="property" width={12} height={12} />
                             </div> 
-                        )}
+                        )} */}
+                 {options.map((data, index) =>
+                    <div
+                        key={index}
+                        className="text-white opacity-80 hover:opacity-100 cursor-pointer"
+                        onClick={() => handleTabChange(data.name)}
+                    >
+                        <Image src={`${data.icon}`} className="w-5 h-5 mb-4" alt="property" width={12} height={12} />
+                    </div>
+                    )}
                    </div>
                   
                  </div>

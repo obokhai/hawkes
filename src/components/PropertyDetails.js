@@ -33,7 +33,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
-
+import { ClipLoader } from 'react-spinners'
 const chartData = [
   { browser: "safari", visitors: 20, fill: "hsl(var(--chart-2))" },
 ];
@@ -88,7 +88,10 @@ const PropertyDetails = () => {
   const [properties, setProperties] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  
+  const [taskOpen, setTaskOpen] = useState(false)
+  const [updateTaskOpen, setUpdateTaskOpen] =useState(false)
+  const [assignAssetOpen, setAssignAssetOpen] = useState(false)
+
   const assignedAssetId = searchParams.get('property')
   // Update from here
   const [userType, setUserType] = useState("");
@@ -153,40 +156,51 @@ const PropertyDetails = () => {
     priority:''
     })
 
-  const [editedTask, setEditedTask] = useState({
-  taskName: '',
-  description: '',
-  dueDate: '',
-  status: 'pending',
-  stageId: '',
-  priority: '',
-  id: '', // needed for update
-  });
+    const [editedTask, setEditedTask] = useState({
+    taskName: '',
+    description: '',
+    dueDate: '',
+    status: 'pending',
+    stageId: '',
+    priority: '',
+    id: '', // needed for update
+    });
   
-  const [updateStage, setUpdateStage] = useState({
-    id: '',
-    stagePosition: 1
-  })
+    const [updateStage, setUpdateStage] = useState({
+      id: '',
+      stagePosition: 1
+    })
   
-  const [attachments, setAttachments] = useState([]);
+    const [attachments, setAttachments] = useState([]);
 
-  const handleTaskChange = (e) => {
+    const handleTaskChange = (e) => {
     const { name, value } = e.target;
     setTasks(prev => ({ ...prev, [name]: value }));
-  };
-  const [stageTaskId, setStageTaskId] = useState("")
-  const handleTaskUpdate = (e) => {
-    const { name, value } = e.target;
-    setEditedTask(prev => ({ ...prev, [name]: value }));
-  }
+    };
 
-  const taskFileChange = (e) => {
-setAttachments(e.target.files); // multiple files
-  };
+    const [stageTaskId, setStageTaskId] = useState("")
+    const [userRoleId, setUserRoleId] = useState(1)
+    const [loadingUsers, setLoadingUsers] = useState(false)
 
+    const handleTaskUpdate = (e) => {
+      const { name, value } = e.target;
+      setEditedTask(prev => ({ ...prev, [name]: value }));
+    }
+
+    const taskFileChange = (e) => {
+  setAttachments(e.target.files); // multiple files
+    };
+
+  const handleUserRoleChange = async (e) => {
+  const selectedRoleId = e.target.value;
+  setUserRoleId(selectedRoleId);
+    // Optionally handle error
+    getAllUsers()
+  };
   const getAllUsers = async () => {
+    setLoadingUsers(true)
     try {
-      const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/role?roleId=1", {
+      const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/user/role?roleId=${userRoleId}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -198,13 +212,13 @@ setAttachments(e.target.files); // multiple files
       
       const fetchedUsers = data?.data.users;
       console.log(fetchedUsers) // Adjust this based on actual API structure
+      setLoadingUsers(false)
       setUsers(Array.isArray(fetchedUsers) ? fetchedUsers : []);
     } catch (error) {
       console.error("Failed to fetch users:", error);
       setUsers([]);
     }
   };
-
 
   const getStageTasks = async (stageId) => {
     setStageTaskId(stageId)
@@ -311,7 +325,7 @@ setAttachments(e.target.files); // multiple files
   }
 
   const updateTask = async () =>{
-
+        setUpdateTaskOpen(true)
     console.log("editedTask",editedTask)
     const id = editedTask?.id
     console.log(id)
@@ -328,6 +342,7 @@ setAttachments(e.target.files); // multiple files
           }}
         )
         console.log("Task Successfully Updated")
+        setUpdateTaskOpen(false)
         router(`/dashboard?property=${id}`)
 
   } catch (err) {
@@ -354,8 +369,8 @@ setAttachments(e.target.files); // multiple files
   }
   
     console.log("Stage Steps",stageSteps)
-  };
-      
+  };  
+
   useEffect(() => {
         if (!id) return  // 👈 prevent call if id is undefined
       
@@ -390,8 +405,6 @@ setAttachments(e.target.files); // multiple files
         // getStageTasks()
         getStages()
       }, [id])
-
-      
       
   const handleSubmit = async (e) => {
     console.log(formState)
@@ -501,7 +514,7 @@ setAttachments(e.target.files); // multiple files
          {}
           <div className='flex flex-col flex-1 min-w-1/4 border-r-2 relative justify-center gap-y-3 items-center border-gray-100 px-12 h-full' >
             
-          <button className="text-blue-600 underline mb-4 cursor-pointer" onClick={() => router.push("/dashboard")}>← Back to Properties</button>
+          {/* <button className="text-blue-600 underline mb-4 cursor-pointer" onClick={() => router.push("/dashboard")}>← Back to Properties</button> */}
             <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
             <h3 className='text-3xl text-clip font-bold'>{ property?.propertyName}</h3>
            <p className='text-xs'>{property?.address}</p> 
@@ -574,14 +587,36 @@ setAttachments(e.target.files); // multiple files
                     </DialogHeader>
                   <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl scroll-auto">
                        {currentStep === 1 && (
-                    <>
+                    <>  
                       <div className="grid gap-4">
-                      <select name="userRole" onChange={e => setAssignUserId(e.target.value)}   placeholder="Assign User" className="border p-2 rounded w-full">
+                        <select name="roles" onChange={handleUserRoleChange}>
+                          <option value='1'>Admin</option>
+                          <option value='2'>Joint Venture</option>
+                          <option value='3'>Owner</option>
+                          <option value='4'>Lawyer</option>
+                        </select>
+                      {/* <select name="userRole" onChange={e => setAssignUserId(e.target.value)}   placeholder="Assign User" className="border p-2 rounded w-full">
                         <option value="Select user">Select User</option>
                           {users.map((user) => (
                               <option key={user.id} value={user.id}>{user.firstName}</option>
                           ))}
-                        </select>
+                        </select> */}
+                        {userRoleId && (
+                              loadingUsers ? (
+                                <div className="flex justify-center items-center my-4">
+                                  <ClipLoader size={28} color="#6434F8" />
+                                </div>
+                              ) : (
+                                users.length > 0 && (
+                                  <select name="users" onChange={e => setUserId(e.target.value)}>
+                                    <option value="">Select User</option>
+                                    {users.map(user => (
+                                      <option key={user.id} value={user.id}>{user.firstName}</option>
+                                    ))}
+                                  </select>
+                                )
+                              )
+                            )}
 
                       </div>
 
@@ -1075,7 +1110,7 @@ setAttachments(e.target.files); // multiple files
         
         <div className='flex gap-x-8'>
           {getStageData.map((task) => (
-          <Dialog className="w-full" key={task.id}>
+          <Dialog className="w-full" open={taskOpen} key={task.id}>
             <DialogTrigger>
                <TaskCard title={task.taskName} onClick={() =>getTaskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
             </DialogTrigger>
@@ -1095,15 +1130,15 @@ setAttachments(e.target.files); // multiple files
                             day: "numeric",
                           })}
                           </td>
-                           <Dialog className="w-[1200px]">
+                           <Dialog className="w-[600px]" open={updateTaskOpen} >
                                     <DialogTrigger asChild>
-                                  <td className='bg-blue-400 text-white font-bold rounded text-center ' onClick={() => setEditedTask(task)}>Update</td>
+                                  <td className='bg-blue-400 text-white font-bold cursor-pointer rounded text-center '  onClick={() => setEditedTask(task)}>Update</td>
                             </DialogTrigger>
-                                    <DialogContent className="w-full  bg-white">
+                                    <DialogContent className=" w-[600px] bg-white">
                                     
-                        <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
+                        <div className="w-[400px] mx-auto mt-10 text-xs bg-white rounded-xl">
                                 <h4 className='font-bold text-xl'>Update Task</h4>
-                                <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
+                                <div className="w-[400px] mx-auto mt-6 bg-white rounded-xl">
                           
                                 <div className="space-y-4">
                                   <div className="flex-col gap-x-5">
