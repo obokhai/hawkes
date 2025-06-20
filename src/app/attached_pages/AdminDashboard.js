@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import api from '../api';
 import {
   Card,
   CardContent,
@@ -74,14 +75,9 @@ useEffect(() => {
    }
         async function fetchPosts() {  
      try {
-       const res = await fetch('https://propertyapi-monolithic.onrender.com/api/v1/dashboard/admin?clientId=3&JvId=2', {
-         headers: {
-           'Content-Type': 'application/json',
-           'Authorization': `Bearer ${token}`,
-         }
-       });
+       const res = await api.get('/dashboard/admin?clientId=3&JvId=2');
       
-       const data = await res.json();
+       const data = res.data
 
        console.log(data?.data);
        if (data?.data) {

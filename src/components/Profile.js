@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import axios from 'axios'
+import api from '@/app/api'
 const Profile = () => {
   const [roles, setRoles] = useState({})
   const getRoles = async(e) => {

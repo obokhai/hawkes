@@ -3,6 +3,7 @@ import { useState , useEffect} from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import api from '@/app/api'
 import Link from 'next/link'
 
 import {

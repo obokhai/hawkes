@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import api from '@/app/api'
 
 const Password = () => {
   const [newPassword, setNewPassword] = useState("")

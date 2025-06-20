@@ -19,8 +19,9 @@ import { toast } from 'sonner';
 import { Skeleton } from './ui/skeleton';
 // import { ClipLoader } from 'react-spinners';
 import {BeatLoader, GridLoader} from "react-spinners"
-
-const PropertyListing = () => {   
+import Paginate from '@/components/Paginate'
+import api from '@/app/api'
+const PropertyListing = () => {     
   
   const router = useRouter();
   const [properties, setProperties] = useState([]);
@@ -35,6 +36,8 @@ const PropertyListing = () => {
   const [users, setUsers] = useState([]);
   const [file, setFile] = useState(null);
   const [loading,  setLoading] = useState(false)
+   const [page, setPage] = useState(1);
+   const PAGE_SIZE = 5
 
 const handleFileChange = (e) => {
   setFile(e.target.files[0]);
@@ -95,21 +98,15 @@ const handleFileChange = (e) => {
   
   const getRoles = async () => {
     try {
-      const response = await fetch(
-        "https://propertyapi-monolithic.onrender.com/api/v1/roles",
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        }
+      const response = await api.get(
+        "/roles",
       );
   
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
   
-      const data = await response.json();
+      const data = await response.data
       setRoleData(data.data);
       console.log(data.data);
     } catch (error) {
@@ -120,21 +117,9 @@ const handleFileChange = (e) => {
   const handleSubmit = async () => {
     try {
       if (!token) throw new Error("No token found.");
-      const response = await fetch(
-        "https://propertyapi-monolithic.onrender.com/api/v1/assets/create",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(assetData),
-        }
-      );
-  
-    
-      toast.success(response.data.message)
-     console.log(response)
+      const response = await api.post("/assets/create",assetData);
+      // toast.success(response.data.message)
+     console.log(response.data)
       setIsOpen(false); // Close modal
      
     } catch (error) {
@@ -150,14 +135,9 @@ const handleFileChange = (e) => {
 async function fetchPosts() {  
       try {
         const token = localStorage.getItem("token")
-        const res = await fetch('https://propertyapi-monolithic.onrender.com/api/v1/assets', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          }
-        });
+        const res = await api.get(`/assets?page=${page}&limit=${PAGE_SIZE}`);
        
-        const data = await res.json();
+        const data = await res.data
         // setProperties(data.data)
        
         console.log(total)
@@ -179,7 +159,8 @@ async function fetchPosts() {
     } 
     fetchPosts();
     
-  }, []); 
+  }, [page]); 
+  const totalPages = Math.ceil(total / PAGE_SIZE);
   if (!mounted) return null;
   return (
 
@@ -322,7 +303,7 @@ async function fetchPosts() {
               <p className=''>Get started by adding an asset.</p>
             </div>
           ) : (
-              properties.map((property) => (
+              properties.map(property => (
             <div  className="flex justify-between items-center py-4 w-full px-6 my-3 bg-gray-200 rounded"
               key={property.id}
             >
@@ -363,7 +344,15 @@ async function fetchPosts() {
             </div>
               )
       ))} 
-            
+      <div className='flex w-full justify-end'>
+        <Paginate
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+
+      </div>
+
           </aside>
       
     </section> 

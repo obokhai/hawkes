@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Copy } from "lucide-react"
 import Link from "next/link"
+import api from '@/app/api'
 const jv = [
   {
     sn:1,

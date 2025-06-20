@@ -1,6 +1,7 @@
 'use client'
 import {useEffect, useState} from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import api from '@/app/api'
 // import Image from 'next/image'
 import { Progress } from "@/components/ui/progress"
 import TaskCard from './TaskCard'
@@ -78,9 +79,7 @@ const PropertyDetails = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get('property');
   console.log(id)
-  // const totalSteps = steps.length;
-  // const completedSteps = steps.filter(step => step.status === "completed").length;
-  // const progressValue = (completedSteps / totalSteps) * 100;
+
   const router = useRouter()
   const [property, setProperty] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
