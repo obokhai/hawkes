@@ -78,12 +78,8 @@ const handleFileChange = (e) => {
   
  const getAllUsers = async () => {
   try {
-    const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/role?roleId=1", {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const response = await api.get("/user/role?roleId=1"
+);
 
     const data = await response.json();
     console.log("Users API response:", data);

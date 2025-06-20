@@ -62,6 +62,7 @@ import {
 import { Download, Link, SmileIcon, CircleCheckBig} from 'lucide-react'
 import Image from 'next/image'
 import axios from 'axios'
+import { toast } from 'sonner'
 
 const taskDetails = {
   createdDate: "Jan 29th, 2025",
@@ -199,14 +200,10 @@ const PropertyDetails = () => {
   const getAllUsers = async () => {
     setLoadingUsers(true)
     try {
-      const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/user/role?roleId=${userRoleId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      console.log(userRoleId)
+      const response = await api.get(`/user/role?roleId=${userRoleId}`);
       
-      const data = await response.json();
+      const data = await response.data;
       console.log("Users API response:", data);
       
       const fetchedUsers = data?.data.users;
@@ -224,14 +221,9 @@ const PropertyDetails = () => {
     console.log("This is the Stage ID for adding a new task ",stageTaskId)
     console.log(stageId)
     try {
-      const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/${stageId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await api.get(`/stage/tasks/${stageId}`);
       
-      const data = await response.json();
+      const data = await response.data;
       setGetStageData(data.data.tasks)
       console.log("Curent Stage Id",stageId)
       
@@ -249,12 +241,7 @@ const PropertyDetails = () => {
     }
     console.log(addNewStage)
         try {
-      const response = await axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/create-stage',addNewStage, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }}
-          ) 
+      const response = await api.post('/stage/create-stage',addNewStage) 
           console.log(response)
           router.push(`/dashboard?property=${id}`)
     } catch (err) {
@@ -282,13 +269,7 @@ const PropertyDetails = () => {
         };
         console.log(update)
       try {
-        const res  =  await axios.post(`https://propertyapi-monolithic.onrender.com/api/v1/stage/manage-stages/`,update,
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              }
-            })
+        const res  =  await api.post(`/stage/manage-stages/`,update)
           console.log("Response data:", res.data);
           if(!res) console.log(res.data)
             router.push(`/dashboard?property=${id}`)
@@ -309,12 +290,7 @@ const PropertyDetails = () => {
 
       console.log("Prepared Traning",preparedTask);
       try {
-    const response = await axios.post('https://propertyapi-monolithic.onrender.com/api/v1/stage/tasks/create-task',preparedTask, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }}
-        )
+    const response = await api.post('/stage/tasks/create-task',preparedTask)
         console.log("Task Successfully Added")
         router.push(`/dashboard?property=${id}`)
 
@@ -334,12 +310,7 @@ const PropertyDetails = () => {
         };
       console.log(preparedTask);
       try {
-    const response = await axios.put(`https://propertyapi-monolithic.onrender.com/api/v1/stage/task/${id}`,preparedTask, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }}
-        )
+    const response = await api.put(`/stage/task/${id}`,preparedTask)
         console.log("Task Successfully Updated")
         setUpdateTaskOpen(false)
         router(`/dashboard?property=${id}`)
@@ -353,14 +324,9 @@ const PropertyDetails = () => {
   // https://propertyapi-monolithic.onrender.com/api/v1/stage/
   if(!id) console.log("missing Id ")
   try {
-      const response = await fetch(`https://propertyapi-monolithic.onrender.com/api/v1/stage/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+      const response = await api.get(`/stage/${id}`);
 
-    const data = await response.json()
+    const data = await response.data
     setStageSteps(data.data.stages)
 
   } catch (error) {
@@ -403,7 +369,7 @@ const PropertyDetails = () => {
         getRoles()
         // getStageTasks()
         getStages()
-      }, [id])
+  }, [id])
       
   const handleSubmit = async (e) => {
     console.log(formState)
@@ -411,26 +377,19 @@ const PropertyDetails = () => {
     
     try {
   
-      const response = axios.post('https://propertyapi-monolithic.onrender.com/api/v1/user/create-and-assign',formState, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }}
-          )  .then(function (response) {
-  console.log(response);
-  })
+      const response = api.post('/user/create-and-assign',formState)
 
     } catch (err) {
       console.log(formState)
       console.error("Error:", err);
     }
     router.push(`/dashboard?property=${id}`)
-};
+  };
           
   const handleChange = (e) => {
   const { name, value } = e.target;
   setFormData((prev) => ({ ...prev, [name]: value }));
-};
+  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -446,28 +405,20 @@ const PropertyDetails = () => {
   const assignAsset = async () => {
     const assetId = id;
     const assignedUserId = assignUserId;
-
+    console.log(assignUserId)
     try {
-      const response = await fetch(
-        "https://propertyapi-monolithic.onrender.com/api/v1/user/assign-asset",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: assignedUserId,
+      const response = await api.post(
+        "/user/assign-asset",{
+            userId: userId,
             assetId: assetId,
             isOwner
-          }),
-        }
+           },
       );
-    
-      console.log(assignedUserId,assetId)
+      toast.success(response.data.message);
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (response.data.success === false && response.statusCode === 400) { 
+        toast.error(response.data.message)
+        const errorData = await response.data;
         console.log(response)
         console.error("Failed to assign asset:", errorData.message || response.statusText);
         return;
@@ -476,6 +427,7 @@ const PropertyDetails = () => {
       const result = await response.json();
       console.log("Asset successfully assigned:", result);
     } catch (error) {
+       toast.error(error.message)
       console.error("Error assigning asset:", error);
     }
   };
