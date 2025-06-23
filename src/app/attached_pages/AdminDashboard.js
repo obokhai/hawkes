@@ -20,6 +20,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { message } from 'antd';
+import Deadlines from '@/components/Deadlines';
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },
@@ -67,7 +68,7 @@ const AdminDashboard = () => {
 const [totalProperties, setTotalProperties] = useState('')
 const [totalClients, setTotalClients] = useState('')
 const [totalJV, setTotalJV ] = useState('')
-
+const [deadlines, setDeadlines] = useState([])
 useEffect(() => {
    const token = localStorage.getItem("token")
    if (!token) {
@@ -81,6 +82,7 @@ useEffect(() => {
 
        console.log(data?.data);
        if (data?.data) {
+        setDeadlines(data.data.tasks)
           setTotalProperties(data.data.totalProperties)
           setTotalJV(data.data.Joint_ventures)
           setTotalClients(data.data.clients)
@@ -156,52 +158,22 @@ useEffect(() => {
 
         </div>
         <div className='flex gap-x-3 min-h-32'>
-            <aside className='w-6/8 bg-white gap-y-12 shadow-xl rounded-xl p-6 text-[#232360] '>
+            <aside className='w-6/8 bg-white gap-y-2 shadow-xl rounded-xl p-6 text-[#232360] '>
               <span className='font-bold text-xl'>Upcoming deadlines</span>
-              <div className='flex flex-col border-2 mt-6 rounded-xl'>
-                  <div className='flex border-l-4  border-[#5A48F9] min-h-16 rounded-lg '>
-                      <div className='w-1/6 bg-gray-300 flex justify-between p-2 flex-col'>
-                          <span className='text-xs'>3, May 2025</span>
-                          <span className='text-xs text-gray-600'>9:00 am</span>
-                      </div>
-                      <div className='w-5/6 flex items-center justify-between'>
-                      <span className=' font-bold text-sm px-12'>Due Diligence on Asset #PR13</span>
-                      <span className='flex items-center gap-x-8 mx-4'> 
-                        <h5>Stage 4</h5>
-                        <Image src='/InProgress.svg' width={100} height={100} />
-                      </span>
-                      </div>
-                  </div>
-              </div>
-              <div className='flex flex-col border-2 mt-6 rounded-xl'>
-                  <div className='flex border-l-4  border-[#5A48F9] min-h-16 rounded-lg '>
-                      <div className='w-1/6 bg-gray-300 flex justify-between p-2 flex-col'>
-                          <span className='text-xs'>3, May 2025</span>
-                          <span className='text-xs text-gray-600'>9:00 am</span>
-                      </div>
-                      <div className='w-5/6 flex items-center justify-between'>
-                      <span className=' font-bold text-sm px-12'>Due Diligence on Asset #PR13</span>
-                      <span className='flex items-center gap-x-8 mx-4'> 
-                        <h5>Stage 4</h5>
-                        <Image src='/InProgress.svg' width={100} height={100} />
-                      </span>
-                      </div>
-                  </div>
-              </div>
-              <div className='flex flex-col border-2 mt-6 rounded-xl'>
-                  <div className='flex border-l-4  border-[#5A48F9] min-h-16 rounded-2xl '>
-                      <div className='w-1/6 bg-gray-300 flex justify-between p-2 flex-col'>
-                          <span className='text-xs'>3, May 2025</span>
-                          <span className='text-xs text-gray-600'>9:00 am</span>
-                      </div>
-                      <div className='w-5/6 flex items-center justify-between'>
-                      <span className=' font-bold text-sm px-12'>Due Diligence on Asset #PR13</span>
-                      <span className='flex items-center gap-x-8 mx-4'> 
-                        <h5>Stage 4</h5>
-                        <Image src='/InProgress.svg' width={100} height={100} />
-                      </span>
-                      </div>
-                  </div>
+              <div className='flex flex-col'>
+                {deadlines.map((item, index) => (
+                  <Deadlines
+                    key={index}
+                    id={item.id}
+                    taskName={item.taskName}
+                    dueDate={new Date(item.dueDate).toLocaleString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}
+                    time={new Date(item.dueDate).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}
+                    priority={item.priority}
+                    stage={item.stage.stagePosition}
+                    status={item.status}
+                    description={item.description}
+                  />
+                ))}
               </div>
             </aside>
             <aside className='w-2/8 bg-[#5A48F9] shadow-xl flex flex-col gap-y-6 rounded-xl p-6'>

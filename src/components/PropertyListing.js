@@ -303,10 +303,11 @@ async function fetchPosts() {
             <div  className="flex justify-between items-center py-4 w-full px-6 my-3 bg-gray-200 rounded"
               key={property.id}
             >
-              <div className="flex items-center gap-x-6 space-x-4 cursor-pointer" onClick={() => router.push(`?property=${property.id}`)}>
+              <div className="flex items-center gap-x-6 space-x-4 cursor-pointer" onClick={() => router.push(`?property=${property.id}&name=${encodeURIComponent(property.propertyName)}`)}>
                 <div className="bg-white border-[1px] border-gray-500 py-3 h-12 px-6 w-44 text-[#6434F8] text-center text-xl rounded-full flex items-center justify-center">
                   <h4 className="font-bold truncate text-ellipsis">{property.id}</h4>
                 </div>
+                
                 <div className="w-full space-y-2 cursor-pointer">
                   <div className="flex flex-col justify-center text-gray-800">
                     <h4 className="flex gap-x-5 text-lg font-bold">
@@ -318,8 +319,9 @@ async function fetchPosts() {
                     <p className="text-sm truncate text-gray-500">{property.address}</p>
                   </div>
                 </div>
-              </div>
-              <div id="second_part" className="flex space-x-5 items-center">
+                </div>
+                
+                <div id="second_part" className="flex space-x-5 items-center">
                 <div className="rounded-full border-[1px] items-center border-gray-500 text-gray-600 text-xs py-2 flex px-6 gap-x-2">
                   <Image src="/resolution.svg" alt="resolution" width={20} height={20} />
                   <p>{property.size}</p>  

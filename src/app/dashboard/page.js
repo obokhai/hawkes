@@ -16,6 +16,7 @@ import AdminDashboard from "../attached_pages/AdminDashboard";
 import Client from "../attached_pages/Client";
 // import { useRouter } from "next/router";
 import Cookies from 'js-cookie';
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const options = [
     { name: "Dashboard", icon: "dashboard_admin.svg" },
@@ -29,7 +30,6 @@ const options = [
   ];
 
 export default function Dashboard(){
-
     const router = useRouter()
 
      const logout = () => {
@@ -37,7 +37,6 @@ export default function Dashboard(){
             Cookies.remove('token');
             localStorage.removeItem('token');
             localStorage.removeItem('userEmail');
-    
             router.push('/');
           };
        
@@ -53,14 +52,15 @@ useEffect(() => {
 
     const [active, setActive] = useState("Dashboard")
     // console.log("Current active tab:", active);
-const handleTabChange = (tabName) => {
-  setActive(tabName);
-  if (tabName === "Dashboard") {
-    router.push("/dashboard"); // No query param for Dashboard
-  } else {
-    router.push(`/dashboard?tab=${encodeURIComponent(tabName)}`);
-  }
-};
+    const handleTabChange = (tabName) => {
+      setActive(tabName);
+      if (tabName === "Dashboard") {
+        router.push("/dashboard"); // No query param for Dashboard
+      } else {
+        router.push(`/dashboard?tab=${encodeURIComponent(tabName)}`);
+      }
+    };
+
     return(
         <main className="flex h-full relative">
             <Image src='/hawkes_stripe.svg' className="absolute top-0 right-0 -z-10" width={500} height={60} />
@@ -86,7 +86,8 @@ const handleTabChange = (tabName) => {
                  </div>
            <div className="flex flex-col flex-1 bg-gray-100">
              <div className="w-full h-20 z-50 bg-white text-gray-500 fixed left-20 flex items-center justify-between px-12  pb-1">
-             <span className="font-semibold text-xs">{active}</span>
+             {/* <span className="font-semibold text-xs">{active}</span> */}
+             <Breadcrumbs/>
                          <div className="flex justify-between bg-gray-200 px-3 rounded-lg">
                              <input
                                  type="text"
@@ -104,7 +105,7 @@ const handleTabChange = (tabName) => {
                              <Image src="/notification.svg" alt="" width={20} height={20} />
                              </button>
                              <Link href="#" className="flex items-center space-x-4">
-                                 <Image src="/user_avatar.svg" onClick={logout} alt="" width={20} height={20} />
+                                 <Image src="/user_avatar.svg" onClick={()=>logout} alt="" width={20} height={20} />
                                  <Image src="/caret_down.svg" alt="" width={20} height={20} />
                              </Link>
                          </div>

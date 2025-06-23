@@ -179,7 +179,7 @@ const PropertyDetails = () => {
     };
 
     const [stageTaskId, setStageTaskId] = useState("")
-    const [userRoleId, setUserRoleId] = useState(1)
+    const [userRoleId, setUserRoleId] = useState(20)
     const [loadingUsers, setLoadingUsers] = useState(false)
 
     const handleTaskUpdate = (e) => {
@@ -193,14 +193,16 @@ const PropertyDetails = () => {
 
   const handleUserRoleChange = async (e) => {
   const selectedRoleId = e.target.value;
+  console.log("Selected Role ID:", selectedRoleId);
   setUserRoleId(selectedRoleId);
     // Optionally handle error
     getAllUsers()
   };
   const getAllUsers = async () => {
     setLoadingUsers(true)
+    console.log(userRoleId)
     try {
-      console.log(userRoleId)
+      console.log("User Role Id",userRoleId)
       const response = await api.get(`/user/role?roleId=${userRoleId}`);
       
       const data = await response.data;
@@ -541,17 +543,13 @@ const PropertyDetails = () => {
                     <>  
                       <div className="grid gap-4">
                         <select name="roles" onChange={handleUserRoleChange}>
-                          <option value='1'>Admin</option>
-                          <option value='2'>Joint Venture</option>
-                          <option value='3'>Owner</option>
-                          <option value='4'>Lawyer</option>
-                        </select>
-                      {/* <select name="userRole" onChange={e => setAssignUserId(e.target.value)}   placeholder="Assign User" className="border p-2 rounded w-full">
-                        <option value="Select user">Select User</option>
-                          {users.map((user) => (
-                              <option key={user.id} value={user.id}>{user.firstName}</option>
+                          <option value=''>Select Role</option>
+                          {roleData.map((role) => (
+                            <option key={role.id} value={role.id}>{role.name}</option>
                           ))}
-                        </select> */}
+                       
+                        </select>
+                     
                         {userRoleId && (
                               loadingUsers ? (
                                 <div className="flex justify-center items-center my-4">

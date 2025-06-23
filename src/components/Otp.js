@@ -17,8 +17,8 @@ const Otp = () => {
   const [otp, setOTP] = useState("");
   const [loading, setLoading] = useState(false)
    const router = useRouter();
-   const email = localStorage.getItem("forgotEmail")
- 
+   const email = localStorage.getItem("forgotMail")
+   console.log("Email from localStorage:", email);
    const verifyOTP = async (event) => {
     event.preventDefault();
     setLoading(true)
