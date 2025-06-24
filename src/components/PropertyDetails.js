@@ -108,6 +108,7 @@ const PropertyDetails = () => {
   const [file, setFile] = useState(null);
   const [updateId, setUpdateId] = useState("")
   const [isOwner, setIsowner] = useState(false)
+  const [updateTaskFiles, setUpdateTaskFiles] = useState([]);
   const handleUserChange = (e) => {
     const { name, value } = e.target;
     setUserId(prev => ({ ...prev, [name]: value }));
@@ -138,6 +139,7 @@ const PropertyDetails = () => {
       roleId: "",
       document:"",
       companyName: "",
+      isOwner: false,
       assetId: id
     });
        const [stage, setStage] = useState({
@@ -181,11 +183,15 @@ const PropertyDetails = () => {
     const [stageTaskId, setStageTaskId] = useState("")
     const [userRoleId, setUserRoleId] = useState(20)
     const [loadingUsers, setLoadingUsers] = useState(false)
-
+    const [inviteUserModal, setInviteUserModal] = useState(false)
+    const [addStageModal, setAddStageModal] = useState(false)
     const handleTaskUpdate = (e) => {
       const { name, value } = e.target;
       setEditedTask(prev => ({ ...prev, [name]: value }));
     }
+    const handleUpdateTaskFiles = (e) => {
+  setUpdateTaskFiles(Array.from(e.target.files));
+};
 
     const taskFileChange = (e) => {
   setAttachments(e.target.files); // multiple files
@@ -245,7 +251,7 @@ const PropertyDetails = () => {
         try {
       const response = await api.post('/stage/create-stage',addNewStage) 
           console.log(response)
-          router.push(`/dashboard?property=${id}`)
+          // router.push(`/dashboard?property=${id}`)
     } catch (err) {
       console.log(addNewStage)
       console.error("Error:", err);
@@ -301,26 +307,51 @@ const PropertyDetails = () => {
   }
   }
 
-  const updateTask = async () =>{
-        setUpdateTaskOpen(true)
-    console.log("editedTask",editedTask)
+
+  const updateTask = async () => {
+  const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dfna08jzi/auto/upload";
+  const uploadPreset = "task_assignment";
+  setUpdateTaskOpen(true);
+
+    let documentIds = [];
+    if (updateTaskFiles.length > 0) {
+      for (let file of updateTaskFiles) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", uploadPreset);
+
+        try {
+          const res = await axios.post(cloudinaryUrl, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          if (res.data.public_id) {
+            documentIds.push(res.data.public_id);
+          }
+        } catch (err) {
+          console.error("Cloudinary upload error:", err);
+        }
+      }
+    }
+
     const id = editedTask?.id
     console.log(id)
     const preparedTask = {
         ...editedTask,
-        dueDate: new Date(editedTask.dueDate).toISOString()
+        dueDate: new Date(editedTask.dueDate).toISOString(),
+        attachments: documentIds, // Use the uploaded document IDs
         };
       console.log(preparedTask);
       try {
     const response = await api.put(`/stage/task/${id}`,preparedTask)
         console.log("Task Successfully Updated")
         setUpdateTaskOpen(false)
-        router(`/dashboard?property=${id}`)
+        // router(`/dashboard?property=${id}`)
 
   } catch (err) {
     console.error("Error:", err.response?.data?.errors || err.message);
   }
   }
+
 
   const getStages = async () => {
   // https://propertyapi-monolithic.onrender.com/api/v1/stage/
@@ -376,16 +407,19 @@ const PropertyDetails = () => {
   const handleSubmit = async (e) => {
     console.log(formState)
     e.preventDefault();
-    
+    const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dfna08jzi/auto/upload";
+    const preset ="task_assignment"
     try {
   
       const response = api.post('/user/create-and-assign',formState)
+      toast.success("User successfully created and assigned");
+      console.log(response)
+      // router.push(`/dashboard?property=${id}`)
 
     } catch (err) {
       console.log(formState)
       console.error("Error:", err);
     }
-    router.push(`/dashboard?property=${id}`)
   };
           
   const handleChange = (e) => {
@@ -472,53 +506,6 @@ const PropertyDetails = () => {
             <h3 className='text-3xl text-clip font-bold'>{ property?.propertyName}</h3>
            <p className='text-xs'>{property?.address}</p> 
           </div>
-          {/* <div className='w-1/3 px-4 space-y-'>
-              <table className='table-auto sapce-y-3'>
-                <thead>
-                  <tr></tr>
-                  <tr></tr>
-                </thead>
-              <tbody className='table-auto w-full gap-y-14'>
-                  <tr className='table-row space-x-10 items-center py-4 justify-between'>
-                    <td className='text-sm font-bold pe-16'>Asset Id: </td>
-                    <td className='text-sm ms-28 text-end'>{property.id}</td>
-                  </tr>
-                  <tr className='table-row w-full justify-between py-4 items-center '>
-                    <td className='text-sm font-bold'>Authorized Use: </td>
-                    <td className='text-xs'>{property.authorizedUse}</td>
-                  </tr>
-                  <tr className='table-row justify-between py-4 items-center border-spacing-6'>
-                    <td className='text-sm font-bold'>Size: </td>
-                    <td className='text-xs'>{property.size}</td>
-                  </tr>
-                  <tr className='table-row justify-between py-4 items-center border-spacing-6'>
-                    <td className='text-sm font-bold'>Client: </td>
-                    <td className='text-xs'>Admin</td>
-                  </tr>
-                  <tr className='table-row justify-between py-4 items-center border-spacing-6'>
-                    <td className='text-sm font-bold'>JV Partner: </td>
-                    <td className='text-xs'></td>
-                  </tr>
-                  <tr className='table-row justify-between py-4 items-center border-spacing-6'>
-                    <td className='text-sm font-bold'>Assigned Legal Rep: </td>
-                    <td className='text-xs'></td>
-                  </tr>
-                  <tr className='table-row justify-between py-4 items-center border-spacing-6'>
-                    <td className='text-sm table-cell font-bold'>Date Added: </td>
-                    <td className='text-xs table-cell'> {new Date(property.createdAt).toLocaleDateString(undefined, {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                      })}</td>
-                  </tr>
-                  <tr className='table-row justify-between py-4 items-center border-spacing-6'>
-                    <td className='text-sm font-bold'>Status: </td>
-                    <td className='text-xs'>{property.status} </td>
-                  </tr>
-              </tbody>
-              </table>
-          </div> */}
-     
   
             <div className='grid grid-cols-2 w-2/4 text-sm px-4 space-y-3 relative'>
               
@@ -526,7 +513,7 @@ const PropertyDetails = () => {
               <span className='grid grid-cols-2space-x-2'>
                 <span className='w-28 truncate'>{property.id}</span>
                 <span className=''>  
-                  <Dialog className="w-[1200px] ">
+                  <Dialog open={inviteUserModal} onOpenChange={setInviteUserModal} className="w-[1200px]" id='ínviteUser'>
                   <DialogTrigger asChild>
                     <div className='flex w-full justify-end absolute top-0 right-0 -mt-10 cursor-pointer pe-4'>
                       <Image src='/inviteuser.svg' className='' width={100} height={20} />
@@ -575,12 +562,12 @@ const PropertyDetails = () => {
                       </div>
                       <div className="flex justify-end mt-6 gap-x-5">
                         {/* <button onClick={prevStep} className="rounded-full border-[1px] text-[#2C1C92] border-[#2C1C92] px-8 py-3">Back</button> */}
-                        <button onClick={assignAsset} className="bg-[#2C1C92] rounded-full text-white px-8 py-3">Submit</button>
+                        <button onClick={ async () =>{await assignAsset(); setInviteUserModal(false)}} className="bg-[#2C1C92] rounded-full text-white px-8 py-3">Submit</button>
                       </div>
                     </>
                   )} 
                    {currentStep === 2 && (
-                                     <form onSubmit={handleSubmit} className="space-y-4">
+                                     <form onSubmit={()=>{handleSubmit;  setInviteUserModal(false) }} className="space-y-4  max-h-96 overflow-y-auto">
                                       <div className="mb-6 min-w-[400px] flex flex-col">
                                          <select
                                           name="roleId"
@@ -642,64 +629,127 @@ const PropertyDetails = () => {
                                                 placeholder="Email" className="w-full mt-2 border p-3 rounded" />
                                             </label>
                                           </div>
+                                            <div className="flex gap-x-5 w-2/5 px-0">
+                                          <label className="text-xs w-full">Owner
+                                            <select name='isOwner' value={formState.isOwner}
+                                               onChange={e =>
+                                                  setFormState(prev => ({
+                                                    ...prev,
+                                                    isOwner: e.target.value === "true" // convert string to boolean
+                                                  }))
+                                                }className="w-full border p-2 rounded">
+                                              <option value="">Select</option>
+                                              <option value="true">Yes</option>
+                                              <option value="false">No</option>
+                                            </select>
+                                            </label>
+                                          </div>  
                                         </div>
                                       )}
 
                                       {userType === 'company' && (
-                                        <div className="space-y-2 flex flex-col gap-y-1">
+                                        <div className="space-y-2 flex flex-col gap-y-1 p-2 bg-white rounded shadow">
                                           <h3 className="text-lg font-semibold">Company Details</h3>
-                                           <label className="text-xs mb-3 w-full">
-                                          <input name="companyName"   value={formState.companyName}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                 placeholder="Company Name" className="w-full border p-2 rounded" />
-                                                </label>
-                                                 <label className='text-xs w-full'>
-                                          <input name='address'  value={formState.address}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })} placeholder="Company Address" className="w-full border p-2 rounded" />
-                                                </label>
-                                                <label className='text-xs w-full'>
-                                          <input name="email"   value={formState.email}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })} placeholder="Email" className="w-full border p-2 rounded" />
-                                                </label>
+                                          <label className="text-xs mb-3 w-full">
+                                            <input
+                                              name="companyName"
+                                              value={formState.companyName}
+                                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                              placeholder="Company Name"
+                                              className="w-full border p-2 rounded"
+                                            />
+                                          </label>
+                                          <label className="text-xs w-full">
+                                            <input
+                                              name="address"
+                                              value={formState.address}
+                                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                              placeholder="Company Address"
+                                              className="w-full border p-2 rounded"
+                                            />
+                                          </label>
+                                          <label className="text-xs w-full">
+                                            <input
+                                              name="email"
+                                              value={formState.email}
+                                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                              placeholder="Email"
+                                              className="w-full border p-2 rounded"
+                                            />
+                                          </label>
                                           <div>
                                             <label className="block mb-1 text-xs">Upload Document</label>
-                                            <input type="file"
-                                                  onChange={(e) => setFile(e.target.files[0])}
-                                                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                                                className="w-full bg-cyan-50 p-2 py-6 rounded" />
+                                            <input
+                                              type="file"
+                                              onChange={(e) => setFile(e.target.files[0])}
+                                              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                                              className="w-full bg-cyan-50 p-2 py-6 rounded"
+                                            />
                                           </div>
-                                            <span className='text-gray-400  text-sm ' >Primary Contact</span>
-                                           <div className="flex gap-x-5">
-                                              <label className="text-xs w-full">First Name
-                                              <input name="firstName"
+                                          <span className="text-gray-400 text-sm">Primary Contact</span>
+                                          <div className="flex gap-x-5">
+                                            <label className="text-xs w-full">First Name
+                                              <input
+                                                name="firstName"
                                                 value={formState.firstName}
                                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Enter firstname" className="w-full mt-2 border p-3 rounded" />
+                                                placeholder="Enter firstname"
+                                                className="w-full mt-2 border p-3 rounded"
+                                              />
                                             </label>
                                             <label className="text-xs w-full">Last Name
-                                              <input type="text"
+                                              <input
+                                                type="text"
                                                 name="lastName"
                                                 value={formState.lastName}
                                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Enter lastname" className="w-full mt-2 border p-3 rounded" />
+                                                placeholder="Enter lastname"
+                                                className="w-full mt-2 border p-3 rounded"
+                                              />
                                             </label>
                                           </div>
-                                           <div className="flex gap-x-5">
+                                          <div className="flex gap-x-5">
                                             <label className="text-xs w-full">Phone Number
-                                              <input name="phoneNumber"   value={formState.phoneNumber}
+                                              <input
+                                                name="phoneNumber"
+                                                value={formState.phoneNumber}
                                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Enter phone number" className="w-full mt-2 border p-3 rounded" />
+                                                placeholder="Enter phone number"
+                                                className="w-full mt-2 border p-3 rounded"
+                                              />
                                             </label>
                                             <label className="text-xs w-full">Official Email
-                                              <input name="email"   value={formState.email}
+                                              <input
+                                                name="email"
+                                                value={formState.email}
                                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="nter Email" className="w-full mt-2 border p-3 rounded" />
+                                                placeholder="Enter Email"
+                                                className="w-full mt-2 border p-3 rounded"
+                                              />
+                                            </label>
+                                          </div>
+                                          <div className="flex gap-x-5 w-1/3">
+                                            <label className="text-xs w-full">Owner
+                                              <select
+                                                name="isOwner"
+                                                value={formState.isOwner}
+                                                onChange={e =>
+                                                  setFormState(prev => ({
+                                                    ...prev,
+                                                    isOwner: e.target.value === "true"
+                                                  }))
+                                                }
+                                                className="w-full border p-2 rounded"
+                                              >
+                                                <option value="">Select</option>
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                              </select>
                                             </label>
                                           </div>
                                         </div>
                                       )}
-
-                                      <button type="submit" className="mt-6 bg-[#6434F8] text-white justify-self-end py-2 px-4 rounded-md">Submit</button>
+                                      <button type='submit' className="mt-6 bg-[#6434F8] text-white justify-self-end py-2 px-4 rounded-md">Submit</button>
                                     </form>
                         )} 
                       
@@ -816,7 +866,7 @@ const PropertyDetails = () => {
                   <DialogTrigger asChild>
                     <PlusIcon className='cursor-pointer'/>
                   </DialogTrigger>
-                  <DialogContent className="w-full  bg-white">
+                  <DialogContent className="w-full  bg-white" open={addStageModal} onOpenChange={setAddStageModal}>
                     <DialogHeader>
                       <DialogTitle>
                         Add Stage    
@@ -964,18 +1014,18 @@ const PropertyDetails = () => {
           )}
          
           {stageSteps.map((step) => (
-            <div className='flex gap-x-4'>
+            <div className='flex w-full justify-between gap-x-4'>
             <div key={step.id} onClick={() =>getStageTasks(step.id)} className="flex cursor-pointer flex-col items-center">
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                  step.stageStatus === "completed" ? "bg-indigo-700 text-white " : "border-[1px] border-indigo-700 text-indigo-700"
+                  step.status === "completed" ? "bg-indigo-700 text-white " : "border-[1px] border-indigo-700 text-indigo-700"
                 }`}
               >
                 {step.stagePosition}
               </div>
               <span
                 className={`mt-2 text-center text-sm ${
-                  step.stageStatus === "completed" ? "text-indigo-800 font-semibold" : "text-indigo-700"
+                  step.status === "completed" ? "text-indigo-800 font-semibold" : "text-indigo-700"
                 }`}
               >
                 {step.stageName}
@@ -1059,9 +1109,9 @@ const PropertyDetails = () => {
         
         <div className='flex gap-x-8'>
           {getStageData.map((task) => (
-          <Dialog className="w-full" open={taskOpen} key={task.id}>
+          <Dialog className="w-full cursor-pointer"  key={task.id}>
             <DialogTrigger>
-               <TaskCard title={task.taskName} onClick={() =>getTaskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
+               <TaskCard title={task.taskName} onClick={() =>taskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
             </DialogTrigger>
             <DialogContent className="w-full overflow-auto bg-white">
               <DialogHeader className=''>
@@ -1079,7 +1129,7 @@ const PropertyDetails = () => {
                             day: "numeric",
                           })}
                           </td>
-                           <Dialog className="w-[600px]" open={updateTaskOpen} >
+                           <Dialog className="w-[600px]">
                                     <DialogTrigger asChild>
                                   <td className='bg-blue-400 text-white font-bold cursor-pointer rounded text-center '  onClick={() => setEditedTask(task)}>Update</td>
                             </DialogTrigger>
@@ -1114,6 +1164,9 @@ const PropertyDetails = () => {
                                       onChange={handleTaskUpdate}
                                         placeholder="Enter due date"  className="w-full mb-2 border p-3 rounded" />
                                     </label>
+                                    <div>
+                                      <input type="file" onChange={handleUpdateTaskFiles} multiple className='w-full h-10 bg-cyan-100' placeholder='Upload Documents' />
+                                    </div>
                                     <div className='flex gap-x-8'>
 
                                          <label className="text-xs w-full">Priority
@@ -1129,8 +1182,6 @@ const PropertyDetails = () => {
                                         </select>
                                     </label>
 
-
-
                                         <label className="text-xs w-full">Status
                                       <select name="status"
                                         
@@ -1145,7 +1196,6 @@ const PropertyDetails = () => {
                                     </label>
                                     </div>
                                       
-                                  
                                   </div>
                                   <button type='button' onClick={updateTask} className='w-32 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Update</button>
                                 </div>
