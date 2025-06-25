@@ -72,7 +72,9 @@ const Client = () => {
   
       const data = await response.json();
       setUsersByRole(data?.data?.users || []);
-      setTotalClients(usersByRole.length+1)
+      setTotalClients(data.data.users.length);
+      console.log("Fetched Users for total:", data?.data?.users.length);
+      // alert("Users loaded successfully");  
     } catch (error) {
       console.error("Fetch Error:", error);
       // alert("Failed to load users. Check console for more details.");

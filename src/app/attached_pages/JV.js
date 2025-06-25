@@ -162,7 +162,7 @@ const handleSubmit = async (e) => {
     <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
                   <div className="flex justify-between mb-14 text-black items-center">
                         {/* <h3 className="text-2xl ">JV Partners : {totalJV} </h3> */}
-                        <div className="flex space-x-6">
+                        <div className="flex w-full justify-end space-x-6 float-right">
                             <div className="flex items-center cursor-pointer space-x-2 bg-gray-100  border-gray-300 rounded-xs border-[1px] lg:w-32 justify-center  py-3 px-4">
                                 <Image src="/arrow_up.svg"  alt="arrow up" width={13} height={13} />
                                 <p className="text-md ">Export</p>
