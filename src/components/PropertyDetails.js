@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import api from '@/app/api'
 // import Image from 'next/image'
 import { Progress } from "@/components/ui/progress"
+import nigeriaStates  from '@/app/data/States'
 import TaskCard from './TaskCard'
 import { Timeline } from 'antd';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -140,6 +141,7 @@ const PropertyDetails = () => {
       document:"",
       companyName: "",
       isOwner: false,
+      state: "",
       assetId: id
     });
        const [stage, setStage] = useState({
@@ -185,13 +187,18 @@ const PropertyDetails = () => {
     const [loadingUsers, setLoadingUsers] = useState(false)
     const [inviteUserModal, setInviteUserModal] = useState(false)
     const [addStageModal, setAddStageModal] = useState(false)
+    const [companyFiles, setCompanyFiles] = useState([])
     const handleTaskUpdate = (e) => {
       const { name, value } = e.target;
       setEditedTask(prev => ({ ...prev, [name]: value }));
     }
     const handleUpdateTaskFiles = (e) => {
-  setUpdateTaskFiles(Array.from(e.target.files));
-};
+   setUpdateTaskFiles(Array.from(e.target.files));
+  };
+
+   const handleCompanyFiles = (e) => {
+   setCompanyFiles(Array.from(e.target.files));
+  };
 
     const taskFileChange = (e) => {
   setAttachments(e.target.files); // multiple files
@@ -408,16 +415,41 @@ const PropertyDetails = () => {
     console.log(formState)
     e.preventDefault();
     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dfna08jzi/auto/upload";
-    const preset ="task_assignment"
+    const uploadPreset ="company_files"
     try {
   
-      const response = api.post('/user/create-and-assign',formState)
+     let documentId = "";
+    if (companyFiles && companyFiles.length > 0) {
+      const formData = new FormData();
+      formData.append("file", companyFiles[0]);
+      formData.append("upload_preset", uploadPreset);
+
+      try {
+        const res = await axios.post(cloudinaryUrl, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        if (res.data.public_id) {
+          documentId = res.data.public_id;
+        }
+      } catch (err) {
+        console.error("Cloudinary upload error:", err);
+      }
+    }
+    
+
+    const formDataWithFiles = {
+      ...formState,
+      document: documentId, // Use the uploaded document IDs
+    }
+
+      const response = api.post('/user/create-and-assign',formDataWithFiles)
       toast.success("User successfully created and assigned");
       console.log(response)
       // router.push(`/dashboard?property=${id}`)
+      setInviteUserModal
 
     } catch (err) {
-      console.log(formState)
+      console.log(formDataWithFiles)
       console.error("Error:", err);
     }
   };
@@ -567,31 +599,32 @@ const PropertyDetails = () => {
                     </>
                   )} 
                    {currentStep === 2 && (
-                                     <form onSubmit={()=>{handleSubmit;  setInviteUserModal(false) }} className="space-y-4  max-h-96 overflow-y-auto">
+                                     <form onSubmit={handleSubmit} className="space-y-4  max-h-96 overflow-y-auto">
                                       <div className="mb-6 min-w-[400px] flex flex-col">
+                                        <label htmlFor="roleId" className="block text-xs font-medium mt-3 mb-1">User Role</label>
                                          <select
                                           name="roleId"
                                           value={formState.roleId}
                                           onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                          className="border p-2 rounded w-full py-[6px]"
+                                          className="border p-2 text-xs cursor-pointer rounded w-full py-[6px]"
 >
                                           <option value="Select user">Select Role</option>
                                             {roleData.map((role) => (
-                                                <option key={role.id} value={role.id}>{role.name}</option>
+                                                <option key={role.id} className='text-xs' value={role.id}>{role.name}</option>
                                             ))}
                                           </select>
 
-                                        <label htmlFor="userType" className="block text-xs font-medium mt-3 ">User Type</label>
+                                        <label htmlFor="userType" className="block text-xs font-medium mt-3 mb-1">User Type</label>
                                         
                                         <select
                                           id="userType"
                                           value={userType}
                                           onChange={(e) => setUserType(e.target.value)}
-                                          className="w-full border border-gray-300 rounded-md py-[6px]"
+                                          className="w-full border text-xs border-gray-300 cursor-pointer rounded py-[6px]"
                                         >
                                           <option value="">Select</option>
-                                          <option value="individual">Individual</option>
-                                          <option value="company">Company</option>
+                                          <option value="individual" className='text-xs'>Individual</option>
+                                          <option value="company" className='text-xs'>Company</option>
                                         </select>
                                       </div>
 
@@ -616,6 +649,19 @@ const PropertyDetails = () => {
                                             <input name='address'  value={formState.address}
                                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                                 placeholder="Address"className="w-full border p-2 rounded" />
+                                          </label>
+                                          <label className="text-xs w-full">State
+                                            <select
+                                              name="state"
+                                              value={formState.state}
+                                              onChange={e => setFormState({ ...formState, state: e.target.value })}
+                                              className="w-full border p-2 rounded"
+                                            >
+                                              <option value="">Select State</option>
+                                              {nigeriaStates.map(state => (
+                                                <option key={state} value={state}>{state}</option>
+                                              ))}
+                                            </select>
                                           </label>
                                           <div className="flex gap-x-5">
                                             <label className="text-xs w-full">Phone Number
@@ -649,7 +695,7 @@ const PropertyDetails = () => {
 
                                       {userType === 'company' && (
                                         <div className="space-y-2 flex flex-col gap-y-1 p-2 bg-white rounded shadow">
-                                          <h3 className="text-lg font-semibold">Company Details</h3>
+                                          <h3 className="text-sm font-semibold">Company Details</h3>
                                           <label className="text-xs mb-3 w-full">
                                             <input
                                               name="companyName"
@@ -679,12 +725,15 @@ const PropertyDetails = () => {
                                           </label>
                                           <div>
                                             <label className="block mb-1 text-xs">Upload Document</label>
-                                            <input
+                                            {/* <input
                                               type="file"
                                               onChange={(e) => setFile(e.target.files[0])}
                                               accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
                                               className="w-full bg-cyan-50 p-2 py-6 rounded"
                                             />
+                                          </div>
+                                           <div> */}
+                                            <input type="file" onChange={handleCompanyFiles}  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' />
                                           </div>
                                           <span className="text-gray-400 text-sm">Primary Contact</span>
                                           <div className="flex gap-x-5">
