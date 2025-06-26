@@ -7,8 +7,13 @@ import { Progress } from "@/components/ui/progress"
 import nigeriaStates  from '@/app/data/States'
 import TaskCard from './TaskCard'
 import { Timeline } from 'antd';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ChevronRight, PlusIcon, TrendingUp } from "lucide-react";
+import { ChevronRight, HelpCircleIcon, PlusIcon, TrendingUp } from "lucide-react";
 import {
   Label,
   PolarGrid,
@@ -561,7 +566,7 @@ const PropertyDetails = () => {
                        {currentStep === 1 && (
                     <>  
                       <div className="grid gap-4">
-                        <select name="roles" onChange={handleUserRoleChange}>
+                        <select name="roles" onChange={handleUserRoleChange} className='focus:outline-none border-[1px] p-2 text-xs cursor-pointer rounded w-full py-[6px]'>
                           <option value=''>Select Role</option>
                           {roleData.map((role) => (
                             <option key={role.id} value={role.id}>{role.name}</option>
@@ -576,7 +581,7 @@ const PropertyDetails = () => {
                                 </div>
                               ) : (
                                 users.length > 0 && (
-                                  <select name="users" onChange={e => setUserId(e.target.value)}>
+                                  <select name="users" className='focus:outline-none border-[1px] p-2 text-xs cursor-pointer rounded w-full py-[6px]' onChange={e => setUserId(e.target.value)}>
                                     <option value="">Select User</option>
                                     {users.map(user => (
                                       <option key={user.id} value={user.id}>{user.firstName}</option>
@@ -599,207 +604,208 @@ const PropertyDetails = () => {
                     </>
                   )} 
                    {currentStep === 2 && (
-                                     <form onSubmit={handleSubmit} className="space-y-4  max-h-96 overflow-y-auto">
-                                      <div className="mb-6 min-w-[400px] flex flex-col">
-                                        <label htmlFor="roleId" className="block text-xs font-medium mt-3 mb-1">User Role</label>
-                                         <select
-                                          name="roleId"
-                                          value={formState.roleId}
-                                          onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                          className="border p-2 text-xs cursor-pointer rounded w-full py-[6px]"
+                      <form onSubmit={handleSubmit} className="space-y-4  max-h-96 overflow-y-auto">
+                      <div className="mb-6 min-w-[400px] flex flex-col">
+                        <label htmlFor="roleId" className="block text-xs font-medium mt-3 mb-1">User Role</label>
+                          <select
+                          name="roleId"
+                          value={formState.roleId}
+                          onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                          className="border p-2 text-xs cursor-pointer rounded w-full py-[6px]"
 >
-                                          <option value="Select user">Select Role</option>
-                                            {roleData.map((role) => (
-                                                <option key={role.id} className='text-xs' value={role.id}>{role.name}</option>
-                                            ))}
-                                          </select>
+                          <option value="Select user">Select Role</option>
+                            {roleData.map((role) => (
+                                <option key={role.id} className='text-xs' value={role.id}>{role.name}</option>
+                            ))}
+                          </select>
 
-                                        <label htmlFor="userType" className="block text-xs font-medium mt-3 mb-1">User Type</label>
-                                        
-                                        <select
-                                          id="userType"
-                                          value={userType}
-                                          onChange={(e) => setUserType(e.target.value)}
-                                          className="w-full border text-xs border-gray-300 cursor-pointer rounded py-[6px]"
-                                        >
-                                          <option value="">Select</option>
-                                          <option value="individual" className='text-xs'>Individual</option>
-                                          <option value="company" className='text-xs'>Company</option>
-                                        </select>
-                                      </div>
+                        <label htmlFor="userType" className="block text-xs font-medium mt-3 mb-1">User Type</label>
+                        
+                        <select
+                          id="userType"
+                          value={userType}
+                          onChange={(e) => setUserType(e.target.value)}
+                          className="w-full border text-xs border-gray-300 cursor-pointer rounded py-[6px]"
+                        >
+                          <option value="">Select</option>
+                          <option value="individual" className='text-xs'>Individual</option>
+                          <option value="company" className='text-xs'>Company</option>
+                        </select>
+                      </div>
 
-                                      {userType === 'individual' && (
-                                        <div className="space-y-4">
-                                          <div className="flex gap-x-5">
-                                            <label className="text-xs w-full">First Name
-                                              <input name="firstName"
-                                                value={formState.firstName}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="First Name" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                            <label className="text-xs w-full">Last Name
-                                              <input type="text"
-                                                name="lastName"
-                                                value={formState.lastName}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Last Name" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                          </div>
-                                          <label className="text-xs">Address
-                                            <input name='address'  value={formState.address}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Address"className="w-full border p-2 rounded" />
-                                          </label>
-                                          <label className="text-xs w-full">State
-                                            <select
-                                              name="state"
-                                              value={formState.state}
-                                              onChange={e => setFormState({ ...formState, state: e.target.value })}
-                                              className="w-full border p-2 rounded"
-                                            >
-                                              <option value="">Select State</option>
-                                              {nigeriaStates.map(state => (
-                                                <option key={state} value={state}>{state}</option>
-                                              ))}
-                                            </select>
-                                          </label>
-                                          <div className="flex gap-x-5">
-                                            <label className="text-xs w-full">Phone Number
-                                              <input name="phoneNumber"   value={formState.phoneNumber}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="PhoneNumber" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                            <label className="text-xs w-full">Email
-                                              <input name="email"   value={formState.email}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Email" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                          </div>
-                                            <div className="flex gap-x-5 w-2/5 px-0">
-                                          <label className="text-xs w-full">Owner
-                                            <select name='isOwner' value={formState.isOwner}
-                                               onChange={e =>
-                                                  setFormState(prev => ({
-                                                    ...prev,
-                                                    isOwner: e.target.value === "true" // convert string to boolean
-                                                  }))
-                                                }className="w-full border p-2 rounded">
-                                              <option value="">Select</option>
-                                              <option value="true">Yes</option>
-                                              <option value="false">No</option>
-                                            </select>
-                                            </label>
-                                          </div>  
-                                        </div>
-                                      )}
+                      {userType === 'individual' && (
+                        <div className="space-y-4">
+                          <div className="flex gap-x-5">
+                            <label className="text-xs w-full">First Name
+                              <input name="firstName"
+                                value={formState.firstName}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="First Name" className="w-full mt-2 border p-3 rounded" />
+                            </label>
+                            <label className="text-xs w-full">Last Name
+                              <input type="text"
+                                name="lastName"
+                                value={formState.lastName}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="Last Name" className="w-full mt-2 border p-3 rounded" />
+                            </label>
+                          </div>
+                          <label className="text-xs">Address
+                            <input name='address'  value={formState.address}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="Address"className="w-full border p-2 rounded" />
+                          </label>
+                          <label className="text-xs w-full">State
+                            <select
+                              name="state"
+                              value={formState.state}
+                              onChange={e => setFormState({ ...formState, state: e.target.value })}
+                              className="w-full border p-2 rounded"
+                            >
+                              <option value="">Select State</option>
+                              {nigeriaStates.map(state => (
+                                <option key={state} value={state}>{state}</option>
+                              ))}
+                            </select>
+                          </label>
+                          <div className="flex gap-x-5">
+                            <label className="text-xs w-full">Phone Number
+                              <input name="phoneNumber"   value={formState.phoneNumber}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="PhoneNumber" className="w-full mt-2 border p-3 rounded" />
+                            </label>
+                            <label className="text-xs w-full">Email
+                              <input name="email"   value={formState.email}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="Email" className="w-full mt-2 border p-3 rounded" />
+                            </label>
+                          </div>
+                            <div className="flex gap-x-5 w-2/5 px-0">
+                          <label className="text-xs w-full">Owner
+                            <select name='isOwner' value={formState.isOwner}
+                                onChange={e =>
+                                  setFormState(prev => ({
+                                    ...prev,
+                                    isOwner: e.target.value === "true" // convert string to boolean
+                                  }))
+                                }className="w-full border p-2 rounded">
+                              <option value="">Select</option>
+                              <option value="true">Yes</option>
+                              <option value="false">No</option>
+                            </select>
+                            </label>
+                          </div>  
+                        </div>
+                      )}
 
-                                      {userType === 'company' && (
-                                        <div className="space-y-2 flex flex-col gap-y-1 p-2 bg-white rounded shadow">
-                                          <h3 className="text-sm font-semibold">Company Details</h3>
-                                          <label className="text-xs mb-3 w-full">
-                                            <input
-                                              name="companyName"
-                                              value={formState.companyName}
-                                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                              placeholder="Company Name"
-                                              className="w-full border p-2 rounded"
-                                            />
-                                          </label>
-                                          <label className="text-xs w-full">
-                                            <input
-                                              name="address"
-                                              value={formState.address}
-                                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                              placeholder="Company Address"
-                                              className="w-full border p-2 rounded"
-                                            />
-                                          </label>
-                                          <label className="text-xs w-full">
-                                            <input
-                                              name="email"
-                                              value={formState.email}
-                                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                              placeholder="Email"
-                                              className="w-full border p-2 rounded"
-                                            />
-                                          </label>
-                                          <div>
-                                            <label className="block mb-1 text-xs">Upload Document</label>
-                                            {/* <input
-                                              type="file"
-                                              onChange={(e) => setFile(e.target.files[0])}
-                                              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                                              className="w-full bg-cyan-50 p-2 py-6 rounded"
-                                            />
-                                          </div>
-                                           <div> */}
-                                            <input type="file" onChange={handleCompanyFiles}  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' />
-                                          </div>
-                                          <span className="text-gray-400 text-sm">Primary Contact</span>
-                                          <div className="flex gap-x-5">
-                                            <label className="text-xs w-full">First Name
-                                              <input
-                                                name="firstName"
-                                                value={formState.firstName}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Enter firstname"
-                                                className="w-full mt-2 border p-3 rounded"
-                                              />
-                                            </label>
-                                            <label className="text-xs w-full">Last Name
-                                              <input
-                                                type="text"
-                                                name="lastName"
-                                                value={formState.lastName}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Enter lastname"
-                                                className="w-full mt-2 border p-3 rounded"
-                                              />
-                                            </label>
-                                          </div>
-                                          <div className="flex gap-x-5">
-                                            <label className="text-xs w-full">Phone Number
-                                              <input
-                                                name="phoneNumber"
-                                                value={formState.phoneNumber}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Enter phone number"
-                                                className="w-full mt-2 border p-3 rounded"
-                                              />
-                                            </label>
-                                            <label className="text-xs w-full">Official Email
-                                              <input
-                                                name="email"
-                                                value={formState.email}
-                                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                                placeholder="Enter Email"
-                                                className="w-full mt-2 border p-3 rounded"
-                                              />
-                                            </label>
-                                          </div>
-                                          <div className="flex gap-x-5 w-1/3">
-                                            <label className="text-xs w-full">Owner
-                                              <select
-                                                name="isOwner"
-                                                value={formState.isOwner}
-                                                onChange={e =>
-                                                  setFormState(prev => ({
-                                                    ...prev,
-                                                    isOwner: e.target.value === "true"
-                                                  }))
-                                                }
-                                                className="w-full border p-2 rounded"
-                                              >
-                                                <option value="">Select</option>
-                                                <option value="true">Yes</option>
-                                                <option value="false">No</option>
-                                              </select>
-                                            </label>
-                                          </div>
-                                        </div>
-                                      )}
-                                      <button type='submit' className="mt-6 bg-[#6434F8] text-white justify-self-end py-2 px-4 rounded-md">Submit</button>
-                                    </form>
+                      {userType === 'company' && (
+                        <div className="space-y-2 flex flex-col gap-y-1 p-2 bg-white rounded shadow">
+                          <h3 className="text-sm font-semibold">Company Details</h3>
+                          <label className="text-xs mb-3 w-full">
+                            <input
+                              name="companyName"
+                              value={formState.companyName}
+                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                              placeholder="Company Name"
+                              className="w-full border p-2 rounded"
+                            />
+                          </label>
+                          <label className="text-xs w-full">
+                            <input
+                              name="address"
+                              value={formState.address}
+                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                              placeholder="Company Address"
+                              className="w-full border p-2 rounded"
+                            />
+                          </label>
+                          <label className="text-xs w-full">
+                            <input
+                              name="email"
+                              value={formState.email}
+                              onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                              placeholder="Email"
+                              className="w-full border p-2 rounded"
+                            />
+                          </label>
+                          <div>
+                            <label className="block mb-1 text-xs">Upload Document</label>
+                            {/* <input
+                              type="file"
+                              onChange={(e) => setFile(e.target.files[0])}
+                              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                              className="w-full bg-cyan-50 p-2 py-6 rounded"
+                            />
+                          </div>
+                            <div> */}
+                            
+                            <input type="file" onChange={handleCompanyFiles}  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' />
+                          </div>
+                          <span className="text-gray-400 text-sm">Primary Contact</span>
+                          <div className="flex gap-x-5">
+                            <label className="text-xs w-full">First Name
+                              <input
+                                name="firstName"
+                                value={formState.firstName}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="Enter firstname"
+                                className="w-full mt-2 border p-3 rounded"
+                              />
+                            </label>
+                            <label className="text-xs w-full">Last Name
+                              <input
+                                type="text"
+                                name="lastName"
+                                value={formState.lastName}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="Enter lastname"
+                                className="w-full mt-2 border p-3 rounded"
+                              />
+                            </label>
+                          </div>
+                          <div className="flex gap-x-5">
+                            <label className="text-xs w-full">Phone Number
+                              <input
+                                name="phoneNumber"
+                                value={formState.phoneNumber}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="Enter phone number"
+                                className="w-full mt-2 border p-3 rounded"
+                              />
+                            </label>
+                            <label className="text-xs w-full">Official Email
+                              <input
+                                name="email"
+                                value={formState.email}
+                                onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
+                                placeholder="Enter Email"
+                                className="w-full mt-2 border p-3 rounded"
+                              />
+                            </label>
+                          </div>
+                          <div className="flex gap-x-5 w-1/3">
+                            <label className="text-xs w-full">Owner
+                              <select
+                                name="isOwner"
+                                value={formState.isOwner}
+                                onChange={e =>
+                                  setFormState(prev => ({
+                                    ...prev,
+                                      isOwner: e.target.value === "true"
+                                  }))
+                                }
+                                className="w-full border p-2 rounded"
+                              >
+                                <option value="">Select</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                              </select>
+                            </label>
+                          </div>
+                        </div>
+                      )}
+                      <button type='submit' className="mt-6 bg-[#6434F8] text-white justify-self-end py-2 px-4 rounded-md">Submit</button>
+                    </form>
                         )} 
                       
                       </div>
