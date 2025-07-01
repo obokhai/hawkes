@@ -108,10 +108,10 @@ useEffect(() => {
                   <span className='flex-col flex text-3xl font-bold'>Hello Alexander
                     <p className='text-lg mt-3 font-normal'>Here's Your Overview</p>
                   </span>
-                  <Image src='/add_dashboard.svg' width={44} height={24} />
+                  <Image src='/add_dashboard.svg' width={28} height={24} />
                 </div>
-                <div className='grid grid-cols-1 lg:grid-cols-3 w-full gap-x-4'>
-                  <div className='flex flex-col max-md:block max-md:w-20 rounded-xl shadow-lg min-h-36 justify-between p-4 min-w-60'>
+                <div className='flex justify-between items-center gap-x-4 w-full shrink-0 overflow-x-auto'>
+                  <div className='flex flex-col rounded-xl shadow-lg min-h-36 justify-between p-4 min-w-60'>
                       <span className='flex justify-between items-center w-full'>
                         <p className='text-sm text-gray-600'> Total Properties</p>
                         <span className='bg-green-200 rounded-full h-12 w-12 flex justify-center items-center'><Monitor/></span>
@@ -135,8 +135,6 @@ useEffect(() => {
                       <h4 className='text-6xl'>{totalJV}</h4>
                       {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
                   </div>
-
-
                 </div>
             </aside>  
             <aside className='lg:w-2/5 max-lg:block p-8 rounded-2xl bg-white'>

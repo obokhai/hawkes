@@ -125,15 +125,15 @@ const Client = () => {
   };
   return (
 
-    <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
+            <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
                   <div className="flex justify-between mb-14 text-black items-center">
                         <h3 className="text-2xl ">All Clients: <span>{totalClients} </span></h3>
                         <div className="flex space-x-6">
                             <div className="flex items-center space-x-2 ">
-                               <Image src="/export_client_data.svg" width={160} height={40} />
+                               <Image src="/export_client_data.svg" width={120} height={40} />
                                <Dialog className="w-[1200px]">
                                 <DialogTrigger asChild>
-                                    <Image src="/add_new_client.svg" width={160} height={40} />
+                                    <Image src="/add_new_client.svg" width={120} height={40} />
                                 </DialogTrigger>
                                 <DialogContent className="w-full  bg-white">
                                 <div className="max-w-7xl mx-auto mt-10 bg-white rounded-xl">
@@ -231,7 +231,7 @@ const Client = () => {
                                 <DialogTrigger asChild>
                                 <Image src="/three_dots.svg" alt="" className="mx-auto" width={12} height={12} /> 
                                 </DialogTrigger>
-                                <DialogContent className="w-full  bg-gray-200">
+                                <DialogContent className="w-full overflow-auto h-[500px ] bg-gray-200">
                                   <DialogHeader className='space-y-6'>
                                     <DialogTitle>Client Profile view</DialogTitle>
                                     <div className="border-b border-[1px] border-gray-300" />

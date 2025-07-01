@@ -163,13 +163,13 @@ const handleSubmit = async (e) => {
                   <div className="flex justify-between mb-14 text-black items-center">
                         {/* <h3 className="text-2xl ">JV Partners : {totalJV} </h3> */}
                         <div className="flex w-full justify-end space-x-6 float-right">
-                            <div className="flex items-center cursor-pointer space-x-2 bg-gray-100  border-gray-300 rounded-xs border-[1px] lg:w-32 justify-center  py-3 px-4">
-                                <Image src="/arrow_up.svg"  alt="arrow up" width={13} height={13} />
-                                <p className="text-md ">Export</p>
+                            <div className="flex items-center cursor-pointer space-x-2 bg-gray-100  border-gray-300 rounded-xs border-[1px] lg:w-36 justify-center  py-2 px-4">
+                                <Image src="/arrow_up.svg"  alt="arrow up" width={12} height={13} />
+                                <p className="text-xs ">Export</p>
                             </div> 
                              <Dialog className="w-[1200px]">
                                                             <DialogTrigger asChild>
-                                                                <Image src="/add_new_client.svg" className="cursor-pointer" width={176} height={50} />
+                                                                <Image src="/add_new_client.svg" className="cursor-pointer" width={126} height={50} />
                                                             </DialogTrigger>
                                                             <DialogContent className="w-full  bg-white">
                                                             <div className="max-w-7xl mx-auto mt-10 bg-white rounded-xl">

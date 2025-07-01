@@ -78,7 +78,7 @@ useEffect(() => {
                         className="text-white opacity-80 hover:opacity-100 cursor-pointer"
                         onClick={() => handleTabChange(data.name)}
                     >
-                        <Image src={`${data.icon}`} className="w-5 h-5 mb-4" alt="property" width={12} height={12} />
+                        <Image src={`${data.icon}`} className="w-4 h-5 mb-4" alt="property" width={14} height={12} />
                     </div>
                     )}
                    </div>

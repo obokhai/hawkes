@@ -213,10 +213,17 @@ const PropertyDetails = () => {
   const selectedRoleId = e.target.value;
   console.log("Selected Role ID:", selectedRoleId);
   setUserRoleId(selectedRoleId);
-    // Optionally handle error
+    if (selectedRoleId === "3" || selectedRoleId === 3) {
+    setIsowner(true);
+    setFormState(prev => ({ ...prev, isOwner: true }));
+  } else {
+    setIsowner(false);
+    setFormState(prev => ({ ...prev, isOwner: false }));
+  }
+  
     getAllUsers()
   };
-  const getAllUsers = async () => {
+  const getAllUsers = async () => { 
     setLoadingUsers(true)
     console.log(userRoleId)
     try {
@@ -319,8 +326,9 @@ const PropertyDetails = () => {
   }
   }
 
-
+const [submitLoading, setSubmitLoading] = useState(false)
   const updateTask = async () => {
+    setSubmitLoading(true)
   const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dfna08jzi/auto/upload";
   const uploadPreset = "task_assignment";
   setUpdateTaskOpen(true);
@@ -362,6 +370,7 @@ const PropertyDetails = () => {
   } catch (err) {
     console.error("Error:", err.response?.data?.errors || err.message);
   }
+  setSubmitLoading(false)
   }
 
 
@@ -444,9 +453,10 @@ const PropertyDetails = () => {
 
     const formDataWithFiles = {
       ...formState,
-      document: documentId, // Use the uploaded document IDs
+      document: `${documentId}`,  // Use the uploaded document IDs
     }
 
+    console.log(documentId)
       const response = api.post('/user/create-and-assign',formDataWithFiles)
       toast.success("User successfully created and assigned");
       console.log(response)
@@ -679,22 +689,7 @@ const PropertyDetails = () => {
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="Email" className="w-full mt-2 border p-3 rounded" />
                             </label>
-                          </div>
-                            <div className="flex gap-x-5 w-2/5 px-0">
-                          <label className="text-xs w-full">Owner
-                            <select name='isOwner' value={formState.isOwner}
-                                onChange={e =>
-                                  setFormState(prev => ({
-                                    ...prev,
-                                    isOwner: e.target.value === "true" // convert string to boolean
-                                  }))
-                                }className="w-full border p-2 rounded">
-                              <option value="">Select</option>
-                              <option value="true">Yes</option>
-                              <option value="false">No</option>
-                            </select>
-                            </label>
-                          </div>  
+                          </div> 
                         </div>
                       )}
 
@@ -783,25 +778,7 @@ const PropertyDetails = () => {
                               />
                             </label>
                           </div>
-                          <div className="flex gap-x-5 w-1/3">
-                            <label className="text-xs w-full">Owner
-                              <select
-                                name="isOwner"
-                                value={formState.isOwner}
-                                onChange={e =>
-                                  setFormState(prev => ({
-                                    ...prev,
-                                      isOwner: e.target.value === "true"
-                                  }))
-                                }
-                                className="w-full border p-2 rounded"
-                              >
-                                <option value="">Select</option>
-                                <option value="true">Yes</option>
-                                <option value="false">No</option>
-                              </select>
-                            </label>
-                          </div>
+                          
                         </div>
                       )}
                       <button type='submit' className="mt-6 bg-[#6434F8] text-white justify-self-end py-2 px-4 rounded-md">Submit</button>
@@ -1095,13 +1072,13 @@ const PropertyDetails = () => {
           </div>
           </div>
       
-      <div className='flex flex-col space-y-4 lg:w-[1000px]'>
+      <div className='flex flex-col space-y-4 lg:w-full'>
         <span className='flex justify-between'>
-        <h3 className='text-2xl'>Tasks</h3>
+        <h3 className='text-xl'>Tasks</h3>
            <Dialog className="w-[1200px]">
                   <DialogTrigger asChild>
-                <PlusIcon/>
-           </DialogTrigger>
+                    <PlusIcon/>
+                  </DialogTrigger>
                   <DialogContent className="w-full  bg-white">
                     <DialogHeader>
                       <DialogTitle>
@@ -1162,7 +1139,7 @@ const PropertyDetails = () => {
           
         </span>
         
-        <div className='flex gap-x-8'>
+        <div className='flex gap-x-2 gap-2 flex-wrap'>
           {getStageData.map((task) => (
           <Dialog className="w-full cursor-pointer"  key={task.id}>
             <DialogTrigger>
@@ -1252,7 +1229,7 @@ const PropertyDetails = () => {
                                     </div>
                                       
                                   </div>
-                                  <button type='button' onClick={updateTask} className='w-32 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Update</button>
+                                  <button type='button' onClick={updateTask} className={`w-32 h-10 rounded-full ${submitLoading ?'cursor-not-allowed disabled':'cursor-pointer'} bg-[#312787] flex text-center justify-self-end justify-center items-center text-white`}>{submitLoading ?(<p>Submitting</p>):(<p>Submit</p>)}</button>
                                 </div>
                             </div>
                                       </div>
@@ -1309,12 +1286,13 @@ const PropertyDetails = () => {
                     <Image src='/brief_pdf.svg' alt='attachment' width={140} height={120} />
                     <Image src='/brief_docx.svg' alt='attachment' width={140} height={120} />
                     <Image src='/brief_pdf.svg' alt='attachment' width={140} height={120} />
+                    <PlusIcon className='h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 cursor-pointer' onClick={() => setAddFilesModal(true)} />
                   </div>
                 </div>
                 <Tabs defaultValue="account" className="w-[400px]">
                   <TabsList className='bg-white shadow-none rounded-none mb-3'>
                     <TabsTrigger value="comment">Comment</TabsTrigger>
-                    <TabsTrigger value="activities">Activities</TabsTrigger>
+                    <TabsTrigger value="activities">Activities</TabsTrigger> 
                   </TabsList>
                   <TabsContent value="comment">
                     <div className='flex-col flex w-full gap-y-2 mb-6'>

@@ -32,7 +32,7 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <div className="bg-white min-h-screen flex-1 flex text-black items-center ps-24">
+      <div className="bg-white min-h-screen flex-1 flex text-black items-center ps-24 pe-12">
       {
               (()=> {
                 switch (screen) {
