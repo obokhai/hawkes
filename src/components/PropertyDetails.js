@@ -7,11 +7,11 @@ import { Progress } from "@/components/ui/progress"
 import nigeriaStates  from '@/app/data/States'
 import TaskCard from './TaskCard'
 import { Timeline } from 'antd';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipTrigger,
+// } from "@/components/ui/tooltip"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChevronRight, HelpCircleIcon, PlusIcon, TrendingUp } from "lucide-react";
 import {
@@ -41,6 +41,11 @@ import {
 } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 import { ClipLoader } from 'react-spinners'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   Sheet,
   SheetContent,
@@ -201,6 +206,7 @@ const PropertyDetails = () => {
     const [inviteUserModal, setInviteUserModal] = useState(false)
     const [addStageModal, setAddStageModal] = useState(false)
     const [companyFiles, setCompanyFiles] = useState([])
+    const [roleIdSet,setRoleIdSet] = useState(1)
     const handleTaskUpdate = (e) => {
       const { name, value } = e.target;
       setEditedTask(prev => ({ ...prev, [name]: value }));
@@ -221,6 +227,7 @@ const PropertyDetails = () => {
   const selectedRoleId = e.target.value;
   console.log("Selected Role ID:", selectedRoleId);
   setUserRoleId(selectedRoleId);
+  setRoleIdSet(selectedRoleId)
   setFormState(prev => ({ ...prev, roleId: selectedRoleId }));
   if (selectedRoleId === null || selectedRoleId === "") {
     setUserSelected(false);
@@ -235,15 +242,14 @@ const PropertyDetails = () => {
     setIsowner(false);
       setFormState(prev => ({ ...prev, isOwner: false }));
   }
-  
     getAllUsers()
   };
   const getAllUsers = async () => { 
     setLoadingUsers(true)
-    console.log(userRoleId)
+    console.log(roleData)
     try {
-      console.log("User Role Id",userRoleId)
-      const response = await api.get(`/user/role?roleId=${userRoleId}`);
+      console.log("User Role Id",roleIdSet)
+      const response = await api.get(`/user/role?roleId=${roleIdSet}`);
       
       const data = await response.data;
       console.log("Users API response:", data);
@@ -464,7 +470,6 @@ const [submitLoading, setSubmitLoading] = useState(false)
         console.error("Cloudinary upload error:", err);
       }
     }
-    
 
     const formDataWithFiles = {
       ...formState,
@@ -559,20 +564,20 @@ const [submitLoading, setSubmitLoading] = useState(false)
 
   return (
     <section className="mt-18 ms-28 me-10 min-h-screen flex flex-col gap-y-4 px-4 py-12">
-      <div className='lg:w-full  bg-white min-h-1/3 flex w-1/4 justify-between shadow-xl rounded-lg  items-center'>
+      <div className='lg:w-full  bg-white min-h-1/3 flex w-1/4 justify-between shadow-xl rounded-lg items-center'>
          {}
-          <div className='flex flex-col flex-1 min-w-1/4 border-r-2 relative justify-center gap-y-3 items-center border-gray-100 px-12 h-full' >
+          <div className='flex flex-col flex-1 min-w-1/4 border-r-2 relative gap-y-3 justify-center border-gray-100 px-12 h-full' >
             
           {/* <button className="text-blue-600 underline mb-4 cursor-pointer" onClick={() => router.push("/dashboard")}>← Back to Properties</button> */}
             <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
-            <h3 className='lg:text-3xl max-lg:text-xl text-clip text-center font-bold'>{ property?.propertyName}</h3>
+            <h3 className='lg:text-2xl max-lg:text-xl text-clip font-bold'>{ property?.propertyName}</h3>
            <p className='text-xs'>{property?.address}</p> 
+           <button className='p-2 border w-16'>Edit</button>
           </div>
   
             <div className='grid grid-cols-2 w-2/4 text-sm px-4 space-y-3 relative'>
-              
               <span className='font-bold'>Asset Id:</span>
-              <span className='grid grid-cols-2space-x-2'>
+               <span className='grid grid-cols-2space-x-2'>
                 <span className='w-28 truncate'>{property.id}</span>
                 <span className=''>  
                   <Dialog open={inviteUserModal} onOpenChange={setInviteUserModal} className="w-[200px]" id='ínviteUser'>
@@ -582,24 +587,24 @@ const [submitLoading, setSubmitLoading] = useState(false)
                     </div>
                   </DialogTrigger>
                   <DialogContent className="w-full  bg-white">
-                    {/* <DialogHeader>
+                    <DialogHeader>
                       <DialogTitle>
                         Invite User    
                       </DialogTitle>
-                    </DialogHeader> */}
+                    </DialogHeader>
                   <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl scroll-auto">
                        {currentStep === 1 && (
                     <>  
                       <div className="grid gap-4">
                         <select name="roles" onChange={handleUserRoleChange} className='focus:outline-none border-[1px] p-2 text-xs cursor-pointer rounded w-full py-[6px]'>
-                          {/* <option value=''>Select Role</option> */}
+                          <option value=''>Select Role</option>
                           {roleData.map((role) => (
                             <option key={role.id} value={role.id}>{role.name}</option>
                           ))}
                        
                         </select>
                      
-                        {userRoleId && (
+                        {roleIdSet && (
                               loadingUsers ? (
                                 <div className="flex justify-center items-center my-4">
                                   <ClipLoader size={28} color="#6434F8" />
@@ -665,14 +670,14 @@ const [submitLoading, setSubmitLoading] = useState(false)
                               <input name="firstName"
                                 value={formState.firstName}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                placeholder="First Name" className="w-full mt-2 border p-3 rounded" />
+                                placeholder="First Name" className="w-full mt-1 border p-3 rounded" />
                             </label>
                             <label className="text-[10px] w-full">Last Name
                               <input type="text"
                                 name="lastName"
                                 value={formState.lastName}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                placeholder="Last Name" className="w-full mt-2 border p-3 rounded" />
+                                placeholder="Last Name" className="w-full mt-1 border p-3 rounded" />
                             </label>
                           </div>
                           <label className="text-[10px]">Address
@@ -693,40 +698,40 @@ const [submitLoading, setSubmitLoading] = useState(false)
                               ))}
                             </select>
                           </label>
-                          <div className="flex gap-x-5">
+                          <div className="flex gap-x-5 mt-3">
                             <label className="text-[10px] w-full">Phone Number
                               <input name="phoneNumber"   value={formState.phoneNumber}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                placeholder="PhoneNumber" className="w-full mt-2 border p-3 rounded" />
+                                placeholder="PhoneNumber" className="w-full border p-3 rounded" />
                             </label>
                             <label className="text-[10px] w-full">Email
                               <input name="email"   value={formState.email}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                                placeholder="Email" className="w-full mt-2 border p-3 rounded" />
+                                placeholder="Email" className="w-full border p-3 rounded" />
                             </label>
                           </div> 
                         </div>
                       )}
 
                       {userType === 'company' && (
-                        <div className="space-y-2 flex flex-col gap-y-1 p-2 bg-white rounded shadow">
-                          <h3 className="text-sm font-semibold">Company Details</h3>
-                          <label className="text-xs mb-3 w-full">
+                        <div className="space-y-2 flex flex-col gap-y-1 bg-white rounded shadow">
+                          {/* <h3 className="text-sm font-semibold">Company Details</h3> */}
+                          <label className="text-[10px] mb-3 w-full">Company Name
                             <input
                               name="companyName"
                               value={formState.companyName}
                               onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                              placeholder="Company Name"
-                              className="w-full border p-2 rounded"
+                              placeholder="Enter Company Name"
+                              className="w-full h-7 border p-2 rounded"
                             />
                           </label>
-                          <label className="text-[10px] w-full">
+                          <label className="text-[10px] w-full">Company Address
                             <input
                               name="address"
                               value={formState.address}
                               onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                              placeholder="Company Address"
-                              className="w-full border p-2 rounded"
+                              placeholder="Enter Address"
+                              className="w-full border h-7 p-2 rounded"
                             />
                           </label>
                           {/* <label className="text-xs w-full">
@@ -764,7 +769,16 @@ const [submitLoading, setSubmitLoading] = useState(false)
                             
                             <input type="file" onChange={handleCompanyFiles}  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' />
                           </div>
-                          <span className="text-gray-400 text-[10px]">Primary Contact</span>
+                          <span className="text-gray-400 text-[10px] flex items-center gap-x-2">Primary Contact <Tooltip>
+                                                 <TooltipTrigger>
+                                                  <Image src='/caution.png' width={12} height={12}/>
+                                                 </TooltipTrigger>
+                                                 <TooltipContent className='w-36'>
+                                                  <p className='text-[7px]'>the main representative of the company responsible for communication and key property management updates.</p>
+                                                </TooltipContent>
+                                                 </Tooltip>
+  
+                          </span>
                           <div className="flex gap-x-5">
                             <label className="text-[10px] w-full">First Name
                               <input
@@ -809,7 +823,10 @@ const [submitLoading, setSubmitLoading] = useState(false)
                           
                         </div>
                       )}
-                      <button type='submit' className="mt-6 bg-[#6434F8] text-white justify-self-end py-2 px-4 rounded-md">Submit</button>
+                      <div className='flex w-full justify-end'>
+
+                      <button type='submit' className="mt-6 bg-[#312787] text-white text-xs items-end py-2 px-4 rounded-full">Assign & Submit</button>
+                      </div>
                     </form>
                         )} 
                       
@@ -912,11 +929,13 @@ const [submitLoading, setSubmitLoading] = useState(false)
           </div>
           <div className='w-full bg-white min-h-2/3 p-12 space-y-8 shadow-xl rounded-xl'>
              <Sheet className="w-[1200px]">
-                  <SheetTrigger asChild>
-                        <p className='flex text-sm items-center'>Manage Stages <ChevronRight className='h-5' /> </p>
+                  <SheetTrigger asChild >
+                        <p className='flex text-sm items-center cursor-pointer'>Manage Stages <ChevronRight className='h-5' /> </p>
                   </SheetTrigger>
                    <SheetContent className="w-full  bg-white">
+                    <SheetHeader>
 
+                    </SheetHeader>
                       <div className='flex justify-between items-center'>
                         <h3>Manage Stages: </h3>
                            <Dialog className="w-[1200px]">
@@ -961,17 +980,17 @@ const [submitLoading, setSubmitLoading] = useState(false)
                      </form>
                       </div>
                   </DialogContent>
-                  </Dialog>
-                        {/*  */}
+                           </Dialog>
+                        
                       
                 </div>
-                    <div className="min-w-[450px] mx-auto mt-10 bg-white rounded-xl">
-                      <Table>
+                    <div className="w-full mx-auto mt-10 bg-white rounded-xl">
+                      <Table className=''>
                         <TableHeader className="bg-[#5051F9] text-white ">
                           <TableRow className="rounded-tr-xl rounded-tl-xl">
                             <TableHead className="text-white">Position</TableHead>
                             <TableHead className="text-white">Name</TableHead>
-                            <TableHead className="text-white">Description</TableHead>
+                            <TableHead className="text-white ">Description</TableHead>
                             <TableHead className="text-right text-white">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -980,7 +999,7 @@ const [submitLoading, setSubmitLoading] = useState(false)
                             <TableRow key={stage.stageId} className="min-h-12">
                               <TableCell className="font-medium">{stage.stagePosition}</TableCell>
                               <TableCell>{stage.stageName}</TableCell>
-                              <TableCell>{stage.description}</TableCell>
+                              <TableCell className='w-24'>{stage.description}</TableCell>
                               <TableCell className="text-right">
                                 <span className='flex '>
                                     <Dialog className="w-[1200px]">
@@ -1170,7 +1189,7 @@ const [submitLoading, setSubmitLoading] = useState(false)
               <TaskCard title={task.taskName}  onClick={() =>taskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
               </button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className='w-full'>
         <SheetHeader>
           <SheetTitle>Listing deliverables checklist</SheetTitle>
           <SheetDescription>
@@ -1385,16 +1404,11 @@ const [submitLoading, setSubmitLoading] = useState(false)
                     />
                   </TabsContent>
                 </Tabs>
-
-        //       </div>
+               </div>
       </SheetContent>
     </Sheet>
- 
          ) )}
-
-        
-        
-            </div>
+  </div>
         </div>
         </div>
     </section>

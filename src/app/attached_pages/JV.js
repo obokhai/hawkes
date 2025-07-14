@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button"
 import { Copy } from "lucide-react"
 import Link from "next/link"
 import api from '@/app/api'
+import { Sheet,SheetContent,SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 const jv = [
   {
     sn:1,
@@ -62,6 +63,7 @@ const jv = [
     allocated: "4",
   },
 ]
+
 
 const JV = () => {
 const [usersByRole, setUsersByRole] = useState([]);
@@ -167,6 +169,7 @@ const handleSubmit = async (e) => {
                                 <Image src="/arrow_up.svg"  alt="arrow up" width={12} height={13} />
                                 <p className="text-xs ">Export</p>
                             </div> 
+
                              <Dialog className="w-[1200px]">
                                                             <DialogTrigger asChild>
                                                                 <Image src="/add_new_client.svg" className="cursor-pointer" width={126} height={50} />
@@ -287,17 +290,19 @@ const handleSubmit = async (e) => {
                             </TableCell>
                             <TableCell className="text-[#35A0E4]">Jvs@example.com</TableCell>
                             <TableCell>+1928019390490</TableCell>
-                            <TableCell className="ps-12">{user.id}</TableCell>
+                            <TableCell className="">{user.id}</TableCell>
                             <TableCell>
        
-                            <Dialog className="w-full">
-                                <DialogTrigger asChild>
-                                <Image src="/three_dots.svg" alt="" className="mx-auto" width={12} height={12} /> 
-                                </DialogTrigger>
-                                <DialogContent className="w-full  bg-gray-200">
-                                  <DialogHeader className='space-y-6'>
-                                    <DialogTitle>JV Partner Profile view</DialogTitle>
-                                    <div className="border-b border-[1px] border-gray-300" />
+                            <Sheet>
+                              <SheetTrigger>
+                                   <Image src="/three_dots.svg" alt="" className="mx-auto" width={12} height={12} />
+                              </SheetTrigger>
+                              <SheetContent className=''>
+                                <SheetHeader>
+                                    <SheetTitle>
+                                      JV Partner Profile view
+                                    </SheetTitle>
+                                     <div className="border-b border-[1px] border-gray-300" />
                                     <div className="flex justify-between items-center">
                                       <div className="flex items-center gap-x-3">
                                           <Image src='' width={90} height={90} className="rounded-full" />
@@ -311,8 +316,8 @@ const handleSubmit = async (e) => {
                                         <Image alt="mail" src='/send_mail.svg' width={80} height={80} />
                                       </div>
                                     </div>
-                                  </DialogHeader>
-                                  <div className="flex space-x-2 mx-2 mt-5 rounded-xl p-7 bg-gray-50 min-h-96">
+                                </SheetHeader>
+                                      <div className="flex space-x-2 mx-2 mt-5 rounded-xl p-7 bg-gray-50 min-h-96">
                                     <div className="flex flex-col gap-y-4">
                                         <div className="flex gap-x-4">
                                           <Image src="/jv_email.svg"  width={16} height={16} />
@@ -348,8 +353,8 @@ const handleSubmit = async (e) => {
                                         </div>
                                     </div>
                                   </div>
-                                </DialogContent>
-                              </Dialog>
+                              </SheetContent>
+                            </Sheet>
                               </TableCell>
                           </TableRow>
                           

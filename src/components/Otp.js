@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'sonner';
 import axios from "axios";
+import api from "@/app/api";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 
 import {
@@ -23,8 +24,8 @@ const Otp = () => {
     event.preventDefault();
     setLoading(true)
     try {
-        const response = await axios.post(
-            "https://propertyapi-api-gateway.onrender.com/api/v1/auth/validate-otp",
+        const response = await api.post(
+            "/auth/validate-otp",
             { 
               email,
               otp
