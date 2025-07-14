@@ -64,9 +64,9 @@ useEffect(() => {
     return(
         <main className="flex h-full relative">
             <Image src='/hawkes_stripe.svg' className="absolute top-0 right-0 -z-10" width={500} height={60} />
-           <div className="w-20 min-h-screen z-10  bg-white flex flex-col py-4 gap-y-14 fixed top-0">
+           <div className="w-20 min-h-screen z-10  bg-white flex flex-col py-4 gap-y-4 fixed top-0">
                    <Image src="/logo.svg" alt="Logo" className="w-12 h-12 mb-6 ms-3" width={12} height={12} />
-                   <div className="flex flex-col items-center space-y-6 py-6 bg-[#6434F8] rounded-tr-xl rounded-br-xl me-3">
+                   <div className="flex flex-col items-center space-y-3 py-6 h-[70vh] bg-[#6434F8] rounded-tr-xl rounded-br-xl me-3">
                         {/* {options.map((data, index)=>
                             <div key={index}  className="text-white opacity-80 hover:opacity-100 cursor-pointer`" onClick={()=>setActive(data.name)}>
                                 <Image src={`${data.icon}`} className="w-5 h-5 mb-4" alt="property" width={12} height={12} />
@@ -81,9 +81,9 @@ useEffect(() => {
                         <Image src={`${data.icon}`} className="w-4 h-5 mb-4" alt="property" width={14} height={12} />
                     </div>
                     )}
-                   </div>
+              </div>
                   
-                 </div>
+            </div>
            <div className="flex flex-col flex-1 bg-gray-100">
              <div className="w-full h-20 z-50 bg-white text-gray-500 fixed left-20 flex items-center justify-between px-12  pb-1">
              {/* <span className="font-semibold text-xs">{active}</span> */}
@@ -105,7 +105,7 @@ useEffect(() => {
                              <Image src="/notification.svg" alt="" width={20} height={20} />
                              </button>
                              <Link href="#" className="flex items-center space-x-4">
-                                 <Image src="/user_avatar.svg" onClick={()=>logout} alt="" width={20} height={20} />
+                                 <Image src="/user_avatar.svg" onClick={logout} alt="" width={20} height={20} />
                                  <Image src="/caret_down.svg" alt="" width={20} height={20} />
                              </Link>
                          </div>

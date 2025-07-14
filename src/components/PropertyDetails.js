@@ -41,6 +41,14 @@ import {
 } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 import { ClipLoader } from 'react-spinners'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 const chartData = [
   { browser: "safari", visitors: 20, fill: "hsl(var(--chart-2))" },
 ];
@@ -213,12 +221,19 @@ const PropertyDetails = () => {
   const selectedRoleId = e.target.value;
   console.log("Selected Role ID:", selectedRoleId);
   setUserRoleId(selectedRoleId);
+  setFormState(prev => ({ ...prev, roleId: selectedRoleId }));
+  if (selectedRoleId === null || selectedRoleId === "") {
+    setUserSelected(false);
+    setUsers([]);
+    return;
+  }
+
     if (selectedRoleId === "3" || selectedRoleId === 3) {
     setIsowner(true);
     setFormState(prev => ({ ...prev, isOwner: true }));
   } else {
     setIsowner(false);
-    setFormState(prev => ({ ...prev, isOwner: false }));
+      setFormState(prev => ({ ...prev, isOwner: false }));
   }
   
     getAllUsers()
@@ -536,7 +551,7 @@ const [submitLoading, setSubmitLoading] = useState(false)
   
       const data = await response.json();
       setRoleData(data.data);
-      console.log(data.data);
+      console.log("The Roles Data",data.data);
     } catch (error) {
       console.error("Failed to fetch roles:", error);
     }
@@ -550,7 +565,7 @@ const [submitLoading, setSubmitLoading] = useState(false)
             
           {/* <button className="text-blue-600 underline mb-4 cursor-pointer" onClick={() => router.push("/dashboard")}>← Back to Properties</button> */}
             <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
-            <h3 className='text-3xl text-clip font-bold'>{ property?.propertyName}</h3>
+            <h3 className='lg:text-3xl max-lg:text-xl text-clip text-center font-bold'>{ property?.propertyName}</h3>
            <p className='text-xs'>{property?.address}</p> 
           </div>
   
@@ -560,24 +575,24 @@ const [submitLoading, setSubmitLoading] = useState(false)
               <span className='grid grid-cols-2space-x-2'>
                 <span className='w-28 truncate'>{property.id}</span>
                 <span className=''>  
-                  <Dialog open={inviteUserModal} onOpenChange={setInviteUserModal} className="w-[1200px]" id='ínviteUser'>
+                  <Dialog open={inviteUserModal} onOpenChange={setInviteUserModal} className="w-[200px]" id='ínviteUser'>
                   <DialogTrigger asChild>
                     <div className='flex w-full justify-end absolute top-0 right-0 -mt-10 cursor-pointer pe-4'>
                       <Image src='/inviteuser.svg' className='' width={100} height={20} />
                     </div>
                   </DialogTrigger>
                   <DialogContent className="w-full  bg-white">
-                    <DialogHeader>
+                    {/* <DialogHeader>
                       <DialogTitle>
                         Invite User    
                       </DialogTitle>
-                    </DialogHeader>
+                    </DialogHeader> */}
                   <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl scroll-auto">
                        {currentStep === 1 && (
                     <>  
                       <div className="grid gap-4">
                         <select name="roles" onChange={handleUserRoleChange} className='focus:outline-none border-[1px] p-2 text-xs cursor-pointer rounded w-full py-[6px]'>
-                          <option value=''>Select Role</option>
+                          {/* <option value=''>Select Role</option> */}
                           {roleData.map((role) => (
                             <option key={role.id} value={role.id}>{role.name}</option>
                           ))}
@@ -592,7 +607,7 @@ const [submitLoading, setSubmitLoading] = useState(false)
                               ) : (
                                 users.length > 0 && (
                                   <select name="users" className='focus:outline-none border-[1px] p-2 text-xs cursor-pointer rounded w-full py-[6px]' onChange={e => setUserId(e.target.value)}>
-                                    <option value="">Select User</option>
+                                    {/* <option value="">Select User</option> */}
                                     {users.map(user => (
                                       <option key={user.id} value={user.id}>{user.firstName}</option>
                                     ))}
@@ -616,26 +631,26 @@ const [submitLoading, setSubmitLoading] = useState(false)
                    {currentStep === 2 && (
                       <form onSubmit={handleSubmit} className="space-y-4  max-h-96 overflow-y-auto">
                       <div className="mb-6 min-w-[400px] flex flex-col">
-                        <label htmlFor="roleId" className="block text-xs font-medium mt-3 mb-1">User Role</label>
+                        <label htmlFor="roleId" className="block text-[10px] font-medium mt-3 mb-1">User Role</label>
                           <select
                           name="roleId"
                           value={formState.roleId}
                           onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
-                          className="border p-2 text-xs cursor-pointer rounded w-full py-[6px]"
+                          className="border p-2 text-[10px] cursor-pointer rounded w-full py-[6px]"
 >
                           <option value="Select user">Select Role</option>
                             {roleData.map((role) => (
-                                <option key={role.id} className='text-xs' value={role.id}>{role.name}</option>
+                                <option key={role.id} className='text-[10px]' value={role.id}>{role.name}</option>
                             ))}
                           </select>
 
-                        <label htmlFor="userType" className="block text-xs font-medium mt-3 mb-1">User Type</label>
+                        <label htmlFor="userType" className="block text-[10px] font-medium mt-3 mb-1">User Type</label>
                         
                         <select
                           id="userType"
                           value={userType}
                           onChange={(e) => setUserType(e.target.value)}
-                          className="w-full border text-xs border-gray-300 cursor-pointer rounded py-[6px]"
+                          className="w-full border text-[10px] border-gray-300 cursor-pointer rounded py-[6px]"
                         >
                           <option value="">Select</option>
                           <option value="individual" className='text-xs'>Individual</option>
@@ -646,13 +661,13 @@ const [submitLoading, setSubmitLoading] = useState(false)
                       {userType === 'individual' && (
                         <div className="space-y-4">
                           <div className="flex gap-x-5">
-                            <label className="text-xs w-full">First Name
+                            <label className="text-[10px] w-full">First Name
                               <input name="firstName"
                                 value={formState.firstName}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="First Name" className="w-full mt-2 border p-3 rounded" />
                             </label>
-                            <label className="text-xs w-full">Last Name
+                            <label className="text-[10px] w-full">Last Name
                               <input type="text"
                                 name="lastName"
                                 value={formState.lastName}
@@ -660,12 +675,12 @@ const [submitLoading, setSubmitLoading] = useState(false)
                                 placeholder="Last Name" className="w-full mt-2 border p-3 rounded" />
                             </label>
                           </div>
-                          <label className="text-xs">Address
+                          <label className="text-[10px]">Address
                             <input name='address'  value={formState.address}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="Address"className="w-full border p-2 rounded" />
                           </label>
-                          <label className="text-xs w-full">State
+                          <label className="text-[10px] w-full">State
                             <select
                               name="state"
                               value={formState.state}
@@ -679,12 +694,12 @@ const [submitLoading, setSubmitLoading] = useState(false)
                             </select>
                           </label>
                           <div className="flex gap-x-5">
-                            <label className="text-xs w-full">Phone Number
+                            <label className="text-[10px] w-full">Phone Number
                               <input name="phoneNumber"   value={formState.phoneNumber}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="PhoneNumber" className="w-full mt-2 border p-3 rounded" />
                             </label>
-                            <label className="text-xs w-full">Email
+                            <label className="text-[10px] w-full">Email
                               <input name="email"   value={formState.email}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="Email" className="w-full mt-2 border p-3 rounded" />
@@ -705,7 +720,7 @@ const [submitLoading, setSubmitLoading] = useState(false)
                               className="w-full border p-2 rounded"
                             />
                           </label>
-                          <label className="text-xs w-full">
+                          <label className="text-[10px] w-full">
                             <input
                               name="address"
                               value={formState.address}
@@ -714,7 +729,7 @@ const [submitLoading, setSubmitLoading] = useState(false)
                               className="w-full border p-2 rounded"
                             />
                           </label>
-                          <label className="text-xs w-full">
+                          {/* <label className="text-xs w-full">
                             <input
                               name="email"
                               value={formState.email}
@@ -722,9 +737,22 @@ const [submitLoading, setSubmitLoading] = useState(false)
                               placeholder="Email"
                               className="w-full border p-2 rounded"
                             />
-                          </label>
+                          </label> */}
+                           <label className="text-[10px] w-full">State
+                            <select
+                              name="state"
+                              value={formState.state}
+                              onChange={e => setFormState({ ...formState, state: e.target.value })}
+                              className="w-full border p-2 rounded"
+                            >
+                              <option value="" className='text-gray-400'>Select State</option>
+                              {nigeriaStates.map(state => (
+                                <option key={state} value={state}>{state}</option>
+                              ))}
+                            </select>
+                            </label>
                           <div>
-                            <label className="block mb-1 text-xs">Upload Document</label>
+                            <label className="block mb-1 text-[10px]">Upload Document</label>
                             {/* <input
                               type="file"
                               onChange={(e) => setFile(e.target.files[0])}
@@ -736,45 +764,45 @@ const [submitLoading, setSubmitLoading] = useState(false)
                             
                             <input type="file" onChange={handleCompanyFiles}  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' />
                           </div>
-                          <span className="text-gray-400 text-sm">Primary Contact</span>
+                          <span className="text-gray-400 text-[10px]">Primary Contact</span>
                           <div className="flex gap-x-5">
-                            <label className="text-xs w-full">First Name
+                            <label className="text-[10px] w-full">First Name
                               <input
                                 name="firstName"
                                 value={formState.firstName}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="Enter firstname"
-                                className="w-full mt-2 border p-3 rounded"
+                                className="w-full mt-2 border placeholder:text-[10px] p-3 rounded"
                               />
                             </label>
-                            <label className="text-xs w-full">Last Name
+                            <label className="text-[10px] w-full">Last Name
                               <input
                                 type="text"
                                 name="lastName"
                                 value={formState.lastName}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="Enter lastname"
-                                className="w-full mt-2 border p-3 rounded"
+                                className="w-full mt-2 border placeholder:text-[10px] p-3 rounded"
                               />
                             </label>
                           </div>
                           <div className="flex gap-x-5">
-                            <label className="text-xs w-full">Phone Number
+                            <label className="text-[10px] w-full">Phone Number
                               <input
                                 name="phoneNumber"
                                 value={formState.phoneNumber}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="Enter phone number"
-                                className="w-full mt-2 border p-3 rounded"
+                                className="w-full mt-2 border p-3 placeholder:text-[10px] rounded"
                               />
                             </label>
-                            <label className="text-xs w-full">Official Email
+                            <label className="text-[10px] w-full">Official Email
                               <input
                                 name="email"
                                 value={formState.email}
                                 onChange={(e) => setFormState({ ...formState, [e.target.name]: e.target.value })}
                                 placeholder="Enter Email"
-                                className="w-full mt-2 border p-3 rounded"
+                                className="w-full mt-2 border p-3 placeholder:text-[10px] rounded"
                               />
                             </label>
                           </div>
@@ -872,28 +900,25 @@ const [submitLoading, setSubmitLoading] = useState(false)
                     </ChartContainer>
                   </CardContent>
                 <CardFooter className="flex-col gap-2 text-sm">
-                  <div className="flex items-center gap-2 font-medium leading-none">
-                      
+                  <div className="flex items-center gap-2 font-medium leading-none">      
                   </div>
                   {/* <div className="leading-none text-muted-foreground">
                     Showing total visitors for the last 6 months
                   </div> */}
                 </CardFooter>
-              </Card>
-              
+              </Card>             
               </div>
             </div>
           </div>
           <div className='w-full bg-white min-h-2/3 p-12 space-y-8 shadow-xl rounded-xl'>
-             <Dialog className="w-[1200px]">
-                  <DialogTrigger asChild>
+             <Sheet className="w-[1200px]">
+                  <SheetTrigger asChild>
                         <p className='flex text-sm items-center'>Manage Stages <ChevronRight className='h-5' /> </p>
-                  </DialogTrigger>
-                   <DialogContent className="w-full  bg-white">
-                    <DialogHeader className="mt-2">
-                      <DialogTitle className="flex justify-between items-center">
+                  </SheetTrigger>
+                   <SheetContent className="w-full  bg-white">
+
+                      <div className='flex justify-between items-center'>
                         <h3>Manage Stages: </h3>
-                        {/*  */}
                            <Dialog className="w-[1200px]">
                   <DialogTrigger asChild>
                     <PlusIcon className='cursor-pointer'/>
@@ -938,8 +963,8 @@ const [submitLoading, setSubmitLoading] = useState(false)
                   </DialogContent>
                   </Dialog>
                         {/*  */}
-                      </DialogTitle>
-                    </DialogHeader>
+                      
+                </div>
                     <div className="min-w-[450px] mx-auto mt-10 bg-white rounded-xl">
                       <Table>
                         <TableHeader className="bg-[#5051F9] text-white ">
@@ -985,8 +1010,8 @@ const [submitLoading, setSubmitLoading] = useState(false)
                         </TableBody>
                       </Table>
                     </div>
-                  </DialogContent>
-             </Dialog>
+                  </SheetContent>
+             </Sheet>
           <div className="flex  justify-between items-center w-full max-w-6xl mx-auto py-8">
              <div className='flex flex-col w-full'>
             <div className='flex  gap-x-12'>
@@ -996,16 +1021,16 @@ const [submitLoading, setSubmitLoading] = useState(false)
               <div className='flex-col flex w-60 gap-y-2 items-center'>
                   <h4 className='font-bold '>No stages added yet</h4>
                   <p className='text-sm text-center text-gray-500 '>Get Started by creating the first stage for this asset</p>
-                    <Dialog className="w-[1200px]">
-                  <DialogTrigger asChild>
+                    <Sheet className="w-[1200px]">
+                  <SheetTrigger asChild>
                      <button className='bg-[#4D91FF] cursor-pointer text-light text-xs rounded-md text-white px-6 py-3'>Create stage</button>
-                  </DialogTrigger>
-                  <DialogContent className="w-full  bg-white">
-                    <DialogHeader>
-                      <DialogTitle>
+                  </SheetTrigger>
+                  <SheetContent className="w-full  bg-white">
+                    <SheetHeader>
+                      <SheetTitle>
                         Add Stage    
-                      </DialogTitle>
-                    </DialogHeader>
+                      </SheetTitle>
+                    </SheetHeader>
                   <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
                      <form onSubmit={addStage}>
                           <div className="space-y-4">
@@ -1037,8 +1062,8 @@ const [submitLoading, setSubmitLoading] = useState(false)
                           </div>
                      </form>
                       </div>
-                  </DialogContent>
-                  </Dialog>
+                  </SheetContent>
+                  </Sheet>
 
               </div>
             </div>
@@ -1075,17 +1100,15 @@ const [submitLoading, setSubmitLoading] = useState(false)
       <div className='flex flex-col space-y-4 lg:w-full'>
         <span className='flex justify-between'>
         <h3 className='text-xl'>Tasks</h3>
-           <Dialog className="w-[1200px]">
-                  <DialogTrigger asChild>
+                 <Sheet className="min-w-[1200px]">
+                  <SheetTrigger asChild>
                     <PlusIcon/>
-                  </DialogTrigger>
-                  <DialogContent className="w-full  bg-white">
-                    <DialogHeader>
-                      <DialogTitle>
+                   </SheetTrigger>
+                        <SheetContent className=''>
+                          <SheetHeader>
                         Add Task   
-                      </DialogTitle>
-                    </DialogHeader>
-                  <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
+                      </SheetHeader>
+                  <div className="px-4 mx-auto bg-white rounded-xl">
                      <form onSubmit={addTask} >
                           <div className="space-y-4">
                             <div className="flex-col gap-x-5">
@@ -1130,32 +1153,36 @@ const [submitLoading, setSubmitLoading] = useState(false)
                               </div>
                              
                             </div>
-                            <button type='submit' className='w-44 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Add</button>
+                            <button type='submit' className='w-44 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Save</button>
                           </div>
                      </form>
                       </div>
-                  </DialogContent>
-                  </Dialog>
+                  </SheetContent>
+                  </Sheet>
           
         </span>
         
         <div className='flex gap-x-2 gap-2 flex-wrap'>
           {getStageData.map((task) => (
-          <Dialog className="w-full cursor-pointer"  key={task.id}>
-            <DialogTrigger>
-               <TaskCard title={task.taskName} onClick={() =>taskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
-            </DialogTrigger>
-            <DialogContent className="w-full overflow-auto bg-white">
-              <DialogHeader className=''>
-                <DialogTitle>Listing deliverables checklist</DialogTitle>
-                
-              </DialogHeader>
-              <div className="flex flex-col h-16 space-y-3 space-x-2 mx-2 mt-5 rounded-xl p-2 min-h-96">
-              <table className="table-auto w-full shrink text-sm text-left">
-                <tbody className='space-y-3'>
-                  <tr className="h-2 text-xs">
-                    <td className="text-gray-400 text-xs font-bold pr-3 py-1">Created date</td>
-                    <td className="text-gray-900 font-medium py-1">{new Date(task.createdAt).toLocaleDateString("en-GB", {
+            <Sheet key={task.id}>
+      <SheetTrigger asChild>
+              <button>
+              <TaskCard title={task.taskName}  onClick={() =>taskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
+              </button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Listing deliverables checklist</SheetTitle>
+          <SheetDescription>
+            Make changes to your profile here. Click save when you&apos;re done.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="flex flex-col h-16 space-y-3 space-x-2 mx-2 mt-5 rounded-xl p-2 min-h-96">
+             <table className="table-auto w-full shrink text-sm text-left">
+               <tbody className='space-y-3'>
+                 <tr className="h-2 text-xs">
+                   <td className="text-gray-400 text-xs font-bold pr-3 py-1">Created date</td>
+                   <td className="text-gray-900 font-medium py-1">{new Date(task.createdAt).toLocaleDateString("en-GB", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
@@ -1359,10 +1386,12 @@ const [submitLoading, setSubmitLoading] = useState(false)
                   </TabsContent>
                 </Tabs>
 
-              </div>
-            </DialogContent>
-        </Dialog>
+        //       </div>
+      </SheetContent>
+    </Sheet>
+ 
          ) )}
+
         
         
             </div>
