@@ -14,9 +14,23 @@ import Calendar from "../attached_pages/Calendar";
 import Settings from "../attached_pages/Settings";
 import AdminDashboard from "../attached_pages/AdminDashboard";
 import Client from "../attached_pages/Client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 // import { useRouter } from "next/router";
 import Cookies from 'js-cookie';
 import Breadcrumbs from "@/components/Breadcrumbs";
+import NotificationItem from "@/components/NotificationItem";
 
 const options = [
     { name: "Dashboard", icon: "dashboard_admin.svg" },
@@ -61,6 +75,11 @@ useEffect(() => {
       }
     };
 
+    const profile =() =>{
+      router.push( `/dashboard?tab=${encodeURIComponent('Settings')}` )
+      setActive("Settings")
+    }
+
     return(
         <main className="flex h-full relative">
             <Image src='/hawkes_stripe.svg' className="absolute top-0 right-0 -z-10" width={500} height={60} />
@@ -85,7 +104,7 @@ useEffect(() => {
                   
             </div>
            <div className="flex flex-col flex-1 bg-gray-100">
-             <div className="w-full h-20 z-50 bg-white text-gray-500 fixed left-20 flex items-center justify-between px-12  pb-1">
+             <div className="w-full h-20 z-50 bg-white text-gray-500 fixed left-20 flex items-center justify-between pe-24  ps-12 pb-1">
              {/* <span className="font-semibold text-xs">{active}</span> */}
              <Breadcrumbs/>
                          <div className="flex justify-between bg-gray-200 px-3 rounded-lg">
@@ -101,13 +120,32 @@ useEffect(() => {
                              <button className="text-gray-500">
                              <Image src="/grid_dot.svg" alt="" width={20} height={20} />
                              </button>
+                             <Popover>
                              <button className="text-gray-500">
+                              <PopoverTrigger>
                              <Image src="/notification.svg" alt="" width={20} height={20} />
+                             </PopoverTrigger>
                              </button>
-                             <Link href="#" className="flex items-center space-x-4">
-                                 <Image src="/user_avatar.svg" onClick={logout} alt="" width={20} height={20} />
-                                 <Image src="/caret_down.svg" alt="" width={20} height={20} />
-                             </Link>
+
+                             <PopoverContent className='flex flex-col jutify-center'>
+                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on "note='Update Requirement list' />
+                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' />
+                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' />
+                             </PopoverContent>
+                             </Popover>
+                             <div href="#" className="flex items-center space-x-4">
+                              {/* <Image src="/caret_down.svg" alt="" width={20} height={20} />  */}
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger> <Image src="/user_avatar.svg"  alt="" width={30} height={30} /></DropdownMenuTrigger>
+                                  <DropdownMenuContent>
+                                    <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={profile}>My Profile</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={logout}>logout</DropdownMenuItem>
+                                  
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                             </div>
                          </div>
              </div>
              <div className="min-h-screen">

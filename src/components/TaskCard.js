@@ -22,13 +22,16 @@ export default function TaskCard(props) {
   const badgeClasses = statusColorMap[status] || "bg-gray-200 text-gray-700"
 
   return (
-    <Card className="rounded-xl min-w-60 shadow-sm cursor-pointer">
+    <Card className="rounded-xl flex flex-col justify-start min-w-60 shadow-sm cursor-pointer">
       <CardContent className="p-4 space-y-3">
-        <Badge className={`px-2 py-0.5 text-xs rounded ${badgeClasses}`}>
+        <div className="w-full flex justify-start">
+        <Badge className={`px-2 py-0.5  text-xs rounded ${badgeClasses}`}>
           {status}
         </Badge>
 
-        <div>
+        </div>
+
+        <div className="text-left">
           <h3 className="text-sm font-semibold">{title}</h3>
           <p className="text-sm text-gray-500">{description}</p>
         </div>

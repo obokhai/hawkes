@@ -162,7 +162,7 @@ const handleSubmit = async (e) => {
 
   return (
     <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
-                  <div className="flex justify-between mb-14 text-black items-center">
+                  <div className="flex justify-between mb-4 text-black items-center">
                         {/* <h3 className="text-2xl ">JV Partners : {totalJV} </h3> */}
                         <div className="flex w-full justify-end space-x-6 float-right">
                             <div className="flex items-center cursor-pointer space-x-2 bg-gray-100  border-gray-300 rounded-xs border-[1px] lg:w-36 justify-center  py-2 px-4">
@@ -267,9 +267,9 @@ const handleSubmit = async (e) => {
                         </div>
                         </div>
                     <section id="property_listings" className="space-y-3.5">
-                    <Table className="space-y-6">
+                    <Table className="space-y-6 border-b border-b-2">
                       <TableHeader className=" rounded-tr-2xl rounded-tl-2xl py-12">
-                        <TableRow className="font-bold text-lg border-2 border-gray-200">
+                        <TableRow className="font-bold text-sm border-2 border-gray-200">
                           <TableHead className="w-[100px]"></TableHead>
                           <TableHead>Name</TableHead>
                           <TableHead>Email</TableHead>
@@ -283,9 +283,9 @@ const handleSubmit = async (e) => {
        
                        { usersByRole.map((user,index) => (
                           <TableRow key={user.id} className="text-xs truncate border-gray-200 px-8">
-                            <TableCell>{index + 1}</TableCell>
+                            <TableCell className='ps-8'>{index + 1}</TableCell>
                             <TableCell className="font-medium gap-x-5 flex items-center">
-                              <Image src="/avatar.svg" alt={`${user.firstName} ${user.lastName}`} width={50} height={50} className="rounded-full" />
+                              <Image src="/avatar.svg" alt={`${user.firstName} ${user.lastName}`} width={35} height={35} className="rounded-full" />
                               {user.firstName} {user.lastName}
                             </TableCell>
                             <TableCell className="text-[#35A0E4]">Jvs@example.com</TableCell>
