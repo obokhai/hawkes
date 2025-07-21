@@ -4,12 +4,12 @@ import axios from 'axios'
 import api from '@/app/api'
 const Profile = () => {
   const [roles, setRoles] = useState({})
-  const getRoles = async(e) => {
-    e.preventDefault()
+  const getRoles = async() => {
+    // e.preventDefault()
     try {
       const token = localStorage.getItem("token")
-      const response = await axios.get(
-          "https://propertyapi-monolithic.onrender.com/api/v1/roles",{
+      const response = await api.get("/roles",
+        {
             headers:
             {
               "Authorization": `Bearer ${token}`
@@ -23,7 +23,7 @@ const Profile = () => {
     }
   }
   useEffect(() => {
-    getRoles
+    getRoles()
   }, [])
   
   return (

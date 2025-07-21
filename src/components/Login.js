@@ -7,6 +7,7 @@ import Link from 'next/link';
 import axios from "axios";
 import Image from 'next/image';
 import Cookies from 'js-cookie'
+import api from '@/app/api';
 import { ClipLoader } from 'react-spinners';
 const Login = () => {
    const [email, setEmail] = useState("");
@@ -28,8 +29,8 @@ const Login = () => {
   event.preventDefault();
   setLoading(true);
   try {
-    const response = await axios.post(
-      "https://propertyapi-monolithic.onrender.com/api/v1/auth/admin/login",
+    const response = await api.post(
+      "/auth/admin/login",
       { email, password },
       { headers: { "Content-Type": "application/json" } }
     );

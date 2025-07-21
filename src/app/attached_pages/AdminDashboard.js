@@ -111,18 +111,18 @@ useEffect(() => {
                   <Image src='/add_dashboard.svg' width={28} height={24} />
                 </div>
                 <div className='flex justify-between items-center gap-x-4 w-full'>
-                  <div className='flex flex-1 flex-col rounded-xl shadow-lg min-h-36  w-[150px] justify-between w-fulll shrink p-4 min-w-60'>
+                  <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 w-60'>
                       <span className='flex justify-between items-center w-full'>
                         <p className='text-xs text-gray-600'> Total Properties</p>
-                        <span className='bg-green-200 rounded-full h-12 w-12 flex justify-center items-center'><Monitor/></span>
+                        <span className='bg-green-200 rounded-full h-10 w-10 font-light flex justify-center items-center'><Monitor size={16}/></span>
                       </span>
                       <h4 className='text-6xl'>{totalProperties}</h4>
                       {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
                   </div>
-                  <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 min-w-60'>
+                  <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 w-60'>
                       <span className='flex justify-between items-center w-full'>
                         <p className='text-xs text-gray-600'> Total Clients</p>
-                        <span className='bg-green-200 rounded-full h-12 w-12 font-light flex justify-center items-center'><UserRoundCheck/></span>
+                        <span className='bg-green-200 rounded-full h-10 w-10 font-light flex justify-center items-center'><UserRoundCheck size={16}/></span>
                       </span>
                       <h4 className='text-6xl'>{totalClients}</h4>
                       {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
@@ -130,7 +130,7 @@ useEffect(() => {
                   <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 w-60'>
                       <span className='flex justify-between items-center w-full'>
                         <p className='text-xs text-gray-600'> Total JV Partners</p>
-                        <span className='bg-green-200 rounded-full h-12 w-12 font-light flex justify-center items-center'><UsersRound/></span>
+                        <span className='bg-green-200 rounded-full h-10 w-10 font-light flex justify-center items-center'><UsersRound size={16}/></span>
                       </span>
                       <h4 className='text-6xl'>{totalJV}</h4>
                       {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}

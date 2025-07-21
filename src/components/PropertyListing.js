@@ -304,7 +304,7 @@ async function fetchPosts() {
               key={property.id}
             >
               <div className="flex items-center gap-x-6 space-x-4 cursor-pointer" onClick={() => router.push(`?property=${property.id}&name=${encodeURIComponent(property.propertyName)}`)}>
-                <div className="bg-white border-[1px] border-gray-500 py-3 h-12 px-6 w-44 text-[#6434F8] text-center text-xl rounded-full flex items-center justify-center">
+                <div className="bg-white border-[1px] border-gray-500 py-3 h-12 px-6 w-32 text-[#6434F8] text-center text-xl rounded-full flex items-center justify-center">
                   <h4 className="font-bold truncate text-ellipsis">{property.id}</h4>
                 </div>
                 

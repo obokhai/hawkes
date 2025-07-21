@@ -127,7 +127,7 @@ const Client = () => {
 
             <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
                   <div className="flex justify-between mb-14 text-black items-center">
-                        <h3 className="text-2xl ">All Clients: <span>{totalClients} </span></h3>
+                        <h3 className="text-2xl ">Owners <span>{totalClients} </span></h3>
                         <div className="flex space-x-6">
                             <div className="flex items-center space-x-2 ">
                                <Image src="/export_client_data.svg" width={120} height={40} />
@@ -137,7 +137,7 @@ const Client = () => {
                                 </DialogTrigger>
                                 <DialogContent className="w-full  bg-white">
                                 <div className="max-w-7xl mx-auto mt-10 bg-white rounded-xl">
-                                <h2 className="text-2xl font-bold mb-6">Add Client</h2>
+                                <h2 className="text-2xl font-bold mb-6">Add Owner</h2>
 
                                     {/* Dropdown */}
                                     <form onSubmit={handleSubmit} className="space-y-4">
