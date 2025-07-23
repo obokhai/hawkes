@@ -69,8 +69,10 @@ const [totalProperties, setTotalProperties] = useState('')
 const [totalClients, setTotalClients] = useState('')
 const [totalJV, setTotalJV ] = useState('')
 const [deadlines, setDeadlines] = useState([])
+const userName = localStorage.getItem("userName")
 useEffect(() => {
    const token = localStorage.getItem("token")
+
    if (!token) {
     console.log("there is no token available")
    }
@@ -105,7 +107,7 @@ useEffect(() => {
         <div className='lg:flex-row  flex flex-col gap-5'>
             <aside className=' lg:w-3/5 max-lg:block p-8 flex flex-col shadow-xl justify-around gap-y-14 rounded-2xl bg-white'>
                 <div className='flex justify-between items-center'>
-                  <span className='flex-col flex text-3xl font-bold'>Hello Alexander
+                  <span className='flex-col flex text-3xl font-bold capitalize'>Hello {userName || 'Admin'}!
                     <p className='text-lg mt-3 font-normal'>Here's Your Overview</p>
                   </span>
                   <Image src='/add_dashboard.svg' width={28} height={24} />
