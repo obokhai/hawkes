@@ -22,13 +22,20 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Copy } from "lucide-react"
 import Link from "next/link"
 import axios from "axios"
 import api from '@/app/api'
+import nigeriaStates from "../data/States"
 const Client = () => {
+  
     const [userType, setUserType] = useState('');
     const [usersByRole, setUsersByRole] = useState([]);
     const [totalClients, setTotalClients] = useState(0)
@@ -55,6 +62,9 @@ const Client = () => {
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+  };
+    const handleCompanyFiles = (e) => {
+    setCompanyFiles(Array.from(e.target.files));
   };
 
   const fetchUsersByRole = async () => {
@@ -135,19 +145,19 @@ const Client = () => {
                                 <DialogTrigger asChild>
                                     <Image src="/add_new_client.svg" width={120} height={40} />
                                 </DialogTrigger>
-                                <DialogContent className="w-full  bg-white">
+                                <DialogContent className="w-full  overflow-y-auto h-[400px]  bg-white">
                                 <div className="max-w-7xl mx-auto mt-10 bg-white rounded-xl">
                                 <h2 className="text-2xl font-bold mb-6">Add Owner</h2>
 
                                     {/* Dropdown */}
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                       <div className="mb-6 min-w-[400px] flex flex-col">
-                                        <label htmlFor="userType" className="block text-xs font-medium mb-2">User Type</label>
+                                        <label htmlFor="userType" className="block text-xs font-bold mb-2">User Type</label>
                                         <select
                                           id="userType"
                                           value={userType}
                                           onChange={(e) => setUserType(e.target.value)}
-                                          className="w-full border border-gray-300 rounded-md p-3"
+                                          className="w-full border border-gray-300 rounded-md p-1 text-xs"
                                         >
                                           <option value="">Select</option>
                                           <option value="individual">Individual</option>
@@ -155,7 +165,158 @@ const Client = () => {
                                         </select>
                                       </div>
 
-                                      {userType === 'individual' && (
+                                       {userType === 'individual' && (
+                                                                <div className="space-y-4">
+                                                                  <div className="flex gap-x-5">
+                                                                    <label className="text-[10px] w-full">First Name
+                                                                      <input name="firstName"
+                                                                        value={formData.firstName}
+                                                                        onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                        placeholder="First Name" className="w-full mt-1 border p-3 rounded" />
+                                                                    </label>
+                                                                    <label className="text-[10px] w-full">Last Name
+                                                                      <input type="text"
+                                                                        name="lastName"
+                                                                        value={formData.lastName}
+                                                                        onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                        placeholder="Last Name" className="w-full mt-1 border p-3 rounded" />
+                                                                    </label>
+                                                                  </div>
+                                                                  <label className="text-[10px]">Address
+                                                                    <input name='address' value={formData.address}
+                                                                      onChange={(e) => setFormData ({ ...formData, [e.target.name]: e.target.value })}
+                                                                      placeholder="Address" className="w-full border p-2 rounded" />
+                                                                  </label>
+                                                                  <label className="text-[10px] w-full">State
+                                                                    <select
+                                                                      name="state"
+                                                                      value={formData.state}
+                                                                      onChange={e => setFormData ({ ...formData , state: e.target.value })}
+                                                                      className="w-full border p-2 rounded"
+                                                                    >
+                                                                      <option value="">Select State</option>
+                                                                      {nigeriaStates.map(state => (
+                                                                        <option key={state} value={state}>{state}</option>
+                                                                      ))}
+                                                                    </select>
+                                                                  </label>
+                                                                  <div className="flex gap-x-5 mt-3">
+                                                                    <label className="text-[10px] w-full">Phone Number
+                                                                      <input name="phoneNumber" value={formData .phoneNumber}
+                                                                        onChange={(e) => setFormData({ ...formData , [e.target.name]: e.target.value })}
+                                                                        placeholder="PhoneNumber" className="w-full border p-3 rounded" />
+                                                                    </label>
+                                                                    <label className="text-[10px] w-full">Email
+                                                                      <input name="email" value={formData .email}
+                                                                        onChange={(e) => setFormData({ ...formData , [e.target.name]: e.target.value })}
+                                                                        placeholder="Email" className="w-full border p-3 rounded" />
+                                                                    </label>
+                                                                  </div>
+                                                                </div>
+                                                              )}
+                                      
+                                                              {userType === 'company' && (
+                                                                <div className="space-y-2 flex flex-col gap-y-1 bg-white rounded shadow">
+                                                                  {/* <h3 className="text-sm font-semibold">Company Details</h3> */}
+                                                                  <label className="text-[10px] mb-3 w-full">Company Name
+                                                                    <input
+                                                                      name="companyName"
+                                                                      value={formData.companyName}
+                                                                      onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                      placeholder="Enter Company Name"
+                                                                      className="w-full h-7 border p-2 rounded"
+                                                                    />
+                                                                  </label>
+                                                                  <label className="text-[10px] w-full">Company Address
+                                                                    <input
+                                                                      name="address"
+                                                                      value={formData.address}
+                                                                      onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                      placeholder="Enter Address"
+                                                                      className="w-full border h-7 p-2 rounded"
+                                                                    />
+                                                                  </label>
+                                                                  <label className="text-[10px] w-full">State
+                                                                    <select
+                                                                      name="state"
+                                                                      value={formData.state}
+                                                                      onChange={e => setFormData({ ...formData, state: e.target.value })}
+                                                                      className="w-full border p-2 rounded"
+                                                                    >
+                                                                      <option value="" className='text-gray-400'>Select State</option>
+                                                                      {nigeriaStates.map(state => (
+                                                                        <option key={state} value={state}>{state}</option>
+                                                                      ))}
+                                                                    </select>
+                                                                  </label>
+                                                                  <div>
+                                                                    <label className="block mb-1 text-[10px]">Upload Document</label>
+                                                                    {/* <input
+                                                                    type="file"
+                                                                    onChange={(e) => setFile(e.target.files[0])}
+                                                                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                                                                    className="w-full bg-cyan-50 p-2 py-6 rounded"
+                                                                  />
+                                                                </div>
+                                                                  <div> */}
+                                      
+                                                                    <input type="file" onChange={handleCompanyFiles} accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' />
+                                                                  </div>
+                                                                  <span className="text-gray-400 text-[10px] flex items-center gap-x-2">Primary Contact <Tooltip>
+                                                                    <TooltipTrigger>
+                                                                      <Image src='/caution.png' width={12} height={12} />
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent className='w-36'>
+                                                                      <p className='text-[7px]'>the main representative of the company responsible for communication and key property management updates.</p>
+                                                                    </TooltipContent>
+                                                                  </Tooltip>
+                                      
+                                                                  </span>
+                                                                  <div className="flex gap-x-5">
+                                                                    <label className="text-[10px] w-full">First Name
+                                                                      <input
+                                                                        name="firstName"
+                                                                        value={formData.firstName}
+                                                                        onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                        placeholder="Enter firstname"
+                                                                        className="w-full mt-2 border placeholder:text-[10px] p-3 rounded"
+                                                                      />
+                                                                    </label>
+                                                                    <label className="text-[10px] w-full">Last Name
+                                                                      <input
+                                                                        type="text"
+                                                                        name="lastName"
+                                                                        value={formData.lastName}
+                                                                        onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                        placeholder="Enter lastname"
+                                                                        className="w-full mt-2 border placeholder:text-[10px] p-3 rounded"
+                                                                      />
+                                                                    </label>
+                                                                  </div>
+                                                                  <div className="flex gap-x-5">
+                                                                    <label className="text-[10px] w-full">Phone Number
+                                                                      <input
+                                                                        name="phoneNumber"
+                                                                        value={formData.phoneNumber}
+                                                                        onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                        placeholder="Enter phone number"
+                                                                        className="w-full mt-2 border p-3 placeholder:text-[10px] rounded"
+                                                                      />
+                                                                    </label>
+                                                                    <label className="text-[10px] w-full">Official Email
+                                                                      <input
+                                                                        name="email"
+                                                                        value={formData.email}
+                                                                        onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                                                        placeholder="Enter Email"
+                                                                        className="w-full mt-2 border p-3 placeholder:text-[10px] rounded"
+                                                                      />
+                                                                    </label>
+                                                                  </div>
+                                      
+                                                                </div>
+                                                              )}
+                                      {/* {userType === 'individual' && (
                                         <div className="space-y-4">
                                           <div className="flex gap-x-5">
                                             <label className="text-xs w-full">First Name
@@ -181,18 +342,18 @@ const Client = () => {
 
                                       {userType === 'company' && (
                                         <div className="space-y-4">
-                                          <h3 className="text-lg font-semibold">Company Details</h3>
-                                          <input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" className="w-full border p-2 rounded" />
-                                          <input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" className="w-full border p-2 rounded" />
-                                          <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full border p-2 rounded" />
+                                          <h3 className="text-xs font-semibold">Company Details</h3>
+                                          <input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" className="w-full border text-xs placeholder:text-xs p-2 rounded" />
+                                          <input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" className="w-full border p-2 text-xs placeholder:text-xs rounded" />
+                                          <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full border p-2 text-xs placeholder:text-xs rounded" />
                                           <div>
                                             <label className="block mb-1 text-xs">Upload Document</label>
                                             <input type="file" onChange={handleFileChange} className="w-full border p-2 rounded" />
                                           </div>
                                         </div>
-                                      )}
+                                      )} */}
 
-                                      <button type="submit" className="mt-6 bg-[#6434F8] text-white py-2 px-4 rounded-md">Submit</button>
+                                      <button type="submit" className="mt-6 bg-[#6434F8] text-white py-2 px-4 rounded-md float-right">Submit</button>
                                     </form>
                                     </div>
                                 </DialogContent>
@@ -231,7 +392,7 @@ const Client = () => {
                                 <DialogTrigger asChild>
                                 <Image src="/three_dots.svg" alt="" className="mx-auto" width={12} height={12} /> 
                                 </DialogTrigger>
-                                <DialogContent className="w-full overflow-auto h-[500px ] bg-gray-200">
+                                <DialogContent className="w-full overflow-auto h-[500px] bg-gray-200">
                                   <DialogHeader className='space-y-6'>
                                     <DialogTitle>Client Profile view</DialogTitle>
                                     <div className="border-b border-[1px] border-gray-300" />

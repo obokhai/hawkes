@@ -1360,7 +1360,7 @@ const completeStage = async (stageId) => {
                             ))
                   }
                 </SheetTrigger>
-                <SheetContent className='w-full overflow-y-auto '>
+                <SheetContent className='w-full overflow-y-scroll'> 
                   <SheetHeader>
                     <SheetTitle>Listing deliverables checklist</SheetTitle>
                     <SheetDescription>
@@ -1508,8 +1508,8 @@ const completeStage = async (stageId) => {
                     </div>
                     <Tabs defaultValue="account" className="w-[300px] mt-4">
                       <TabsList className='bg-white shadow-none rounded-none mb-3'>
-                        <TabsTrigger value="comment" className='shadow-md'>Comment</TabsTrigger>
-                        <TabsTrigger value="activities" className='shadow-md'>Activities</TabsTrigger>
+                        <TabsTrigger value="comment" className='shadow-md cursor-pointer'>Comment</TabsTrigger>
+                        <TabsTrigger value="activities" className='shadow-md cursor-pointer'>Activities</TabsTrigger>
                       </TabsList>
                       <TabsContent value="comment">
                         <div className='flex-col flex w-full gap-y-2 mb-6'>
