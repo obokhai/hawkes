@@ -73,7 +73,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 const chartData = [
-  { browser: "safari", visitors: 80, fill: "hsl(var(--chart-2))" },
+  { browser: "safari", visitors: 20, fill: "hsl(var(--chart-4))" },
 ];
 
 const chartConfig = {
@@ -573,7 +573,7 @@ const completeStage = async (stageId) => {
         "/user/assign-asset", {
         userId: userId,
         assetId: assetId,
-        isOwner
+        isOwnerf
       },
       );
       toast.success(response.data.message);
@@ -689,8 +689,8 @@ const completeStage = async (stageId) => {
         </div>
 
         <div className='grid grid-cols-2 w-2/4 text-sm px-4 space-y-3 relative'>
-          <span className='font-bold'>Asset Id:</span>
-          <span className='grid grid-cols-2space-x-2'>
+          <span className='font-bold text-xs'>Asset Id:</span>
+          <span className='grid grid-cols-2 space-x-2 text-xs'>
             <span className='w-28 truncate'>{property.id}</span>
             <span className=''>
               <Dialog open={inviteUserModal} onOpenChange={setInviteUserModal} className="w-[200px]" id='ínviteUser'>
@@ -947,17 +947,17 @@ const completeStage = async (stageId) => {
                 </DialogContent>
               </Dialog></span>
           </span>
-          <span className='font-bold '>Authorized Use:</span><span>{property.authorizedUse}</span>
-          <span className='font-bold'>Size:</span><span>{property.size}</span>
-          <span className='font-bold'>Client:</span><span>{`${property?.owner?.firstName || ''} ${property?.owner?.lastName || ''}`}</span>
-          <span className='font-bold'>JV Partner:</span><span>{`${property?.jvUsers?.[0]?.firstName || ''} ${property?.jvUsers?.[0]?.lastName || ''}`}</span>
-          <span className='font-bold'>Assigned Legal Rep:</span><span>{property.legal || '-'}</span>
-          <span className='font-bold'>Date Added:</span><span> {new Date(property.createdAt).toLocaleDateString(undefined, {
+          <span className='font-bold text-xs'>Authorized Use:</span><span className='text-xs'>{property.authorizedUse}</span>
+          <span className='font-bold text-xs'>Size:</span><span className='text-xs'>{property.size}</span>
+          <span className='font-bold text-xs'>Client:</span><span className='text-xs'>{`${property?.owner?.firstName || ''} ${property?.owner?.lastName || ''}`}</span>
+          <span className='font-bold text-xs'>JV Partner:</span><span className='text-xs'>{`${property?.jvUsers?.[0]?.firstName || ''} ${property?.jvUsers?.[0]?.lastName || ''}`}</span>
+          <span className='font-bold text-xs'>Assigned Legal Rep:</span><span className='text-xs'>{property.legal || '-'}</span>
+          <span className='font-bold text-xs'>Date Added:</span><span className='text-xs'> {new Date(property.createdAt).toLocaleDateString(undefined, {
             year: 'numeric',
             month: 'short',
             day: 'numeric'
           })}</span>
-          <span className='font-bold'>Status:</span><span>{property.status}</span>
+          <span className='font-bold text-xs'>Status:</span><span className='text-xs'>{property.status}</span>
 
 
         </div>
@@ -983,9 +983,9 @@ const completeStage = async (stageId) => {
                 >
                   <RadialBarChart
                     data={chartData}
-                    endAngle={100}
+                    endAngle={chartData[0].visitors * 3.6}
                     innerRadius={80}
-                    outerRadius={140}
+                    outerRadius={130}
                   >
                     <PolarGrid
                       gridType="circle"
@@ -1360,7 +1360,7 @@ const completeStage = async (stageId) => {
                             ))
                   }
                 </SheetTrigger>
-                <SheetContent className='w-full '>
+                <SheetContent className='w-full overflow-y-auto '>
                   <SheetHeader>
                     <SheetTitle>Listing deliverables checklist</SheetTitle>
                     <SheetDescription>
@@ -1483,7 +1483,7 @@ const completeStage = async (stageId) => {
                         </tr>
                       </tbody>
                     </table>
-
+                  <div className=' min-h-40'>
                     <div className='bg-gray-300 p-3 pb-6 rounded-xl'>
                       <p className='text-xs text-black'>Review and confirm all required deliverables for the property listing, ensuringcompleteness and
                         accuracy before submission.</p>
@@ -1499,17 +1499,17 @@ const completeStage = async (stageId) => {
                           <p>Download All</p>
                         </div>
                       </div>
-                      <div className='flex gap-x-2'>
-                        <Image src='/brief_pdf.svg' alt='attachment' width={140} height={120} />
-                        <Image src='/brief_docx.svg' alt='attachment' width={140} height={120} />
-                        <Image src='/brief_pdf.svg' alt='attachment' width={140} height={120} />
-                        <PlusIcon className='h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 cursor-pointer' onClick={() => setAddFilesModal(true)} />
+                      <div className='flex gap-x-2 flex-wrap w-full'>
+                        <Image src='/brief_pdf.svg' alt='attachment' width={100} height={120} />
+                        <Image src='/brief_docx.svg' alt='attachment' width={100} height={120} />
+                        <Image src='/brief_pdf.svg' alt='attachment' width={100} height={120} />
+                        <PlusIcon className='h-5 w-5 bg-gray-200 rounded-full flex items-center mt-4 justify-center text-gray-500 cursor-pointer' onClick={() => setAddFilesModal(true)} />
                       </div>
                     </div>
-                    <Tabs defaultValue="account" className="w-[400px]">
+                    <Tabs defaultValue="account" className="w-[300px] mt-4">
                       <TabsList className='bg-white shadow-none rounded-none mb-3'>
-                        <TabsTrigger value="comment">Comment</TabsTrigger>
-                        <TabsTrigger value="activities">Activities</TabsTrigger>
+                        <TabsTrigger value="comment" className='shadow-md'>Comment</TabsTrigger>
+                        <TabsTrigger value="activities" className='shadow-md'>Activities</TabsTrigger>
                       </TabsList>
                       <TabsContent value="comment">
                         <div className='flex-col flex w-full gap-y-2 mb-6'>
@@ -1521,8 +1521,8 @@ const completeStage = async (stageId) => {
                             </span>
                             <button className='bg-[#312787] text-white px-6 py-2 rounded-lg '>Send</button>
                           </div>
-                          <div className='space-y-6 mt-3'>
-                            <div className='flex items-center gap-x-4'>
+                          <div className='space-y-6 mt-3 flex flex-col flex-wrap'>
+                            <div className='flex items-center gap-x-4 '>
                               <Image src='/avatar.svg' className='h-8 w-8 rounded-full' width={40} height={40} />
                               <span className=''>
                                 <h5 className='text-xs font-semibold'>Albert Bello <span className='text-blue-400'>@Alex Hisso</span> kindly review documnets and revert</h5>
@@ -1575,6 +1575,7 @@ const completeStage = async (stageId) => {
                         />
                       </TabsContent>
                     </Tabs>
+                    </div>
                   </div>
                 </SheetContent>
               </Sheet>

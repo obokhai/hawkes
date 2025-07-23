@@ -128,32 +128,76 @@ const handleFileChange = (e) => {
    useEffect(() => {
      setLoading(true)
     setMounted(true);
+
+// async function fetchPosts() {  
+//       try {
+//         const token = localStorage.getItem("token")
+//         const res = await api.get(`/assets?page=${page}&limit=${PAGE_SIZE}`);
+       
+//         const data = await res.data
+//         // setProperties(data.data)
+       
+//         console.log(total)
+//         console.log(data?.data);
+//         if (data?.data) {
+//           setProperties(data.data.activeAsset);
+//            setTotal(data.data.total)
+//            setActiveAssetCount(data.data.activeAssetsCount)
+//            setInActiveAssetCount(data.data.inactiveAssetsCount)
+//            setLoading(false)
+//         } else {
+//           console.error("No activeAsset found in the response");
+//           setProperties([]); // Or handle the empty case accordingly
+//         }
+//         // setProperties(data.data.activeAsset);
+//       } catch (err) {
+//         console.error(err);
+//       }
+//     } 
 async function fetchPosts() {  
-      try {
-        const token = localStorage.getItem("token")
-        const res = await api.get(`/assets?page=${page}&limit=${PAGE_SIZE}`);
-       
-        const data = await res.data
-        // setProperties(data.data)
-       
-        console.log(total)
-        console.log(data?.data);
-        if (data?.data) {
-          setProperties(data.data.activeAsset);
-           setTotal(data.data.total)
-           setActiveAssetCount(data.data.activeAssetsCount)
-           setInActiveAssetCount(data.data.inactiveAssetsCount)
-           setLoading(false)
-        } else {
-          console.error("No activeAsset found in the response");
-          setProperties([]); // Or handle the empty case accordingly
-        }
-        // setProperties(data.data.activeAsset);
-      } catch (err) {
-        console.error(err);
-      }
-    } 
-    fetchPosts();
+  try {
+    const token = localStorage.getItem("token")
+    const res = await api.get(`/assets?page=${page}&limit=${PAGE_SIZE}`);
+    const data = await res.data
+
+    if (data?.data) {
+      const assets = data.data.activeAsset;
+      setProperties(assets);
+      setTotal(data.data.total)
+      setActiveAssetCount(data.data.activeAssetsCount)
+      setInActiveAssetCount(data.data.inactiveAssetsCount)
+      setLoading(false)
+
+      // Fetch stages for each asset
+      const stageCounts = await Promise.all(
+        assets.map(async (asset) => {
+          const stageRes = await api.get(`/stage/${asset.id}`);
+          const stages = stageRes.data?.data?.stages || [];
+          return { assetId: asset.id, stageCount: stages.length };
+        })
+      );
+
+      // Calculate total stages across all assets
+      const totalStages = stageCounts.reduce((sum, item) => sum + item.stageCount, 0);
+
+      // Add percentage to each asset
+      const assetsWithStagePercent = assets.map(asset => {
+        const found = stageCounts.find(item => item.assetId === asset.id);
+        const percent = totalStages > 0 ? Math.round((found?.stageCount || 0) / totalStages * 100) : 0;
+        return { ...asset, stageCount: found?.stageCount || 0, stagePercent: percent };
+      });
+
+      setProperties(assetsWithStagePercent);
+
+    } else {
+      console.error("No activeAsset found in the response");
+      setProperties([]);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}    
+fetchPosts();
     
   }, [page]); 
   const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -311,7 +355,7 @@ async function fetchPosts() {
                 <div className="w-full space-y-2 cursor-pointer">
                   <div className="flex flex-col justify-center text-gray-800">
                     <h4 className="flex gap-x-5 text-lg font-bold">
-                      {property.propertyName} <span>{property.progress || 30}%</span>
+                      {property.propertyName} <span>{property.stagePercent}%</span>
                     </h4>
                   </div>
                   <div className="flex w-full gap-x-2">
