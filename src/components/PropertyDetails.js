@@ -575,7 +575,7 @@ const completeStage = async (stageId) => {
         "/user/assign-asset", {
         userId: userId,
         assetId: assetId,
-        isOwnerf
+        isOwner
       },
       );
       toast.success(response.data.message);
