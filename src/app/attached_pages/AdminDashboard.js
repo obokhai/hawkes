@@ -14,6 +14,14 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -110,7 +118,19 @@ useEffect(() => {
                   <span className='flex-col flex text-3xl font-bold capitalize'>Hello {userName || 'Admin'}!
                     <p className='text-lg mt-3 font-normal'>Here's Your Overview</p>
                   </span>
-                  <Image src='/add_dashboard.svg' width={28} height={24} />
+                  <DropdownMenu className=" ">
+                      <DropdownMenuTrigger> 
+                       <Image src='/add_dashboard.svg' width={28} height={24} />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-32">
+                        <DropdownMenuItem>Add Property</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem >Add Client</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem> Add JV</DropdownMenuItem>
+                      </DropdownMenuContent>
+                  </DropdownMenu>
+                  
                 </div>
                 <div className='flex justify-between items-center gap-x-4 w-full'>
                   <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 w-60'>

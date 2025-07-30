@@ -31,7 +31,7 @@ import {
 import Cookies from 'js-cookie';
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NotificationItem from "@/components/NotificationItem";
-import { Tally1 } from "lucide-react";
+import { Blocks, Tally1 } from "lucide-react";
 
 const options = [
     { name: "Dashboard", icon: "dashboard_admin.svg" },
@@ -86,7 +86,7 @@ useEffect(() => {
             <Image src='/hawkes_stripe.svg' className="absolute top-0 right-0 -z-10" width={500} height={60} />
            <div className="w-20 min-h-screen z-10  bg-white flex flex-col py-4 gap-y-4 fixed top-0">
                    <Image src="/logo.svg" alt="Logo" className="w-12 h-12 mb-6 ms-3" width={12} height={12} />
-                   <div className="flex flex-col items-center space-y-3 py-6 h-[70vh] bg-[#6434F8] relative rounded-tr-xl rounded-br-xl me-3">
+                   <div className="flex flex-col items-center justify-between space-y-3 py-6 h-[70vh] bg-[#6434F8] relative rounded-tr-xl rounded-br-xl me-3">
                       {options.map((data, index) => (
                         <div className="flex">
                         <div
@@ -100,16 +100,15 @@ useEffect(() => {
                         >
                           <Image
                             src={active === data.name ? `/active_${data.icon}` : `/${data.icon}`}
-                            className="w-4 h-5 mb-4"
+                            className="w-5 h-5 mb-4"
                             alt="property"
-                            width={14}
+                            width={12}
                             height={12}
                           />
                         </div>
                         { active === data.name &&(
-                          <Tally1  className="absolute -right-10 text-teal-400 -mt-1" size={30  }/>
+                          <Tally1  className="absolute -right-10 text-teal-400 -mt-1" size={30}/>
                         )
-
                         }
                         </div>
                       ))}
@@ -126,34 +125,45 @@ useEffect(() => {
                                  className="w-full px-4 py-2 border-0 rounded-lg focus:outline-none placeholder:text-gray-600 placeholder:text-sm "
                              />
                              <Image src="/search.svg" alt="" width={20} height={20} />  
-             
+                                
                          </div>
-                         <div className="flex items-center space-x-4">
+                         <div className="flex items-center space-x-6 me-12">
+                                <DropdownMenu className=" ">
                              <button className="text-gray-500">
-                             <Image src="/grid_dot.svg" alt="" width={20} height={20} />
+                                  <DropdownMenuTrigger>  <Image src="/grid_dot.svg" alt="" width={30} height={30} /></DropdownMenuTrigger>
                              </button>
+                                  <DropdownMenuContent className="w-56">
+                                    <DropdownMenuItem className='flex gap-x-4 items-center' ><Image src='/legal.png' width={10} height={8}/>Legal</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className='flex gap-x-4 items-center'><Image src='/project.png' width={10} height={8}/>Project</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className='flex gap-x-4 items-center'><Image src='/management.png' width={10} height={8}/>Management</DropdownMenuItem>
+                                  
+                                  </DropdownMenuContent>
+                                </DropdownMenu>          
                              <Popover>
-                             <button className="text-gray-500">
+                             <button className="text-gray-500"> 
                               <PopoverTrigger>
-                             <Image src="/notification.svg" alt="" width={20} height={20} />
+                             <Image src="/notification.svg" alt="" width={30} height={20} />
                              </PopoverTrigger>
                              </button>
 
                              <PopoverContent className='flex flex-col jutify-center'>
-                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on "note='Update Requirement list' />
-                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' />
-                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' />
+                              <div className="py-2 border-b-[1px]">Notifications</div>
+                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on "note='Update Requirement list' day='today' />
+                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' day='yesterday' />
+                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' day='last week' />
                              </PopoverContent>
                              </Popover>
                              <div href="#" className="flex items-center space-x-4">
                               {/* <Image src="/caret_down.svg" alt="" width={20} height={20} />  */}
-                                <DropdownMenu>
+                                <DropdownMenu className=" ">
                                   <DropdownMenuTrigger> <Image src="/user_avatar.svg"  alt="" width={30} height={30} /></DropdownMenuTrigger>
-                                  <DropdownMenuContent>
+                                  <DropdownMenuContent className="w-56">
                                     <DropdownMenuLabel>Settings</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={profile}>My Profile</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={logout}>logout</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
                                   
                                   </DropdownMenuContent>
                                 </DropdownMenu>

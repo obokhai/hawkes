@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
+import {Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle} from "@/components/ui/sheet"
 import {
   Tooltip,
   TooltipContent,
@@ -365,7 +366,7 @@ const Client = () => {
                     <section id="property_listings" className="space-y-3.5 flex flex-col">
                     <Table className="space-y-6 table table-auto border-b">
                       <TableHeader className=" rounded-tr-2xl justify-evenly rounded-tl-2xl py-12">
-                        <TableRow className="font-bold text-lg border-2 border-gray-200">
+                        <TableRow className="font-bold text-sm border-2 border-gray-200">
                           <TableHead className="w-[100px]"></TableHead>
                           <TableHead>Name</TableHead>
                           <TableHead>Email</TableHead>
@@ -385,16 +386,16 @@ const Client = () => {
                             </TableCell>
                             <TableCell className="text-[#35A0E4]">Jvs@example.com</TableCell>
                             <TableCell>+1928019390490</TableCell>
-                            <TableCell className="ps-12">{user.id}</TableCell>
+                            <TableCell className="">{user.id}</TableCell>
                             <TableCell>
        
-                            <Dialog className="w-full">
-                                <DialogTrigger asChild>
-                                <Image src="/three_dots.svg" alt="" className="mx-auto" width={12} height={12} /> 
-                                </DialogTrigger>
-                                <DialogContent className="w-full overflow-auto h-[500px] bg-gray-200">
-                                  <DialogHeader className='space-y-6'>
-                                    <DialogTitle>Client Profile view</DialogTitle>
+                            <Sheet className="w-full">
+                                <SheetTrigger asChild>
+                                <Image src="/three_dots.svg" alt="" className="mx-auto" width={16} height={12} /> 
+                                </SheetTrigger>
+                                <SheetContent className="w-full overflow-auto h-full bg-gray-200">
+                                  <SheetHeader className='space-y-6'>
+                                    <h3>Client Profile view</h3>
                                     <div className="border-b border-[1px] border-gray-300" />
                                     <div className="flex justify-between items-center">
                                       <div className="flex items-center gap-x-3">
@@ -409,7 +410,7 @@ const Client = () => {
                                         <Image alt="mail" src='/send_mail.svg' width={110} height={100} />
                                       </div>
                                     </div>
-                                  </DialogHeader>
+                                  </SheetHeader>
                                   <div className="flex space-x-2 mx-2 mt-5 rounded-xl p-7 bg-gray-50 min-h-96 scroll-auto">
                                     <div className="flex flex-col gap-y-4">
                                         <div className="flex gap-x-4">
@@ -446,8 +447,8 @@ const Client = () => {
                                         </div>
                                     </div>
                                   </div>
-                                </DialogContent>
-                              </Dialog>
+                                </SheetContent>
+                              </Sheet>
                               </TableCell>
                           </TableRow>
                           

@@ -297,7 +297,7 @@ const handleSubmit = async (e) => {
                               <SheetTrigger>
                                    <Image src="/three_dots.svg" alt="" className="mx-auto" width={12} height={12} />
                               </SheetTrigger>
-                              <SheetContent className=''>
+                              <SheetContent className='overflow-y-auto'>
                                 <SheetHeader>
                                     <SheetTitle>
                                       JV Partner Profile view

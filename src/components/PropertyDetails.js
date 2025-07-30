@@ -31,7 +31,7 @@ import { CSS } from '@dnd-kit/utilities';
 //   TooltipTrigger,
 // } from "@/components/ui/tooltip"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ChevronRight, HelpCircleIcon, PlusIcon, TrendingUp } from "lucide-react";
+import { ChevronLeft, ChevronRight, EllipsisVertical, HelpCircleIcon, PlusIcon, TrendingUp } from "lucide-react";
 import {
   Label,
   PolarGrid,
@@ -73,7 +73,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 const chartData = [
-  { browser: "safari", visitors: 20, fill: "hsl(var(--chart-4))" },
+  { browser: "safari", visitors: 60, fill: "#1dcb0b" },
 ];
 
 const chartConfig = {
@@ -347,6 +347,8 @@ const completeStage = async (stageId) => {
     try {
       const response = await api.post('/stage/create-stage', addNewStage)
       console.log(response)
+      getStages()
+      setAddStageModal(false)
       // router.push(`/dashboard?property=${id}`)
     } catch (err) {
       console.log(addNewStage)
@@ -685,7 +687,7 @@ const completeStage = async (stageId) => {
           <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
           <h3 className='lg:text-2xl max-lg:text-xl text-clip font-bold'>{property?.propertyName}</h3>
           <p className='text-xs'>{property?.address}</p>
-          <button className='border w-16'>Edit</button>
+          <button className='border w-16 text-xs'>Edit</button>
         </div>
 
         <div className='grid grid-cols-2 w-2/4 text-sm px-4 space-y-3 relative'>
@@ -695,7 +697,7 @@ const completeStage = async (stageId) => {
             <span className=''>
               <Dialog open={inviteUserModal} onOpenChange={setInviteUserModal} className="w-[200px]" id='ínviteUser'>
                 <DialogTrigger asChild>
-                  <div className='flex w-full justify-end absolute top-10 right-0 -mt-10 cursor-pointer pe-4'>
+                  <div className='flex w-full justify-end absolute top-0 right-0 -mt-10 cursor-pointer pe-4'>
                     <Image src='/inviteuser.svg' className='' width={100} height={20} />
                   </div>
                 </DialogTrigger>
@@ -985,7 +987,7 @@ const completeStage = async (stageId) => {
                     data={chartData}
                     endAngle={chartData[0].visitors * 3.6}
                     innerRadius={80}
-                    outerRadius={130}
+                    outerRadius={150}
                   >
                     <PolarGrid
                       gridType="circle"
@@ -1041,16 +1043,24 @@ const completeStage = async (stageId) => {
         </div>
       </div>
       <div className='w-full bg-white min-h-2/3 p-12 space-y-8 shadow-xl rounded-xl'>
-        <Sheet className="w-[1200px]">
-          <SheetTrigger asChild >
+        <Dialog className="w-[600px]">
+          <DialogTrigger asChild >
             <p className='flex text-sm items-center cursor-pointer'>Manage Stages <ChevronRight className='h-5' /> </p>
-          </SheetTrigger>
-          <SheetContent className="w-full  bg-white">
-            <SheetHeader>
+          </DialogTrigger>
+          <DialogContent className="w-[1200px] bg-white [&>button]:hidden">
+            <DialogHeader className='flex flex-col border-b-2 justify-center border-gray-200 py-2'>
 
-            </SheetHeader>
-            <div className='flex justify-between items-center px-4'> 
-              <h3>Manage Stages: </h3>
+              <div className='flex justify-between items-center'>
+                  <DialogClose asChild={true} className='cursor-pointer'>
+                      <ChevronLeft size={25}/>
+                  </DialogClose>
+              <EllipsisVertical className='cursor-pointer' />
+              </div>
+                  {/* <div className='border-b-2 border-gray-200 mt-4'/> */}
+            </DialogHeader>
+            <div className="mx-auto mt-1 bg-white rounded-xl">
+            <div className='flex justify-between items-center '> 
+              <h3 className='font-bold'>Manage Stages: </h3>
               <Dialog className="w-[1200px]">
                 <DialogTrigger asChild>
                   <PlusIcon className='cursor-pointer' />
@@ -1094,90 +1104,26 @@ const completeStage = async (stageId) => {
                   </div>
                 </DialogContent>
               </Dialog>
-
-
             </div>
-            <div className="w-full mx-auto mt-10 bg-white rounded-xl">
-              {/* <Table className=''>
-                        <TableHeader className="bg-[#5051F9] text-white ">
-                          <TableRow className="rounded-tr-xl rounded-tl-xl">
-                            <TableHead className="text-white">Position</TableHead>
-                            <TableHead className="text-white">Name</TableHead>
-                            <TableHead className="text-white ">Description</TableHead>
-                            <TableHead className="text-right text-white">Actions</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody> */}
-              {/* {stageSteps.map((stage) => (
-                            <TableRow key={stage.stageId} className="min-h-12">
-                              <TableCell className="font-medium">{stage.stagePosition}</TableCell>
-                              <TableCell>{stage.stageName}</TableCell>
-                              <TableCell className='w-24'>{stage.description}</TableCell>
-                              <TableCell className="text-right">
-                                <span className='flex '>
-                                    <Dialog className="w-[1200px]">
-                                      <DialogTrigger asChild>
-                                          <Image src="/stage_edit.svg" width={20} height={40}/>
-                                      </DialogTrigger>
-                                      <DialogContent className="w-60  bg-white">
-                                        <div className='flex flex-col justify-center'>
-                                          <h3 className='my-2 font-bold text-left'>Update Stage</h3>
-                                          <label className="text-xs w-full">
-                                              <input name="stagePosition"
-                                                value={updateStage.stagePosition}
-                                                onChange={handleManageStage}
-                                                placeholder="Enter Stage Position" className="w-full mb-2 border p-3 rounded" />
-                                            </label>
-                                           
-                                          <button onClick={() => manageStage(stage)} className='w-44 h-10 rounded bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Update Stage</button>
-                                        </div>
-                                      </DialogContent>
-                                      </Dialog>
-                                  <Image src="/stage_delete.svg" width={20} height={40}/>
-                                </span>
-                              </TableCell>
-                            </TableRow>
-                          ))} */}
-
-              {/* <div className="max-w-md mx-auto p-4">
-                            <h2 className="text-xl font-bold mb-4">Reorder Stages</h2>
-                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                              <SortableContext items={stages.map(s => s.id)} strategy={verticalListSortingStrategy}>
-                                {stages.map(stage => (
-                                  <SortableItem key={stage.id} id={stage.id} name={stage.name} />
-                                ))}
-                              </SortableContext>
-                            </DndContext>
-                          </div> */}
-              {/* </TableBody>
-                      </Table> */}
-              {/* <div className="max-w-md mx-auto p-4">
-                <h2 className="text-xl font-bold mb-4">Reorder Stage Steps</h2>
-                {loading ? (
-                  <p>Loading...</p>
-                ) : (
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    <SortableContext items={stageSteps.map(step => step.id)} strategy={verticalListSortingStrategy}>
-                      {stageSteps.map(step => (
-                        <SortableItem key={step.id} id={step.id} name={step.name} />
-                      ))}
-                    </SortableContext>
-                  </DndContext>
-                )}
-              </div> */}
-
-                <div className="p-8">
-                  <div className='flex justify-evenly bg-blue-500 py-2 rounded-tr-xl rounded-tl-xl text-white font-bold text-xs'>
-                      <p className='-ms-8 w-4'>Position</p>
-                      <p>Name</p>
+                <table className='mt-3'>
+                  <thead>
+                   <tr className='text-xs font-bold flex justify-between gap-x-12 bg-blue-500 text-white py-2 mb-1 px-2'>
+                    <p>Postition</p>
+                    <p className='-ms-16'>Name</p>
                       <p>Description</p>
                       <p>Action</p>
-                  </div>
-                  <StageList assetId={assignedAssetId} />
-                </div>
+                   </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <StageList assetId={assignedAssetId} />
+                    </tr>
+                  </tbody>
+                  
+                </table>
             </div>
-          </SheetContent>
-        </Sheet>
+          </DialogContent>
+        </Dialog>
         <div className="flex  justify-between items-center w-full max-w-6xl mx-auto py-8">
           <div className='flex flex-col w-full'>
             <div className='flex  gap-x-12'>
@@ -1240,13 +1186,13 @@ const completeStage = async (stageId) => {
                 <div className='flex w-full justify-between gap-x-4'>
                   <div key={step.id} onClick={() => getStageTasks(step.id)} className="flex cursor-pointer flex-col items-center">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${step.status === "completed" ? "bg-indigo-700 text-white " : "border-[1px] border-indigo-700 text-indigo-700"
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${step.status === "completed" ? "bg-[#312787] text-white " : "border-[1px] border-indigo-700 text-indigo-700"
                         }`}
                     >
                       {step.stagePosition}
                     </div>
                     <span
-                      className={`mt-2 text-center text-sm ${step.status === "completed" ? "text-indigo-800 font-semibold" : "text-indigo-700"
+                      className={`mt-2 text-center text-sm ${step.status === "completed" ? "text-[#312787] font-semibold" : "text-indigo-700"
                         }`}
                     >
                       {step.stageName}
@@ -1263,7 +1209,7 @@ const completeStage = async (stageId) => {
       return (
         <Progress
           value={progressValue}
-          className="h-4 mt-4 [&>div]:bg-indigo-600"
+          className="h-4 mt-4 [&>div]:bg-[#312787]"
         />
       );
     })()}
@@ -1273,14 +1219,14 @@ const completeStage = async (stageId) => {
         <div className='flex flex-col space-y-4 lg:w-full'>
           <span className='flex justify-between'>
             <h3 className='text-xl'>Tasks</h3>
-            <Sheet className="min-w-[1200px]">
-              <SheetTrigger asChild>
+            <Dialog className="min-w-[1200px]">
+              <DialogTrigger asChild>
                 <PlusIcon />
-              </SheetTrigger>
-              <SheetContent className=''>
-                <SheetHeader>
+              </DialogTrigger>
+              <DialogContent className=''>
+                <DialogHeader>
                   Add Task
-                </SheetHeader>
+                </DialogHeader>
                 <div className="px-4 mx-auto bg-white rounded-xl">
                   <form onSubmit={addTask} >
                     <div className="space-y-4">
@@ -1330,8 +1276,8 @@ const completeStage = async (stageId) => {
                     </div>
                   </form>
                 </div>
-              </SheetContent>
-            </Sheet>
+              </DialogContent>
+            </Dialog>
 
           </span>
 
