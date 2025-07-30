@@ -1133,16 +1133,16 @@ const completeStage = async (stageId) => {
                     <div className='flex-col flex w-60 gap-y-2 items-center'>
                       <h4 className='font-bold '>No stages added yet</h4>
                       <p className='text-sm text-center text-gray-500 '>Get Started by creating the first stage for this asset</p>
-                      <Sheet className="w-[1200px]">
-                        <SheetTrigger asChild>
+                      <Dialog className="w-[1200px]">
+                        <DialogTrigger asChild>
                           <button className='bg-[#4D91FF] cursor-pointer text-light text-xs rounded-md text-white px-6 py-3'>Create stage</button>
-                        </SheetTrigger>
-                        <SheetContent className="w-full  bg-white">
-                          <SheetHeader>
-                            <SheetTitle>
+                        </DialogTrigger>
+                        <DialogContent className="w-full  bg-white">
+                          <DialogHeader>
+                            <DialogTitle>
                               Add Stage
-                            </SheetTitle>
-                          </SheetHeader>
+                            </DialogTitle>
+                          </DialogHeader>
                           <div className="min-w-[400px] mx-auto mt-10 bg-white rounded-xl">
                             <form onSubmit={addStage}>
                               <div className="space-y-4">
@@ -1174,8 +1174,8 @@ const completeStage = async (stageId) => {
                               </div>
                             </form>
                           </div>
-                        </SheetContent>
-                      </Sheet>
+                        </DialogContent>
+                      </Dialog>
 
                     </div>
                   </div>
@@ -1207,11 +1207,15 @@ const completeStage = async (stageId) => {
       const progressValue = Math.round((completedCount / totalCount) * 100);
 
       return (
-        <Progress
-          value={progressValue}
-          className="h-4 mt-4 [&>div]:bg-[#312787]"
-        />
+        
+        stageSteps.length > 0 ? (
+            <Progress
+              value={progressValue}
+              className="h-4 mt-4 [&>div]:bg-[#312787]"
+            />
+          ): (<p></p>)
       );
+
     })()}
           </div>
         </div>
@@ -1282,29 +1286,36 @@ const completeStage = async (stageId) => {
           </span>
 
           <div className='flex gap-x-2 gap-2 flex-wrap'>
-            {getStageData.map((task) => (
+
+            {
+            tasksLoading ? (
+              <div className='w-60 h-[220px] px-4 shadow-md gap-x-6 items-center flex'>
+                <Skeleton className="rounded-full w-12 h-10 bg-[#eee]" />
+                <div className='flex flex-col w-full gap-y-3'>
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                  <Skeleton className='w-full bg-[#eee] h-5' />
+                </div>
+              </div>
+            )  : getStageData.length === 0 ? (
+                  <div className="flex flex-col items-center mx-auto justify-center text-sm text-gray-500">
+                    <Image src="/empty_assets.svg" width={100} height={100} />
+                    <h5 className='font-bold'>No Tasks Yet</h5>
+                    <p className=''>Get started by adding a New Stage.</p>
+                  </div>
+            ) : (  
+            
+            getStageData.map((task) => (
               <Sheet key={task.id} className='scroll-auto'>
-                <SheetTrigger asChild>
-                  {tasksLoading ?(
-                    <div className='w-60 h-[220px] px-4 shadow-md gap-x-6 items-center flex'>
-                        <Skeleton className="rounded-full w-12 h-10 bg-[#eee]" />
-                        <div className='flex flex-col w-full gap-y-3'>
-                          <Skeleton className='w-full bg-[#eee] h-5' />
-                          <Skeleton className='w-full bg-[#eee] h-5' />
-                        </div>
-                    </div>
-                  ) : (Array.isArray(getStageData) && getStageData.length === 0 ? (
-                              <div className="flex flex-col items-center justify-center text-sm text-gray-500">
-                                <Image src="/empty_assets.svg" width={200} height={200} />
-                                <h5 className='font-bold'>No Active Assets</h5>
-                                <p className=''>Get started by adding an asset.</p>
-                              </div>
-                            ):(
-                              <button>
-                                <TaskCard title={task.taskName} onClick={() => taskDetails(task.id)} description={task.description} status={task.status} commentsCount={0} date={task.dueDate} linksCount={11} />
-                              </button>
-                            ))
-                  }
+                <SheetTrigger >
+                  <TaskCard
+                      title={task.taskName}
+                      // onClick={() => taskDetails(task.id)}
+                      description={task.description}
+                      status={task.status}
+                      commentsCount={0}
+                      date={task.dueDate}
+                      linksCount={11}
+                    />
                 </SheetTrigger>
                 <SheetContent className='w-full overflow-y-scroll'> 
                   <SheetHeader>
@@ -1525,7 +1536,11 @@ const completeStage = async (stageId) => {
                   </div>
                 </SheetContent>
               </Sheet>
-            ))}
+           ))
+  )
+}
+             
+            
           </div>
         </div>
       </div>

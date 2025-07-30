@@ -122,7 +122,7 @@ return(
                 />
                 <Image src="/eye.svg" width={25} height={25} alt="Eye Icon" onClick={toggleShowPassword} className="absolute placeholder:text-[#eee] cursor-pointer right-6" />
               </div>
-              <p onClick={() => router.push("?screen=forgot", { scroll: false })} className="float-right cursor-pointer text-[#333]">Forget Password</p>
+              <p onClick={() => router.push("?screen=forgot", { scroll: false })} className="float-right cursor-pointer text-[#333] text-xs">Forgot Password</p>
               <button type='submit' className={`w-full cursor-pointer ${loading ? 'disabled cursor-not-allowed' : ' cursor-pointer'} bg-[#312787] text-center text-white py-5 rounded-full`}>
                 {loading ?(
                   <ClipLoader

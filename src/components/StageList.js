@@ -115,7 +115,7 @@ const SortableItem = ({ stage }) => {
       {...attributes}
       {...listeners}
       style={style}
-      className="bg-white p-2 flex justify-between items-center rounded shadow mb-2 w-[400px] gap-x-4 cursor-grab"
+      className="bg-white p-2 flex justify-between items-center border-b-2 border-gray-200 mb-2 w-[400px] gap-x-4 cursor-grab"
     >
       <div>{stage.stagePosition}</div>
       <div className="font-semibold text-xs w-20">{stage.stageName}</div>

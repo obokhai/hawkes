@@ -178,7 +178,7 @@ useEffect(() => {
 
         </div>
         <div className='flex gap-x-3 min-h-32'>
-            <aside className='w-6/8 bg-white gap-y-2 shadow-xl rounded-xl p-6 text-[#232360] '>
+            <aside className='w-full bg-white gap-y-2 shadow-xl rounded-xl p-6 text-[#232360] '>
               <span className='font-bold text-xl'>Upcoming deadlines</span>
               <div className='flex flex-col'>
                 {deadlines.map((item, index) => (
@@ -196,7 +196,7 @@ useEffect(() => {
                 ))}
               </div>
             </aside>
-            <aside className='w-2/8 bg-[#5A48F9] shadow-xl flex flex-col gap-y-6 rounded-xl p-6'>
+            {/* <aside className='w-2/8 bg-[#5A48F9] shadow-xl flex flex-col gap-y-6 rounded-xl p-6'>
               <span className='flex justify-between'>
                 <h5 className='font-bold text-white'>Messages</h5>
                 <p className='font-extralight text-xs text-white underline '>View All</p>
@@ -216,7 +216,7 @@ useEffect(() => {
                 </div>
               ))}
               </div>
-            </aside>
+            </aside> */}
         </div>
     </section>
   )
