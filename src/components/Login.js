@@ -37,13 +37,16 @@ const Login = () => {
     console.log(response.data); // Check the structure
     const token = response.data.data?.accessToken;
     const id = response.data.data?.id;
-    const userName = response.data.data?.firstName || 'Admin'; // Fallback to id if name is not available
+    const userName = response.data.data?.firstName || 'Admin';
+    // const lastName = response.data?.data
+  
     if (token) {
       Cookies.set("token", token);
       localStorage.setItem("token", token);
       localStorage.setItem("id", id);
       localStorage.setItem("userEmail", email);
       localStorage.setItem("userName", userName);
+      // localStorage.setItem("lastName", lastName)
       toast.success("Login Successful");
       setLoading(false);
       router.push("/dashboard");

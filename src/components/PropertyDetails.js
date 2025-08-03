@@ -323,10 +323,13 @@ const completeStage = async (stageId) => {
     const allCompleted = Array.isArray(data.data.tasks) && data.data.tasks.length > 0
       ? data.data.tasks.every(task => task.status === 'completed')
       : false;
-    console.log("All tasks completed?", allCompleted);
+
     if (allCompleted) {
-      // If all tasks are completed, you can perform an action here, like completing the stage
+      // If all tasks are completed, mark stage as completed
       await completeStage(stageId);
+    } else {
+      // If any task is not completed, mark stage as pending
+      await api.patch(`/stage/update-stage/${stageId}`, { status: 'pending' });
     }
     // You can set a state here if you want to use it in your UI
     // setAllTasksCompleted(allCompleted);
@@ -581,17 +584,17 @@ const completeStage = async (stageId) => {
       toast.success(response.data.message);
 
       if (response.data.success === false && response.statusCode === 400) {
-        toast.error(response.data.message)
+        toast.error(response.data)
         const errorData = await response.data;
         console.log(response)
         console.error("Failed to assign asset:", errorData.message || response.statusText);
         return;
       }
 
-      const result = await response.json();
+      const result = await response.data
       console.log("Asset successfully assigned:", result);
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error?.response?.data?.message)
       console.error("Error assigning asset:", error);
     }
   };
@@ -697,7 +700,7 @@ const completeStage = async (stageId) => {
             <span className=''>
               <Dialog open={inviteUserModal} onOpenChange={setInviteUserModal} className="w-[200px]" id='ínviteUser'>
                 <DialogTrigger asChild>
-                  <div className='flex w-full justify-end absolute top-0 right-0 -mt-10 cursor-pointer pe-4'>
+                  <div className='flex w-full justify-end absolute top-6 right-0 -mt-10 cursor-pointer pe-4'>
                     <Image src='/inviteuser.svg' className='' width={100} height={20} />
                   </div>
                 </DialogTrigger>
@@ -1059,8 +1062,12 @@ const completeStage = async (stageId) => {
                   {/* <div className='border-b-2 border-gray-200 mt-4'/> */}
             </DialogHeader>
             <div className="mx-auto mt-1 bg-white rounded-xl">
-            <div className='flex justify-between items-center '> 
+            <div className='flex justify-between items-center mb-6'> 
+              <div>
               <h3 className='font-bold'>Manage Stages: </h3>
+              <p className='text-gray-400 text-[10px] font-light'>Drag and drop to re-order stages</p>
+
+              </div>
               <Dialog className="w-[1200px]">
                 <DialogTrigger asChild>
                   <PlusIcon className='cursor-pointer' />
@@ -1105,7 +1112,7 @@ const completeStage = async (stageId) => {
                 </DialogContent>
               </Dialog>
             </div>
-                <table className='mt-3'>
+                <table className='mt-3 h-52 overflow-auto'>
                   <thead>
                    <tr className='text-xs font-bold flex justify-between gap-x-12 bg-blue-500 text-white py-2 mb-1 px-2'>
                     <p>Postition</p>
@@ -1114,7 +1121,7 @@ const completeStage = async (stageId) => {
                       <p>Action</p>
                    </tr>
                   </thead>
-                  <tbody>
+                  <tbody className=' '>
                     <tr>
                       <StageList assetId={assignedAssetId} />
                     </tr>
@@ -1285,7 +1292,7 @@ const completeStage = async (stageId) => {
 
           </span>
 
-          <div className='flex gap-x-2 gap-2 flex-wrap'>
+          <div className='flex gap-x-4 gap-2 flex-wrap'>
 
             {
             tasksLoading ? (
@@ -1317,7 +1324,7 @@ const completeStage = async (stageId) => {
                       linksCount={11}
                     />
                 </SheetTrigger>
-                <SheetContent className='w-full overflow-y-scroll'> 
+                <SheetContent className='w-full overflow-y-scroll px-1'> 
                   <SheetHeader>
                     <SheetTitle>Listing deliverables checklist</SheetTitle>
                     <SheetDescription>
@@ -1326,7 +1333,7 @@ const completeStage = async (stageId) => {
                   </SheetHeader>
                   <div className="flex flex-col h-16 space-y-3 space-x-2 mx-2 mt-5 rounded-xl p-2 min-h-96">
                     <table className="table-auto w-full shrink text-sm text-left">
-                      <tbody className='space-y-3'>
+                      <tbody className='space-y-6'>
                         <tr className="h-2 text-xs">
                           <td className="text-gray-400 text-xs font-bold pr-3 py-1">Created date</td>
                           <td className="text-gray-900 font-medium py-1">{new Date(task.createdAt).toLocaleDateString("en-GB", {
@@ -1337,7 +1344,7 @@ const completeStage = async (stageId) => {
                           </td>
                           <Dialog className="w-[600px]">
                             <DialogTrigger asChild>
-                              <td className='bg-blue-400 text-white font-bold cursor-pointer rounded text-center ' onClick={() => setEditedTask(task)}>Update</td>
+                              <td className='bg-blue-400 text-white font-bold cursor-pointer w-16 rounded text-center ' onClick={() => setEditedTask(task)}>Update</td>
                             </DialogTrigger>
                             <DialogContent className=" w-[600px] bg-white">
 

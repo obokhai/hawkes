@@ -393,7 +393,7 @@ const Client = () => {
                                 <SheetTrigger asChild>
                                 <Image src="/three_dots.svg" alt="" className="mx-auto" width={16} height={12} /> 
                                 </SheetTrigger>
-                                <SheetContent className="w-full overflow-auto h-full bg-gray-200">
+                                <SheetContent className="w-full px-2 overflow-auto h-full bg-gray-200">
                                   <SheetHeader className='space-y-6'>
                                     <h3>Client Profile view</h3>
                                     <div className="border-b border-[1px] border-gray-300" />
