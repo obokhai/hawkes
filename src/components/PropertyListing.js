@@ -129,31 +129,6 @@ const handleFileChange = (e) => {
      setLoading(true)
     setMounted(true);
 
-// async function fetchPosts() {  
-//       try {
-//         const token = localStorage.getItem("token")
-//         const res = await api.get(`/assets?page=${page}&limit=${PAGE_SIZE}`);
-       
-//         const data = await res.data
-//         // setProperties(data.data)
-       
-//         console.log(total)
-//         console.log(data?.data);
-//         if (data?.data) {
-//           setProperties(data.data.activeAsset);
-//            setTotal(data.data.total)
-//            setActiveAssetCount(data.data.activeAssetsCount)
-//            setInActiveAssetCount(data.data.inactiveAssetsCount)
-//            setLoading(false)
-//         } else {
-//           console.error("No activeAsset found in the response");
-//           setProperties([]); // Or handle the empty case accordingly
-//         }
-//         // setProperties(data.data.activeAsset);
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     } 
 async function fetchPosts() {  
   try {
     const token = localStorage.getItem("token")

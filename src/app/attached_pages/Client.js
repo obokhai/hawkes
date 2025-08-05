@@ -35,11 +35,19 @@ import Link from "next/link"
 import axios from "axios"
 import api from '@/app/api'
 import nigeriaStates from "../data/States"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 const Client = () => {
-  
     const [userType, setUserType] = useState('');
     const [usersByRole, setUsersByRole] = useState([]);
     const [totalClients, setTotalClients] = useState(0)
+    const [open, setOpen] = useState(false)
     const [formData, setFormData] = useState({
       firstName: '',
       lastName: '',
@@ -317,43 +325,6 @@ const Client = () => {
                                       
                                                                 </div>
                                                               )}
-                                      {/* {userType === 'individual' && (
-                                        <div className="space-y-4">
-                                          <div className="flex gap-x-5">
-                                            <label className="text-xs w-full">First Name
-                                              <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                            <label className="text-xs w-full">Last Name
-                                              <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                          </div>
-                                          <label className="text-xs">Address
-                                            <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="w-full border p-2 rounded" />
-                                          </label>
-                                          <div className="flex gap-x-5">
-                                            <label className="text-xs w-full">Phone Number
-                                              <input name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                            <label className="text-xs w-full">Email
-                                              <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full mt-2 border p-3 rounded" />
-                                            </label>
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {userType === 'company' && (
-                                        <div className="space-y-4">
-                                          <h3 className="text-xs font-semibold">Company Details</h3>
-                                          <input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" className="w-full border text-xs placeholder:text-xs p-2 rounded" />
-                                          <input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" className="w-full border p-2 text-xs placeholder:text-xs rounded" />
-                                          <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full border p-2 text-xs placeholder:text-xs rounded" />
-                                          <div>
-                                            <label className="block mb-1 text-xs">Upload Document</label>
-                                            <input type="file" onChange={handleFileChange} className="w-full border p-2 rounded" />
-                                          </div>
-                                        </div>
-                                      )} */}
-
                                       <button type="submit" className="mt-6 bg-[#6434F8] text-white py-2 px-4 rounded-md float-right">Submit</button>
                                     </form>
                                     </div>
@@ -388,143 +359,81 @@ const Client = () => {
                             <TableCell>+1928019390490</TableCell>
                             <TableCell className="">{user.id}</TableCell>
                             <TableCell>
-       
-                            <Sheet className="w-full">
-                                <SheetTrigger asChild>
-                                <Image src="/three_dots.svg" alt="" className="mx-auto" width={16} height={12} /> 
-                                </SheetTrigger>
-                                <SheetContent className="w-full px-2 overflow-auto h-full bg-gray-200">
-                                  <SheetHeader className='space-y-6'>
-                                    <h3>Client Profile view</h3>
-                                    <div className="border-b border-[1px] border-gray-300" />
-                                    <div className="flex justify-between items-center">
-                                      <div className="flex items-center gap-x-3">
-                                          <Image src='/avatar.svg' width={90} height={90} className="rounded-full" />
-                                          <div className="flex flex-col">
-                                            <h4 className="font-bold text-xs">{user.firstName} </h4>
-                                            <p className="text-xs"> {user.role.name} </p>
+                                  <DropdownMenu className=" ">
+                                    <DropdownMenuTrigger>
+                                       <Image src="/three_dots.svg" alt="" className="mx-auto" width={16} height={12} />
+                                    </DropdownMenuTrigger>
+                                      <DropdownMenuContent className="w-32">  
+                                            <DropdownMenuItem onClick={() => setOpen(true)}>View Profile</DropdownMenuItem>
+                                         
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem >Delete</DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                      </DropdownMenuContent>
+                                  </DropdownMenu>
+                                     <Sheet className="w-full bg-transparent" open={open} onOpenChange={setOpen}>
+                                        <SheetContent className="w-full px-2 overflow-auto h-full bg-gray-200">
+                                          <SheetHeader className='space-y-6'>
+                                            <h3>Client Profile view</h3>
+                                            <div className="border-b border-[1px] border-gray-300" />
+                                            <div className="flex justify-between items-center">
+                                              <div className="flex items-center gap-x-3">
+                                                  <Image src='/avatar.svg' width={90} height={90} className="rounded-full" />
+                                                  <div className="flex flex-col">
+                                                    <h4 className="font-bold text-xs">{user.firstName} </h4>
+                                                    <p className="text-xs"> {user.role.name} </p>
+                                                  </div>
+                                              </div>
+                                              <div className="flex gap-x-2 ">
+                                                <Image alt="chat" src='/chat.svg' width={80} height={80} />
+                                                <Image alt="mail" src='/send_mail.svg' width={110} height={100} />
+                                              </div>
+                                            </div>
+                                          </SheetHeader>
+                                          <div className="flex space-x-2 mx-2 mt-5 rounded-xl p-7 bg-gray-50 min-h-96 scroll-auto">
+                                            <div className="flex flex-col gap-y-4">
+                                                <div className="flex gap-x-4">
+                                                  <Image src="/jv_email.svg"  width={16} height={16} />
+                                                  <Link href="mailto:Kkwabiliah@gmail.com" className="text-cyan-400 text-sm">Kkwabiliah@gmail.com</Link>
+                                                </div>
+                                                <div className="flex gap-x-4">
+                                                  <Image src="/phone.svg" width={16} height={16} />
+                                                  <p className="text-sm">0932492349</p>
+                                                </div>
+                                                <div className="flex gap-x-4">
+                                                  <Image src="/location_icon.svg" alt="location" width={16} height={16} />
+                                                  <p className="text-sm">Amuwo-odofin Area, along Badagry Express Way, 
+                                                  Lagos, Nigeria</p>
+                                                </div>
+
+                                                <div className="my-3 border-[1px] border-gray-200" />
+                                                <h5>Shared Assets: 2</h5>
+                                                <div className="flex gap-x-3">
+                                                    <Image src="/property_icon.svg" alt="property" height={20} width={20} />
+                                                    <div className="text-xs flex-col">
+                                                      <p className="font-bold">Reeve Road<span className="font-light">- Pr-002 - 3390.567sq.mts</span></p>
+                                                      <p className="font-light">10 Reeve Road, Ikoyi, Eti- Osa Local Government Area, Lagos State</p>
+
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-x-3">
+                                                    <Image src="/property_icon.svg" alt="property" height={20} width={20} />
+                                                    <div className="text-xs flex-col">
+                                                      <p className="font-bold">Reeve Road<span className="font-light">- Pr-002 - 3390.567sq.mts</span></p>
+                                                      <p className="font-light">10 Reeve Road, Ikoyi, Eti- Osa Local Government Area, Lagos State</p>
+
+                                                    </div>
+                                                </div>
+                                            </div>
                                           </div>
-                                      </div>
-                                      <div className="flex gap-x-2 ">
-                                        <Image alt="chat" src='/chat.svg' width={80} height={80} />
-                                        <Image alt="mail" src='/send_mail.svg' width={110} height={100} />
-                                      </div>
-                                    </div>
-                                  </SheetHeader>
-                                  <div className="flex space-x-2 mx-2 mt-5 rounded-xl p-7 bg-gray-50 min-h-96 scroll-auto">
-                                    <div className="flex flex-col gap-y-4">
-                                        <div className="flex gap-x-4">
-                                          <Image src="/jv_email.svg"  width={16} height={16} />
-                                          <Link href="mailto:Kkwabiliah@gmail.com" className="text-cyan-400 text-sm">Kkwabiliah@gmail.com</Link>
-                                        </div>
-                                        <div className="flex gap-x-4">
-                                          <Image src="/phone.svg" width={16} height={16} />
-                                          <p className="text-sm">0932492349</p>
-                                        </div>
-                                        <div className="flex gap-x-4">
-                                          <Image src="/location_icon.svg" alt="location" width={16} height={16} />
-                                          <p className="text-sm">Amuwo-odofin Area, along Badagry Express Way, 
-                                          Lagos, Nigeria</p>
-                                        </div>
-
-                                        <div className="my-3 border-[1px] border-gray-200" />
-                                        <h5>Shared Assets: 2</h5>
-                                        <div className="flex gap-x-3">
-                                            <Image src="/property_icon.svg" alt="property" height={20} width={20} />
-                                            <div className="text-xs flex-col">
-                                              <p className="font-bold">Reeve Road<span className="font-light">- Pr-002 - 3390.567sq.mts</span></p>
-                                              <p className="font-light">10 Reeve Road, Ikoyi, Eti- Osa Local Government Area, Lagos State</p>
-
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-x-3">
-                                            <Image src="/property_icon.svg" alt="property" height={20} width={20} />
-                                            <div className="text-xs flex-col">
-                                              <p className="font-bold">Reeve Road<span className="font-light">- Pr-002 - 3390.567sq.mts</span></p>
-                                              <p className="font-light">10 Reeve Road, Ikoyi, Eti- Osa Local Government Area, Lagos State</p>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                  </div>
-                                </SheetContent>
-                              </Sheet>
+                                        </SheetContent>
+                                        </Sheet>
                               </TableCell>
                           </TableRow>
-                          
-                        ))}
-                        
-                      
+                        ))}                 
                       </TableBody>
-                      {/* <TableBody className="border-2 p-12 border-gray-200 border-r-2 ">
-                      <TableRow className='w-full'>
-                        
-                        <div className='flex justify-center mt-12'>
-                            <Image src='/empty_client.svg' width={400} height={400}/>
-                        </div>    
-                      </TableRow>
-                      </TableBody> */}
                     </Table>
-                     {/* <Dialog className="w-full">
-                                                    <DialogTrigger asChild>
-                                                    <Image src="/three_dots.svg" alt="" className="mx-auto" width={12} height={12} /> 
-                                                    </DialogTrigger>
-                                                    <DialogContent className="w-full  bg-gray-200">
-                                                      <DialogHeader className='space-y-6'>
-                                                        <DialogTitle>JV Partner Profile view</DialogTitle>
-                                                        <div className="border-b border-[1px] border-gray-300" />
-                                                        <div className="flex justify-between items-center">
-                                                          <div className="flex items-center gap-x-3">
-                                                              <Image src={jvs.image} alt={jvs.Name} width={90} height={90} className="rounded-full" />
-                                                              <div className="flex flex-col">
-                                                                <h4 className="font-bold text-xs">{jvs.Name} </h4>
-                                                                <p className="text-xs">Individual | Company</p>
-                                                              </div>
-                                                          </div>
-                                                          <div className="flex gap-x-2 ">
-                                                            <Image alt="chat" src='/chat.svg' width={80} height={80} />
-                                                            <Image alt="mail" src='/send_mail.svg' width={80} height={80} />
-                                                          </div>
-                                                        </div>
-                                                      </DialogHeader>
-                                                      <div className="flex space-x-2 mx-2 mt-5 rounded-xl p-7 bg-gray-50 min-h-96">
-                                                        <div className="flex flex-col gap-y-4">
-                                                            <div className="flex gap-x-4">
-                                                              <Image src="/jv_email.svg" alt={jvs.email} width={16} height={16} />
-                                                              <Link href="mailto:Kkwabiliah@gmail.com" className="text-cyan-400 text-sm">Kkwabiliah@gmail.com</Link>
-                                                            </div>
-                                                            <div className="flex gap-x-4">
-                                                              <Image alt={jvs.phone} src="/phone.svg" width={16} height={16} />
-                                                              <p className="text-sm">{jvs.phone}</p>
-                                                            </div>
-                                                            <div className="flex gap-x-4">
-                                                              <Image src="/location_icon.svg" alt="location" width={16} height={16} />
-                                                              <p className="text-sm">Amuwo-odofin Area, along Badagry Express Way, 
-                                                              Lagos, Nigeria</p>
-                                                            </div>
-                    
-                                                            <div className="my-3 border-[1px] border-gray-200" />
-                                                            <h5>Shared Assets: 2</h5>
-                                                            <div className="flex gap-x-3">
-                                                                <Image src="/property_icon.svg" alt="property" height={20} width={20} />
-                                                                <div className="text-xs flex-col">
-                                                                  <p className="font-bold">Reeve Road<span className="font-light">- Pr-002 - 3390.567sq.mts</span></p>
-                                                                  <p className="font-light">10 Reeve Road, Ikoyi, Eti- Osa Local Government Area, Lagos State</p>
-                    
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex gap-x-3">
-                                                                <Image src="/property_icon.svg" alt="property" height={20} width={20} />
-                                                                <div className="text-xs flex-col">
-                                                                  <p className="font-bold">Reeve Road<span className="font-light">- Pr-002 - 3390.567sq.mts</span></p>
-                                                                  <p className="font-light">10 Reeve Road, Ikoyi, Eti- Osa Local Government Area, Lagos State</p>
-                    
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                      </div>
-                                                    </DialogContent>
-                                                  </Dialog> */}
+
                     </section>
                     </section>
   )

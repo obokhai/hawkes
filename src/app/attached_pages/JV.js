@@ -267,7 +267,7 @@ const handleSubmit = async (e) => {
                         </div>
                         </div>
                     <section id="property_listings" className="space-y-3.5">
-                    <Table className="space-y-6 border-b border-b-2">
+                    <Table className="space-y-6 border-b-2">
                       <TableHeader className=" rounded-tr-2xl rounded-tl-2xl py-12">
                         <TableRow className="font-bold text-sm border-2 border-gray-200">
                           <TableHead className="w-[100px]"></TableHead>
