@@ -133,6 +133,13 @@ const PropertyDetails = ({initialStages }) => {
 
   const assignedAssetId = searchParams.get('property')
   // Update from here
+    const [assetData, setAssetData] = useState({
+      propertyName: "",
+      address: "",
+      authorizedUse: "",
+      size: "",
+      status: "",
+    });
   const [userType, setUserType] = useState("");
   const token = localStorage.getItem("token");
   const [users, setUsers] = useState([]);
@@ -231,6 +238,7 @@ const PropertyDetails = ({initialStages }) => {
   const [addStageModal, setAddStageModal] = useState(false)
   const [companyFiles, setCompanyFiles] = useState([])
   const [roleIdSet, setRoleIdSet] = useState(1)
+  const [editAsset, setEditAsset] = useState(false)
   const handleTaskUpdate = (e) => {
     const { name, value } = e.target;
     setEditedTask(prev => ({ ...prev, [name]: value }));
@@ -269,6 +277,27 @@ const handleUserRoleChange = async (e) => {
 
   getAllUsers(selectedRoleId); // Pass it here
 };
+
+
+  const handleUpdateSubmit = async () => {
+    const id = assignedAssetId
+    try {
+      if (!token) throw new Error("No token found.");
+      const response = await api.patch(`/assets/${id}`,assetData);
+      // toast.success(response.data.message)
+     console.log(response.data)
+      setIsOpen(false); // Close modal
+      
+      toast.success("Asset Updated Successfully")
+    } catch (error) {
+      toast.error("Error Submitting Asset")
+      console.error("Submission Error:", error);
+      // alert("Submission failed. Check console for details.");
+    }
+    finally{
+      setEditAsset(false)
+    }
+  };
 
 const getAllUsers = async (roleId) => {
   setLoadingUsers(true);
@@ -690,7 +719,7 @@ const completeStage = async (stageId) => {
           <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
           <h3 className='lg:text-2xl max-lg:text-xl text-clip font-bold'>{property?.propertyName}</h3>
           <p className='text-xs'>{property?.address}</p>
-          <button className='border w-16 text-xs'>Edit</button>
+          <button className='border w-16 text-xs' onClick={() =>{setEditAsset(true)}}>Edit</button>
         </div>
 
         <div className='grid grid-cols-2 w-2/4 text-sm px-4 space-y-3 relative'>
@@ -1551,6 +1580,50 @@ const completeStage = async (stageId) => {
           </div>
         </div>
       </div>
+      {/* Update Asset Modal */}
+       <Dialog open={editAsset} onOpenChange={setEditAsset}>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Add Property</DialogTitle>
+                </DialogHeader>
+                        <div className="max-h-[70vh] overflow-y-auto space-y-4">
+                            <div className="grid gap-4">
+                              <label className='text-xs '>
+                                Asset Name
+                              <input name="propertyName" onChange={handleAssetChange} value={assetData.propertyName} placeholder="Asset Name" className=" mt-1 border p-2 rounded w-full" />
+                              </label>
+                              <label className='text-xs '>
+                                Address
+                              <input name="address" onChange={handleAssetChange} value={assetData.address} placeholder="Address" className="border p-2 mt-1  rounded w-full" />
+                              </label>
+                              <label className='text-xs '>
+                                Authorized Use
+                              <input name="authorizedUse" onChange={handleAssetChange} value={assetData.authorizedUse} placeholder="Authorized Use" className=" mt-1 border p-2 rounded w-full" />
+                              </label>
+                              <label className='text-xs '>
+                                Size
+                              <input name="size" onChange={handleAssetChange} value={assetData.size} placeholder="Size" className="border p-2 rounded mt-1  w-full" />
+                              </label>
+                              <label className='text-xs'>
+                               Status
+                              <div className='flex gap-x-6 w-1/2'>
+                                  {/* <input name="dateAdded" type="date" onChange={handleAssetChange} value={assetData.dateAdded} className="border p-2 rounded w-full" /> */}
+                                  <select name="status" onChange={handleAssetChange} value={assetData.status} placeholder="Select Status" className="border p-2 rounded w-full">
+                                    <option value="">Select Status</option>
+                                    <option value="active">active</option>
+                                    <option value="pending">pending</option>
+                                  </select>
+                              </div>
+                              </label>
+                            </div>
+                            <div className="flex justify-end mt-6">
+                              <button onClick={handleUpdateSubmit} className="bg-[#2C1C92] cursor-pointer text-white px-6 py-2 rounded-full">Submit</button>
+                            </div>
+                        </div>
+                        
+                        
+                      </DialogContent>
+            </Dialog>
     </section>
   )
 }
