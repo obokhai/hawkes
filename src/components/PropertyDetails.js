@@ -278,6 +278,11 @@ const handleUserRoleChange = async (e) => {
   getAllUsers(selectedRoleId); // Pass it here
 };
 
+ const getCurrentAsset =() =>{
+  const res =api.get(`assets/${assignedAssetId}`)
+  console.log(res.data)
+
+ }
 
   const handleUpdateSubmit = async () => {
     const id = assignedAssetId
@@ -287,7 +292,7 @@ const handleUserRoleChange = async (e) => {
       // toast.success(response.data.message)
      console.log(response.data)
       setIsOpen(false); // Close modal
-      
+
       toast.success("Asset Updated Successfully")
     } catch (error) {
       toast.error("Error Submitting Asset")
@@ -735,7 +740,7 @@ const completeStage = async (stageId) => {
                 </DialogTrigger>
                 <DialogContent className="w-full  bg-white">
                   <DialogHeader>
-                    <DialogTitle>
+                    <DialogTitle className='text-sm'> 
                       Invite User
                     </DialogTitle>
                   </DialogHeader>
@@ -743,6 +748,7 @@ const completeStage = async (stageId) => {
                     {currentStep === 1 && (
                       <>
                         <div className="grid gap-4">
+                          <label className='text-xs'> User Role
                           <select name="roles" onChange={handleUserRoleChange} className='focus:outline-none border-[1px] p-2 text-xs cursor-pointer rounded w-full py-[6px]'>
                             {/* <option value=''>Select Role</option> */}
                             {roleData.map((role) => (
@@ -750,6 +756,7 @@ const completeStage = async (stageId) => {
                             ))}
 
                           </select>
+                          </label>
 
                           {roleIdSet && (
                             loadingUsers ? (
@@ -758,25 +765,27 @@ const completeStage = async (stageId) => {
                               </div>
                             ) : (
                               users.length > 0 && (
+                                <label className='text-xs leading-4 font-light'> Assign User
                                 <select name="users" className='focus:outline-none border-[1px] p-2 text-xs cursor-pointer rounded w-full py-[6px]' onChange={e => setUserId(e.target.value)}>
                                   {/* <option value="">Select User</option> */}
                                   {users.map(user => (
                                     <option key={user.id} value={user.id}>{user.firstName}</option>
                                   ))}
                                 </select>
+                                </label>
                               )
                             )
                           )}
 
                         </div>
 
-                        <div className='flex flex-col items-center justify-center mt-12'>
-                          <span className='rounded-full w-16 h-16 flex items-center justify-center bg-gray-100 text-lg font-extralight'>Or</span>
-                          <button onClick={nextStep} className='w-full h-8 border-[1px] rounded-sm flex justify-center items-center text-[#2C1C92] my-3 text-sm font-light border-[#2C1C92] p-6 text-center'>Add New</button>
+                        <div className='flex flex-col items-center justify-center my-6 gap-y-8'>
+                          <span className='rounded-full w-12 h-12 flex items-center justify-center bg-gray-100 text-sm font-extralight'>Or</span>
+                          <button onClick={nextStep} className='w-full h-8 border-[1px] rounded-sm flex justify-center items-center text-[#2C1C92] my-3 text-xs font-light border-[#2C1C92] p-6 text-center'>Add New</button>
                         </div>
                         <div className="flex justify-end mt-6 gap-x-5">
                           {/* <button onClick={prevStep} className="rounded-full border-[1px] text-[#2C1C92] border-[#2C1C92] px-8 py-3">Back</button> */}
-                          <button onClick={async () => { await assignAsset(); setInviteUserModal(false) }} className="bg-[#2C1C92] rounded-full text-white px-8 py-3">Submit</button>
+                          <button onClick={async () => { await assignAsset(); setInviteUserModal(false) }} className="bg-[#2C1C92] text-xs rounded-full text-white px-8 py-3">Submit</button>
                         </div>
                       </>
                     )}
@@ -1066,9 +1075,6 @@ const completeStage = async (stageId) => {
               <CardFooter className="flex-col gap-2 text-sm">
                 <div className="flex items-center gap-2 font-medium leading-none">
                 </div>
-                {/* <div className="leading-none text-muted-foreground">
-                    Showing total visitors for the last 6 months
-                  </div> */}
               </CardFooter>
             </Card>
           </div>
@@ -1086,13 +1092,13 @@ const completeStage = async (stageId) => {
                   <DialogClose asChild={true} className='cursor-pointer'>
                       <ChevronLeft size={25}/>
                   </DialogClose>
-              <EllipsisVertical className='cursor-pointer' />
+              {/* <EllipsisVertical className='cursor-pointer' /> */}
               </div>
                   {/* <div className='border-b-2 border-gray-200 mt-4'/> */}
             </DialogHeader>
             <div className="mx-auto mt-1 bg-white rounded-xl">
             <div className='flex justify-between items-center mb-6'> 
-              <div>
+              <div className='space-y-2'>
               <h3 className='font-bold'>Manage Stages: </h3>
               <p className='text-gray-400 text-[10px] font-light'>Drag and drop to re-order stages</p>
 
@@ -1341,7 +1347,7 @@ const completeStage = async (stageId) => {
             ) : (  
             
             getStageData.map((task) => (
-              <Sheet key={task.id} className='scroll-auto'>
+              <Sheet key={task.id} className='scroll-auto '>
                 <SheetTrigger >
                   <TaskCard
                       title={task.taskName}
@@ -1353,27 +1359,26 @@ const completeStage = async (stageId) => {
                       linksCount={11}
                     />
                 </SheetTrigger>
-                <SheetContent className='w-full overflow-y-scroll px-1'> 
-                  <SheetHeader>
-                    <SheetTitle>Listing deliverables checklist</SheetTitle>
-                    <SheetDescription>
-                      Make changes to your profile here. Click save when you&apos;re done.
-                    </SheetDescription>
-                  </SheetHeader>
-                  <div className="flex flex-col h-16 space-y-3 space-x-2 mx-2 mt-5 rounded-xl p-2 min-h-96">
-                    <table className="table-auto w-full shrink text-sm text-left">
-                      <tbody className='space-y-6'>
-                        <tr className="h-2 text-xs">
-                          <td className="text-gray-400 text-xs font-bold pr-3 py-1">Created date</td>
-                          <td className="text-gray-900 font-medium py-1">{new Date(task.createdAt).toLocaleDateString("en-GB", {
+                <SheetContent  className='flex flex-col overflow-scroll px-2 w-[900px] max-w-none'> 
+                <header className='h-12 border-b border-gray-300'></header>
+                  <div className='flex flex-col gap-y-2 px-3'>
+                      <h2 className='font-bold text-sm capitalize'>Listing deliverables checklist</h2>
+                      <p className='text-[10px] text-gray-500'> Make changes to your profile here. Click save when you're done.</p>
+                  </div>
+                  <div className="flex flex-col h-16 space-x-2 mx-2 rounded-xl p-2 min-h-96">
+                    <div className="table-auto w-full shrink text-sm text-left">
+                      <div className='space-y-1 mb-2'>
+                        <div className="text-xs grid grid-cols-2 items-center not-first-of-type:gap-x-3">
+                          <div className="text-gray-400 text-xs font-bold pr-3 py-1">Created date</div>
+                          <div className="text-gray-900 font-medium py-1">{new Date(task.createdAt).toLocaleDateString("en-GB", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
                           })}
-                          </td>
+                          </div>
                           <Dialog className="w-[600px]">
                             <DialogTrigger asChild>
-                              <td className='bg-blue-400 text-white font-bold cursor-pointer w-16 rounded text-center ' onClick={() => setEditedTask(task)}>Update</td>
+                              <div className='bg-blue-400 text-white absolute right-4 font-bold cursor-pointer p-1 w-16 rounded text-center ' onClick={() => setEditedTask(task)}>Update</div>
                             </DialogTrigger>
                             <DialogContent className=" w-[600px] bg-white">
 
@@ -1445,49 +1450,49 @@ const completeStage = async (stageId) => {
                               </div>
                             </DialogContent>
                           </Dialog>
-                        </tr>
-                        <tr className="h-2 text-xs">
-                          <td className="text-gray-400 pr-3 py-1">Due date</td>
-                          <td className="text-gray-900 font-medium py-1">{new Date(task.dueDate).toLocaleDateString("en-GB", {
+                         </div>
+                        <div className="grid grid-cols-2 items-center text-xs">
+                          <div className="text-gray-400 font-bold pr-3 py-1">Due date</div>
+                          <div className="text-gray-900 font-medium py-1">{new Date(task.dueDate).toLocaleDateString("en-GB", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
-                          })}</td>
-                        </tr>
-                        <tr className="h-2 text-xs">
-                          <td className="text-gray-400 pr-3 py-1">Status</td>
-                          <td className="py-1">
+                          })}</div>
+                         </div>
+                        <div className="grid grid-cols-2 items-center text-xs">
+                          <div className="text-gray-400 text-xs font-bold pr-3 py-1">Status</div>
+                          <div className="py-1">
                             <span className="bg-orange-100 capitalize  text-orange-600 px-2 py-1 rounded text-xs font-medium">
                               {task.status}
                             </span>
-                          </td>
-                        </tr>
-                        <tr className="h-2 text-xs">
-                          <td className="text-gray-400 pr-3 py-1">Priority</td>
-                          <td className="py-1">
+                          </div>
+                         </div>
+                        <div className="grid grid-cols-2 items-center text-xs">
+                          <div className="text-gray-400 text-xs font-bold pr-3 py-1">Priority</div>
+                          <div className="py-1">
                             <span className="bg-blue-100 text-blue-600 px-3 capitalize py-1 rounded text-xs font-medium">
                               {task.priority}
                             </span>
-                          </td>
-                        </tr>
-                        <tr className="h-2 text-xs">
-                          <td className="text-gray-400 pr-3 py-1">Description</td>
-                          <td className="text-gray-900 font-medium py-1">{task.description || '-'}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  <div className=' min-h-40'>
-                    <div className='bg-gray-300 p-3 pb-6 rounded-xl'>
-                      <p className='text-xs text-black'>Review and confirm all required deliverables for the property listing, ensuringcompleteness and
+                          </div>
+                         </div>
+                        <div className="grid grid-cols-2 items-center text-xs">
+                          <div className="text-gray-400 font-bold pr-3 py-1">Description</div>
+                          <div className="text-gray-900 font-medium py-1">{task.description || '-'}</div>
+                         </div>
+                      </div>
+                    </div>
+                  <div className=' min-h-20'>
+                    <div className='bg-gray-200 mb-5 p-3 pb-6 rounded-xl'>
+                      <p className='text-[10px] text-black'>Review and confirm all required deliverables for the property listing, ensuringcompleteness and
                         accuracy before submission.</p>
                     </div>
                     <div className='flex-col flex gap-y-3'>
-                      <div className='flex justify-between'>
+                      <div className='flex justify-between text-xs'>
                         <div className='space-x-3 text-gray-600 flex items-center'>
                           <Link className='h-4' />
                           <p>Attachments</p>
                         </div>
-                        <div className='flex text-sm gap-x-2 items-center text-blue-800'>
+                        <div className='flex gap-x-2 items-center text-blue-800'>
                           <Download className='h-4' />
                           <p>Download All</p>
                         </div>
@@ -1500,13 +1505,13 @@ const completeStage = async (stageId) => {
                       </div>
                     </div>
                     <Tabs defaultValue="account" className="w-[300px] mt-4">
-                      <TabsList className='bg-white shadow-none rounded-none mb-3'>
-                        <TabsTrigger value="comment" className='shadow-md cursor-pointer'>Comment</TabsTrigger>
-                        <TabsTrigger value="activities" className='shadow-md cursor-pointer'>Activities</TabsTrigger>
+                      <TabsList className='bg-white shadow-none rounded-none mb-3 '>
+                        <TabsTrigger value="comment" className=' hover:border-b hover:border-gray-500 cursor-pointer text-[10px]'>Comment</TabsTrigger>
+                        <TabsTrigger value="activities" className='hover:border-gray-500 hover:border-b cursor-pointer text-[10px]'>Activities</TabsTrigger>
                       </TabsList>
                       <TabsContent value="comment">
                         <div className='flex-col flex w-full gap-y-2 mb-6'>
-                          <textarea rows={2} placeholder='Write a Comment' className='p-5 border-2 border-gray rounded-xl' />
+                          <textarea rows={2} placeholder='Write a Comment' className='p-5 border-2 border-gray rounded-xl placeholder:text-xs' />
                           <div className='flex justify-between items-center'>
                             <span className='flex gap-x-2 text-gray-600'>
                               <Link className='h-4' />
@@ -1545,23 +1550,23 @@ const completeStage = async (stageId) => {
                         <Timeline
                           items={[
                             {
-                              children: 'Create a services site 2015-09-01',
-                              dot: <CircleCheckBig />,
+                              children: <p className='text-xs'>Create a services site 2015-09-01</p>,
+                              dot: <CircleCheckBig size={14} />,
                               color: "green"
                             },
                             {
-                              children: 'Solve initial network problems 2015-09-01',
-                              dot: <CircleCheckBig />,
+                              children: <p className='text-xs'>Solve initial network problems 2015-09-01</p>,
+                              dot: <CircleCheckBig size={14} />,
                               color: "green"
                             },
                             {
-                              children: 'Technical testing 2015-09-01',
-                              dot: <CircleCheckBig />,
+                              children: <p className='text-xs'>Technical testing 2015-09-01</p>,
+                              dot: <CircleCheckBig size={14} />,
                               color: "green"
                             },
                             {
-                              children: 'Network problems being solved 2015-09-01',
-                              dot: <CircleCheckBig />,
+                              children: <p className='text-xs'>Network problems being solved 2015-09-01</p>,
+                              dot: <CircleCheckBig size={14} />,
                               color: "green"
                             },
                           ]}
@@ -1584,31 +1589,31 @@ const completeStage = async (stageId) => {
        <Dialog open={editAsset} onOpenChange={setEditAsset}>
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Add Property</DialogTitle>
+                  <DialogTitle>Update Property</DialogTitle>
                 </DialogHeader>
                         <div className="max-h-[70vh] overflow-y-auto space-y-4">
                             <div className="grid gap-4">
                               <label className='text-xs '>
                                 Asset Name
-                              <input name="propertyName" onChange={handleAssetChange} value={assetData.propertyName} placeholder="Asset Name" className=" mt-1 border p-2 rounded w-full" />
+                              <input name="propertyName" onChange={handleAssetChange} value={property.propertyName} placeholder="Asset Name" className=" mt-1 border p-2 rounded w-full" />
                               </label>
                               <label className='text-xs '>
                                 Address
-                              <input name="address" onChange={handleAssetChange} value={assetData.address} placeholder="Address" className="border p-2 mt-1  rounded w-full" />
+                              <input name="address" onChange={handleAssetChange} value={`${property.address}`} placeholder="Address" className="border p-2 mt-1  rounded w-full" />
                               </label>
                               <label className='text-xs '>
                                 Authorized Use
-                              <input name="authorizedUse" onChange={handleAssetChange} value={assetData.authorizedUse} placeholder="Authorized Use" className=" mt-1 border p-2 rounded w-full" />
+                              <input name="authorizedUse" onChange={handleAssetChange} value={property.authorizedUse} placeholder="Authorized Use" className=" mt-1 border p-2 rounded w-full" />
                               </label>
                               <label className='text-xs '>
                                 Size
-                              <input name="size" onChange={handleAssetChange} value={assetData.size} placeholder="Size" className="border p-2 rounded mt-1  w-full" />
+                              <input name="size" onChange={handleAssetChange} value={property.size} placeholder="Size" className="border p-2 rounded mt-1  w-full" />
                               </label>
                               <label className='text-xs'>
                                Status
                               <div className='flex gap-x-6 w-1/2'>
                                   {/* <input name="dateAdded" type="date" onChange={handleAssetChange} value={assetData.dateAdded} className="border p-2 rounded w-full" /> */}
-                                  <select name="status" onChange={handleAssetChange} value={assetData.status} placeholder="Select Status" className="border p-2 rounded w-full">
+                                  <select name="status" onChange={handleAssetChange} value={property.status} placeholder="Select Status" className="border p-2 rounded w-full">
                                     <option value="">Select Status</option>
                                     <option value="active">active</option>
                                     <option value="pending">pending</option>
@@ -1619,10 +1624,8 @@ const completeStage = async (stageId) => {
                             <div className="flex justify-end mt-6">
                               <button onClick={handleUpdateSubmit} className="bg-[#2C1C92] cursor-pointer text-white px-6 py-2 rounded-full">Submit</button>
                             </div>
-                        </div>
-                        
-                        
-                      </DialogContent>
+                        </div>        
+                </DialogContent>
             </Dialog>
     </section>
   )

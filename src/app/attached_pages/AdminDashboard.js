@@ -6,7 +6,11 @@ import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import api from '../api';
 import { Button } from '@/components/ui/button';
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   Card,
   CardContent,
@@ -95,6 +99,7 @@ const [totalClients, setTotalClients] = useState('')
 const [totalJV, setTotalJV ] = useState('')
 const [deadlines, setDeadlines] = useState([])
 const [file, setFile] = useState(null);
+const [companyState, setCompanyState] = useState('');
 const userName = localStorage.getItem("userName")
 useEffect(() => {
    const token = localStorage.getItem("token")
