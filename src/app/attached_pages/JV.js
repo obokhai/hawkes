@@ -1,7 +1,6 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import CustomCalendar from "@/components/CustomCalendar"
-import axios from "axios"
 import {
   Dialog,
   DialogClose,
@@ -70,6 +69,7 @@ const [usersByRole, setUsersByRole] = useState([]);
 const [userType, setUserType] = useState('');
 const [companyState, setCompanyState] = useState('');
 const [file, setFile] = useState(null);
+const [errorMessage, setErrorMessage] = useState([])
 const [totalJV, setTotalJV] = useState(0)
 const [formData, setFormData] = useState({
   firstName: '',
@@ -104,7 +104,6 @@ const fetchUsersByRole = async () => {
     console.log("Fetched Users:", data);
   } catch (error) {
     console.error("Fetch Error:", error);
-    // alert("Failed to load users. Check console for more details.");
   }
 };
 
@@ -128,36 +127,87 @@ const handleFileChange = (e) => {
   setFile(e.target.files[0]);
 };
 // Add New JV
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+
+//   try {
+//     if (!token) throw new Error("No token found.");
+
+//     const payload = {
+//       ...formData,
+//       userType,
+//       companyState,
+//       document: file ? file.name : '',
+//     };
+
+
+//      const response= await axios.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload,{
+//         headers:{
+//           "Authorization": `Bearer ${token}`,
+//           "Content-Type": "application/json"
+//         }
+//       })
+
+//     // const result = await response.json();
+//     console.log("Submitted:", response.data);
+//   } catch (error) {
+//     console.error("Submission Error:", error);
+//     setError(error.response.data.errors)
+//   }
+// };
+// 
 const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
     if (!token) throw new Error("No token found.");
 
-    const payload = {
-      ...formData,
-      userType,
-      companyState,
-      document: file ? file.name : '',
-    };
+    let payload;
+    // let headers = {
+    //   Authorization: `Bearer ${token}`,
+    // };
 
+    if (file) {
+      // If uploading a file, use FormData
+      payload = new FormData();
+      // payload.append("document", file);
+      payload.append("userType", userType);
+      payload.append("companyState", companyState);
+      Object.keys(formData).forEach((key) =>
+        payload.append(key, formData[key])
+      );
 
-     const response= await axios.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload,{
-        headers:{
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      })
+      headers["Content-Type"] = "multipart/form-data";
+    } else {
+      // No file, send JSON
+      payload = {
+        ...formData,
+        userType,
+        companyState,
+        document: "",
+      };
+      // headers["Content-Type"] = "application/json";
+    }
 
-    // const result = await response.json();
+    const response = await api.post(
+      "https://propertyapi-monolithic.onrender.com/api/v1/user/create",
+      payload,
+      { headers }
+    );
+
     console.log("Submitted:", response.data);
-    alert("JV Partner successfully added.");
   } catch (error) {
     console.error("Submission Error:", error);
-    alert("Submission failed. Check console for details.");
+
+    // Handle safe error access
+    if (error.response?.data?.errors) {
+      setErrorMessage(error.response.data.errors);
+    } else {
+      setErrorMessage([{ message: error.message || "Unknown error occurred" }]);
+    }
   }
 };
-// 
+
 
 
   return (
@@ -170,100 +220,103 @@ const handleSubmit = async (e) => {
                                 <p className="text-xs ">Export</p>
                             </div> 
 
-                             <Dialog className="w-[1200px]">
-                                                            <DialogTrigger asChild>
-                                                                <Image src="/add_new_client.svg" className="cursor-pointer" width={126} height={50} />
-                                                            </DialogTrigger>
-                                                            <DialogContent className="w-full  bg-white">
-                                                            <div className="max-w-7xl mx-auto mt-10 bg-white rounded-xl">
-                                                              <h2 className="text-2xl font-bold mb-6">Add JV</h2>
+                        <Dialog className="w-[1200px]">
+                            <DialogTrigger asChild>
+                                <Image src="/add_new_client.svg" className="cursor-pointer" width={126} height={50} />
+                            </DialogTrigger>
+                            <DialogContent className="w-full  bg-white">
+                            <div className="max-w-7xl mx-auto mt-10 bg-white rounded-xl">
+                              <h2 className="text-2xl font-bold mb-6">Add JV</h2>
+                                    {errorMessage.map((errors)=>(
+                                    <p className="text-red-400 text-xs" key={errors.id}>{errors}</p>
+                                    ))}
 
-                                                                  {/* Dropdown */}
-                                                                  <form onSubmit={handleSubmit} className="space-y-4">
-                                                                    <div className="mb-6 min-w-[400px] flex flex-col">
-                                                                      <label htmlFor="userType" className="block text-xs font-medium mb-2">User Type</label>
-                                                                      <select
-                                                                        id="userType"
-                                                                        value={userType}
-                                                                        onChange={(e) => setUserType(e.target.value)}
-                                                                        className="w-full border border-gray-300 rounded-md p-3"
-                                                                      >
-                                                                        <option value="">Select</option>
-                                                                        <option value="individual">Individual</option>
-                                                                        <option value="company">Company</option>
-                                                                      </select>
-                                                                    </div>
+                                  {/* Dropdown */}
+                                  <form onSubmit={handleSubmit} className="space-y-4">
+                                    <div className="mb-6 min-w-[400px] flex flex-col">
+                                      <label htmlFor="userType" className="block text-xs font-medium mb-2">User Type</label>
+                                      <select
+                                        id="userType"
+                                        value={userType}
+                                        onChange={(e) => setUserType(e.target.value)}
+                                        className="w-full border border-gray-300 rounded-md p-3"
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="individual">Individual</option>
+                                        <option value="company">Company</option>
+                                      </select>
+                                    </div>
 
-                                                                    {userType === 'individual' && (
-                                                                      <div className="space-y-4">
-                                                                        <div className="flex gap-x-5">
-                                                                          <label className="text-xs w-full">First Name
-                                                                            <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="w-full mt-2 border p-2 rounded" />
-                                                                          </label>
-                                                                          <label className="text-xs w-full">Last Name
-                                                                            <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="w-full mt-2 border p-2 rounded" />
-                                                                          </label>
-                                                                        </div>
-                                                                        <label className="text-xs">Address
-                                                                          <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="w-full border p-2 rounded" />
-                                                                        </label>
-                                                                        <div className="flex gap-x-5">
-                                                                          <label className="text-xs w-full">Phone Number
-                                                                            <input name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="w-full mt-2 border p-2 rounded" />
-                                                                          </label>
-                                                                          <label className="text-xs w-full">Email
-                                                                            <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full mt-2 border p-2 rounded" />
-                                                                          </label>
-                                                                        </div>
-                                                                      </div>
-                                                                    )}
+                                    {userType === 'individual' && (
+                                      <div className="space-y-4">
+                                        <div className="flex gap-x-5">
+                                          <label className="text-xs w-full">First Name
+                                            <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="w-full mt-2 border p-2 rounded" />
+                                          </label>
+                                          <label className="text-xs w-full">Last Name
+                                            <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="w-full mt-2 border p-2 rounded" />
+                                          </label>
+                                        </div>
+                                        <label className="text-xs">Address
+                                          <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="w-full border p-2 rounded" />
+                                        </label>
+                                        <div className="flex gap-x-5">
+                                          <label className="text-xs w-full">Phone Number
+                                            <input name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Phone Number" className="w-full mt-2 border p-2 rounded" />
+                                          </label>
+                                          <label className="text-xs w-full">Email
+                                            <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full mt-2 border p-2 rounded" />
+                                          </label>
+                                        </div>
+                                      </div>
+                                    )}
 
-                                                                    {userType === 'company' && (
-                                                                      <div className="flex flex-col gap-y-4">
-                                                                        {/* <h3 className="text-lg font-semibold">Company Details</h3> */}
-                                                                        <input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" className="w-full border p-2 rounded" />
-                                                                        <input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" className="w-full border p-2 rounded" />
-                                                                        <select
-                                                                        id="userType"
-                                                                        value={companyState}
-                                                                        onChange={(e) => setCompanyState(e.target.value)}
-                                                                        className="w-full border border-gray-300 rounded-md p-3"
-                                                                      >
-                                                                        <option value="">Select</option>
-                                                                        <option value="individual">Lagos</option>
-                                                                        <option value="company">Abuja</option>
-                                                                      </select>
-                                                                        <div>
-                                                                          <label className="block mb-1 text-xs">Upload Document</label>
-                                                                          <input type="file" onChange={handleFileChange} className="w-full border p-2 rounded" />
-                                                                        </div>
-                                                                        <div className="flex-col flex w-full gap-y-4">
-                                                                          <div className="flex gap-x-6">
-                                                                              <label className="text-xs font-bold w-1/2"> First name
-                                                                               <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="w-full mt-2 border p-2 rounded" />
-                                                                              </label>
-                                                                              <label className="text-xs font-bold"> Last name
-                                                                                <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="w-full mt-2 border p-2 rounded" />
-                                                                              </label>
-                                                                          </div>
-                                                                          <div className="flex gap-x-6">
-                                                                              <label className="text-xs font-bold w-1/2"> Phone Number
-                                                                               <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="w-full mt-2 border p-2 rounded" />
-                                                                              </label>
-                                                                              <label className="text-xs font-bold"> Official Email
-                                                                                <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="w-full mt-2 border p-2 rounded" />
-                                                                              </label>
-                                                                          </div>
+                                    {userType === 'company' && (
+                                      <div className="flex flex-col gap-y-4">
+                                        {/* <h3 className="text-lg font-semibold">Company Details</h3> */}
+                                        <input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" className="w-full border p-2 rounded" />
+                                        <input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" className="w-full border p-2 rounded" />
+                                        <select
+                                        id="userType"
+                                        value={companyState}
+                                        onChange={(e) => setCompanyState(e.target.value)}
+                                        className="w-full border border-gray-300 rounded-md p-3"
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="individual">Lagos</option>
+                                        <option value="company">Abuja</option>
+                                      </select>
+                                        <div>
+                                          <label className="block mb-1 text-xs">Upload Document</label>
+                                          <input type="file" onChange={handleFileChange} className="w-full border p-2 rounded" />
+                                        </div>
+                                        <div className="flex-col flex w-full gap-y-4">
+                                          <div className="flex gap-x-6">
+                                              <label className="text-xs font-bold w-1/2"> First name
+                                                <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="w-full mt-2 border p-2 rounded" />
+                                              </label>
+                                              <label className="text-xs font-bold"> Last name
+                                                <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="w-full mt-2 border p-2 rounded" />
+                                              </label>
+                                          </div>
+                                          <div className="flex gap-x-6">
+                                              <label className="text-xs font-bold w-1/2"> Phone Number
+                                                <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" className="w-full mt-2 border p-2 rounded" />
+                                              </label>
+                                              <label className="text-xs font-bold"> Official Email
+                                                <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" className="w-full mt-2 border p-2 rounded" />
+                                              </label>
+                                          </div>
 
-                                                                        </div>
-                                                                      </div>
-                                                                    )}
+                                        </div>
+                                      </div>
+                                    )}
 
-                                                                    <button type="submit" className="mt-6 bg-[#6434F8] text-white py-2 px-4 rounded-md">Submit</button>
-                                                                  </form>
-                                                                  </div>
-                                                            </DialogContent>
-                                                            </Dialog>
+                                    <button type="submit" className="mt-6 bg-[#6434F8] text-white py-2 px-4 rounded-md">Submit</button>
+                                  </form>
+                                  </div>
+                            </DialogContent>
+                            </Dialog>
                         </div>
                         </div>
                     <section id="property_listings" className="space-y-3.5">

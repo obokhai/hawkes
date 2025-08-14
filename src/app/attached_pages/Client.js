@@ -44,6 +44,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 const Client = () => {
+    const [errorMessage, setErrorMessage] = useState([])
     const [userType, setUserType] = useState('');
     const [usersByRole, setUsersByRole] = useState([]);
     const [totalClients, setTotalClients] = useState(0)
@@ -119,14 +120,6 @@ const Client = () => {
         document: file ? file.name : ''
       };
   console.log(payload)
-      // const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/create", {
-      //   method: "POST",
-      //   headers: {
-      //     "Authorization": `Bearer ${token}`,
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(payload),
-      // });
       const response= await axios.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload,{
         headers:{
           "Authorization": `Bearer ${token}`,
@@ -139,7 +132,12 @@ const Client = () => {
       console.log("Submitted:", result);
     } catch (error) {
       console.error("Submission Error:", error);
-      alert("Submission failed. Check console for details.");
+          if (error.response?.data?.errors) {
+      setErrorMessage(error.response.data.errors);
+    } else {
+      setErrorMessage([{ message: error.message || "Unknown error occurred" }]);
+    }
+      // alert("Submission failed. Check console for details.");
     }
   };
   return (
@@ -147,6 +145,10 @@ const Client = () => {
             <section className="mt-28 ms-28 me-10 min-h-screen bg-white rounded-2xl px-8 py-12">
                   <div className="flex justify-between mb-14 text-black items-center">
                         <h3 className="text-2xl ">Owners <span>{totalClients} </span></h3>
+                           {errorMessage.map((errors)=>(
+                                    <p className="text-red-400 text-xs" key={errors.id}>{errors}</p>
+                             ))}
+
                         <div className="flex space-x-6">
                             <div className="flex items-center space-x-2 ">
                                <Image src="/export_client_data.svg" width={120} height={40} />
@@ -269,7 +271,7 @@ const Client = () => {
                                                                 </div>
                                                                   <div> */}
                                       
-                                                                    <input type="file" onChange={handleCompanyFiles} accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' />
+                                                                    {/* <input type="file" onChange={handleCompanyFiles} accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" className='w-full h-20 bg-blue-200 rounded-md  flex justify-center px-16 pt-6' placeholder='Upload Documents' /> */}
                                                                   </div>
                                                                   <span className="text-gray-400 text-[10px] flex items-center gap-x-2">Primary Contact <Tooltip>
                                                                     <TooltipTrigger>
@@ -370,7 +372,7 @@ const Client = () => {
                                         <DropdownMenuItem >Delete</DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                       </DropdownMenuContent>
-                                  </DropdownMenu>
+                                      </DropdownMenu>
                                      <Sheet className="w-full bg-transparent" open={open} onOpenChange={setOpen}>
                                         <SheetContent className="w-full px-2 overflow-auto h-full bg-gray-200">
                                           <SheetHeader className='space-y-6'>
@@ -428,6 +430,7 @@ const Client = () => {
                                           </div>
                                         </SheetContent>
                                         </Sheet>
+                                  
                               </TableCell>
                           </TableRow>
                         ))}                 

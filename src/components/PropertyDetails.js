@@ -1359,7 +1359,7 @@ const completeStage = async (stageId) => {
                       linksCount={11}
                     />
                 </SheetTrigger>
-                <SheetContent  className='flex flex-col overflow-scroll px-2 w-[900px] max-w-none'> 
+                <SheetContent  className='flex flex-col overflow-scroll px-2'> 
                 <header className='h-12 border-b border-gray-300'></header>
                   <div className='flex flex-col gap-y-2 px-3'>
                       <h2 className='font-bold text-sm capitalize'>Listing deliverables checklist</h2>
@@ -1411,9 +1411,9 @@ const completeStage = async (stageId) => {
                                           onChange={handleTaskUpdate}
                                           placeholder="Enter due date" className="w-full mb-2 border p-3 rounded" />
                                       </label>
-                                      <div>
+                                      {/* <div>
                                         <input type="file" onChange={handleUpdateTaskFiles} multiple className='w-full h-10 bg-cyan-100' placeholder='Upload Documents' />
-                                      </div>
+                                      </div> */}
                                       <div className='flex gap-x-8'>
 
                                         <label className="text-xs w-full">Priority
