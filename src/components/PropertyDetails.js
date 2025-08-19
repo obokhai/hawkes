@@ -9,6 +9,8 @@ import TaskCard from './TaskCard'
 import { Timeline } from 'antd';
 import StageList from './StageList'
 import { Skeleton } from './ui/skeleton'
+import { Button } from "@/components/ui/button";
+import { X, Star, Share2, MoreVertical } from "lucide-react";
 // import { useState } from 'react';
 import {
   DndContext,
@@ -71,6 +73,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose
 } from "@/components/ui/sheet"
 const chartData = [
   { browser: "safari", visitors: 60, fill: "#1dcb0b" },
@@ -1250,7 +1253,7 @@ const completeStage = async (stageId) => {
 
       return (
         
-        stageSteps.length > 0 ? (
+      stageSteps.length > 0 ? (
             <Progress
               value={progressValue}
               className="h-4 mt-4 [&>div]:bg-[#312787]"
@@ -1347,7 +1350,7 @@ const completeStage = async (stageId) => {
             ) : (  
             
             getStageData.map((task) => (
-              <Sheet key={task.id} className='scroll-auto '>
+              <Sheet key={task.id} showClose={false} className='scroll-auto '>
                 <SheetTrigger >
                   <TaskCard
                       title={task.taskName}
@@ -1360,7 +1363,25 @@ const completeStage = async (stageId) => {
                     />
                 </SheetTrigger>
                 <SheetContent  className='flex flex-col overflow-scroll px-2'> 
-                <header className='h-12 border-b border-gray-300'></header>
+                  <div className="flex items-center justify-between border-b px-4 py-2">
+                    {/* Left Close Button */}
+                     <SheetClose asChild>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="rounded-lg h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </SheetClose>
+
+                    {/* Right Action Icons */}
+                    <div className="flex items-center gap-4 text-gray-500">
+                      <Star className="h-5 w-5 cursor-pointer hover:text-gray-700" />
+                      <Share2 className="h-5 w-5 cursor-pointer hover:text-gray-700" />
+                      <MoreVertical className="h-5 w-5 cursor-pointer hover:text-gray-700" />
+                    </div>
+                  </div>
                   <div className='flex flex-col gap-y-2 px-3'>
                       <h2 className='font-bold text-sm capitalize'>Listing deliverables checklist</h2>
                       <p className='text-[10px] text-gray-500'> Make changes to your profile here. Click save when you're done.</p>

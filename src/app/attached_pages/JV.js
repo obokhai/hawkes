@@ -156,39 +156,103 @@ const handleFileChange = (e) => {
 //   }
 // };
 // 
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+
+//   try {
+//     if (!token) throw new Error("No token found.");
+
+//     let payload;
+//     // let headers = {
+//     //   Authorization: `Bearer ${token}`,
+//     // };
+
+//     if (file) {
+//       // If uploading a file, use FormData
+//       payload = new FormData();
+//       // payload.append("document", file);
+//       payload.append("userType", userType);
+//       payload.append("companyState", companyState);
+//       Object.keys(formData).forEach((key) =>
+//         payload.append(key, formData[key])
+//       );
+
+//       headers["Content-Type"] = "multipart/form-data";
+//     } else {
+//       // No file, send JSON
+//       payload = {
+//         ...formData,
+//         userType,
+//         companyState,
+//         document: "",
+//       };
+//       // headers["Content-Type"] = "application/json";
+//     }
+
+//     const response = await api.post(
+//       "https://propertyapi-monolithic.onrender.com/api/v1/user/create",
+//       payload,
+//       { headers }
+//     );
+
+//     console.log("Submitted:", response.data);
+//   } catch (error) {
+//     console.error("Submission Error:", error);
+
+//     // Handle safe error access
+//     if (error.response?.data?.errors) {
+//       setErrorMessage(error.response.data.errors);
+//     } else {
+//       setErrorMessage([{ message: error.message || "Unknown error occurred" }]);
+//     }
+//   }
+// };
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
     if (!token) throw new Error("No token found.");
 
+    // Step 1: Check if formData is empty or has empty fields
+    const emptyFields = Object.keys(formData).filter(
+      (key) => formData[key] === "" || formData[key] === null
+    );
+
+    // Also validate other required fields outside formData
+    if (!userType) emptyFields.push("userType");
+    if (userType === "company" && !companyState) emptyFields.push("companyState");
+
+    // If there are empty fields, stop and show error
+    if (emptyFields.length > 0) {
+      setErrorMessage([`Please fill all required fields: ${emptyFields.join(", ")}`]);
+      return;
+    }
+
+    // Step 2: Prepare payload
     let payload;
-    // let headers = {
-    //   Authorization: `Bearer ${token}`,
-    // };
+    let headers = { Authorization: `Bearer ${token}` };
 
     if (file) {
-      // If uploading a file, use FormData
       payload = new FormData();
-      // payload.append("document", file);
       payload.append("userType", userType);
       payload.append("companyState", companyState);
-      Object.keys(formData).forEach((key) =>
-        payload.append(key, formData[key])
-      );
-
+      payload.append("document", file);
+      Object.keys(formData).forEach((key) => {
+        payload.append(key, formData[key]);
+      });
       headers["Content-Type"] = "multipart/form-data";
     } else {
-      // No file, send JSON
       payload = {
         ...formData,
         userType,
         companyState,
         document: "",
       };
-      // headers["Content-Type"] = "application/json";
+      headers["Content-Type"] = "application/json";
     }
 
+    // Step 3: Submit to API
     const response = await api.post(
       "https://propertyapi-monolithic.onrender.com/api/v1/user/create",
       payload,
@@ -198,8 +262,6 @@ const handleSubmit = async (e) => {
     console.log("Submitted:", response.data);
   } catch (error) {
     console.error("Submission Error:", error);
-
-    // Handle safe error access
     if (error.response?.data?.errors) {
       setErrorMessage(error.response.data.errors);
     } else {
@@ -232,14 +294,14 @@ const handleSubmit = async (e) => {
                                     ))}
 
                                   {/* Dropdown */}
-                                  <form onSubmit={handleSubmit} className="space-y-4">
+                                  <form onSubmit={handleSubmit} className="space-y-4 scroll-auto">
                                     <div className="mb-6 min-w-[400px] flex flex-col">
                                       <label htmlFor="userType" className="block text-xs font-medium mb-2">User Type</label>
                                       <select
                                         id="userType"
                                         value={userType}
                                         onChange={(e) => setUserType(e.target.value)}
-                                        className="w-full border border-gray-300 rounded-md p-3"
+                                        className="w-full border border-gray-300 rounded-md h-10 px-2"
                                       >
                                         <option value="">Select</option>
                                         <option value="individual">Individual</option>
@@ -274,13 +336,13 @@ const handleSubmit = async (e) => {
                                     {userType === 'company' && (
                                       <div className="flex flex-col gap-y-4">
                                         {/* <h3 className="text-lg font-semibold">Company Details</h3> */}
-                                        <input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" className="w-full border p-2 rounded" />
-                                        <input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" className="w-full border p-2 rounded" />
+                                        <input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company Name" className="w-full h-8 border p-2 rounded-sm" />
+                                        <input name="address" value={formData.address} onChange={handleChange} placeholder="Company Address" className="w-full border p-2 h-8 rounded-sm" />
                                         <select
                                         id="userType"
                                         value={companyState}
                                         onChange={(e) => setCompanyState(e.target.value)}
-                                        className="w-full border border-gray-300 rounded-md p-3"
+                                        className="w-full border border-gray-300 rounded-md p-2 "
                                       >
                                         <option value="">Select</option>
                                         <option value="individual">Lagos</option>
