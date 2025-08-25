@@ -112,16 +112,29 @@ const handleFileChange = (e) => {
   
   const handleSubmit = async () => {
     try {
-      if (!token) throw new Error("No token found.");
+      if(!assetData.propertyName || !assetData.address || !assetData.authorizedUse || !assetData.size || !assetData.status){
+        toast.error("Please fill all fields")
+        return;
+      }
+
       const response = await api.post("/assets/create",assetData);
-      // toast.success(response.data.message)
-     console.log(response.data)
+      console.log(response.data)
       setIsOpen(false); // Close modal
-     
+      toast.success("Asset Successfully Created")
+      // Optionally, refresh the property list or add the new property to the state
+      
+      setAssetData({
+        propertyName: "",
+        address: "",
+        authorizedUse: "",
+        size: "",
+        status: "",
+      });
     } catch (error) {
-      toast.error("Error Submitting Asset")
+      toast.error(error?.response?.data?.errors || "Failed to create asset");
       console.error("Submission Error:", error);
-      alert("Submission failed. Check console for details.");
+    }finally {
+        fetchPosts(); // Refresh the list after adding a new asset
     }
   };
 

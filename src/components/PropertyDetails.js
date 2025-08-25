@@ -562,10 +562,7 @@ const completeStage = async (stageId) => {
     (field) => !formState[field] || formState[field].toString().trim() === ""
   );
 
-  if (emptyFields.length > 0) {
-    toast.error(`Please fill all required fields: ${emptyFields.join(", ")}`);
-    return;
-  }
+
     // console.log(formState)
     e.preventDefault();
     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dfna08jzi/auto/upload";
@@ -597,6 +594,11 @@ const completeStage = async (stageId) => {
       }
 
       console.log(documentId)
+
+    if (emptyFields.length > 0) {
+    toast.error(`Please fill all required fields: ${emptyFields.join(", ")}`);
+    return;
+  }
       const response = api.post('/user/create-and-assign', formDataWithFiles)
       toast.success("User successfully created and assigned");
       console.log(response)
