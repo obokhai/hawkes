@@ -27,6 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { toast } from 'sonner';
 import {
   ChartConfig,
   ChartContainer,
@@ -161,30 +162,33 @@ useEffect(() => {
        client: clientData,
      };
      console.log("Submitting all:", payload);
-     
    }
-   const handlePropertySubmit = async () => {
-    try {
-      if (!token) throw new Error("No token found.");
-      const response = await api.post("/assets/create",assetData);
-      // toast.success(response.data.message)
-     console.log(response.data)
-      setIsOpen(false); // Close modal
-     
-    } catch (error) {
-      toast.error("Error Submitting Asset")
-      console.error("Submission Error:", error);
-      alert("Submission failed. Check console for details.");
-    }
-  };
-    
- const handleChange = (e) => {
+
+    const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
   };
+
+   const handlePropertySubmit = async () => {
+    try {
+      console.log(assetData)
+      const response = await api.post("/assets/create",assetData);
+
+      toast.success(response.data.message)
+     console.log(response.data)
+      setPropertyOpen(false); // Close modal
+     
+    } catch (error) {
+      toast.error(`Submission failed, ${error?.response?.data?.message}`);
+      console.error("Submission Error:", error);
+      // alert("Submission failed. Check console for details.");
+    }
+  };
+    
+
 
   const handleFileChange = (e) => {
   setFile(e.target.files[0]);
@@ -204,35 +208,17 @@ useEffect(() => {
      e.preventDefault();
    
      try {
-       if (!token) throw new Error("No token found.");
-   
        const payload = {
          ...formData,
          userType,
          document: file ? file.name : ''
        };
    console.log(payload)
-       // const response = await fetch("https://propertyapi-monolithic.onrender.com/api/v1/user/create", {
-       //   method: "POST",
-       //   headers: {
-       //     "Authorization": `Bearer ${token}`,
-       //     "Content-Type": "application/json",
-       //   },
-       //   body: JSON.stringify(payload),
-       // });
-       const response= await axios.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload,{
-         headers:{
-           "Authorization": `Bearer ${token}`,
-         }
-       })
-   
-       // if (!response.ok) throw new Error("Failed to submit");
-   
-       console.log(response)
-       console.log("Submitted:", result);
+       const response= await api.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload)
+       setClientOpen(false)
      } catch (error) {
        console.error("Submission Error:", error);
-       alert("Submission failed. Check console for details.");
+       toast.error(`Submission failed, ${error?.response?.data?.message}`);
      }
    };
    const [formDataJV, setFormDataJV] = useState({
@@ -246,41 +232,39 @@ useEffect(() => {
   companyName: '',
 });
 
+
+
 const handleJVChange = (e) => {
   const { name, value } = e.target;
-  setFormDataJV((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
+  setFormDataJV((prev) => ({ ...prev, [name]: value, }));
 };
-   const handleJVSubmit = async (e) => {
+const handleJVSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    // if (!token) throw new Error("No token found.");
 
     const payload = {
-      ...formData,
+      ...formDataJV,
       userType,
       companyState,
       document: file ? file.name : '',
     };
 
 
-     const response= await api.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload,{
-        headers:{
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      })
+     const response= await api.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload)
 
     // const result = await response.json();
     console.log("Submitted:", response.data);
-    alert("JV Partner successfully added.");
+    toast.success("JV Partner added successfully");
   } catch (error) {
     console.error("Submission Error:", error);
-    alert("Submission failed. Check console for details.");
+    toast.error(`Submission failed, ${error?.response?.data?.message}`);
   }
+
+  useEffect(() => {
+  console.log("assetData updated:", assetData);
+  console.log("formDataJV updated:", formDataJV);
+}, [assetData, formDataJV]);
 };
  
   return (

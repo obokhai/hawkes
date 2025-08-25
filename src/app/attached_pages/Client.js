@@ -163,6 +163,9 @@ const Client = () => {
                                     {/* Dropdown */}
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                       <div className="mb-6 min-w-[400px] flex flex-col">
+                                              {errorMessage.map((errors)=>(
+                                    <p className="text-red-400 text-xs" key={errors.id}>{errors}</p>
+                                    ))}
                                         <label htmlFor="userType" className="block text-xs font-bold mb-2">User Type</label>
                                         <select
                                           id="userType"

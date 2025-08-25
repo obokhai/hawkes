@@ -289,13 +289,14 @@ const handleSubmit = async (e) => {
                             <DialogContent className="w-full  bg-white">
                             <div className="max-w-7xl mx-auto mt-10 bg-white rounded-xl">
                               <h2 className="text-2xl font-bold mb-6">Add JV</h2>
-                                    {errorMessage.map((errors)=>(
-                                    <p className="text-red-400 text-xs" key={errors.id}>{errors}</p>
-                                    ))}
+                                  
 
                                   {/* Dropdown */}
                                   <form onSubmit={handleSubmit} className="space-y-4 scroll-auto">
                                     <div className="mb-6 min-w-[400px] flex flex-col">
+                                  {errorMessage.map((errors)=>(
+                                    <p className="text-red-400 text-xs" key={errors.id}>{errors}</p>
+                                    ))}
                                       <label htmlFor="userType" className="block text-xs font-medium mb-2">User Type</label>
                                       <select
                                         id="userType"

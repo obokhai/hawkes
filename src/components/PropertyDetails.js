@@ -286,6 +286,16 @@ const handleUserRoleChange = async (e) => {
   console.log(res.data)
 
  }
+     const handleEditClick = () =>{
+        setAssetData({
+          propertyName: property.propertyName || "",
+          address: property.address || "",
+          authorizedUse: property.authorizedUse || "",
+          size: property.size || "",
+          status: property.status || "",
+        });
+        setEditAsset(true);
+     }
 
   const handleUpdateSubmit = async () => {
     const id = assignedAssetId
@@ -543,12 +553,20 @@ const completeStage = async (stageId) => {
     getAllUsers()
     fetchProperty()
     getRoles()
-    // getStageTasks()
+    getStageTasks()
     getStages()
   }, [id])
 
   const handleSubmit = async (e) => {
-    console.log(formState)
+      const emptyFields = requiredFields.filter(
+    (field) => !formState[field] || formState[field].toString().trim() === ""
+  );
+
+  if (emptyFields.length > 0) {
+    toast.error(`Please fill all required fields: ${emptyFields.join(", ")}`);
+    return;
+  }
+    // console.log(formState)
     e.preventDefault();
     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dfna08jzi/auto/upload";
     const uploadPreset = "company_files"
@@ -560,6 +578,7 @@ const completeStage = async (stageId) => {
         formData.append("file", companyFiles[0]);
         formData.append("upload_preset", uploadPreset);
 
+        
         try {
           const res = await axios.post(cloudinaryUrl, formData, {
             headers: { "Content-Type": "multipart/form-data" },
@@ -585,6 +604,7 @@ const completeStage = async (stageId) => {
       setInviteUserModal
 
     } catch (err) {
+      toast.error(`Error creating user: ${err?.response?.data?.message || err.message}`);
       console.log(formDataWithFiles)
       console.error("Error:", err);
     }
@@ -710,6 +730,7 @@ const completeStage = async (stageId) => {
       cursor: 'grab'
     };
 
+
     return (
       <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
         {name}
@@ -727,7 +748,7 @@ const completeStage = async (stageId) => {
           <Image src='/house.svg' alt='hawkes property detail' width={140} height={140} />
           <h3 className='lg:text-2xl max-lg:text-xl text-clip font-bold'>{property?.propertyName}</h3>
           <p className='text-xs'>{property?.address}</p>
-          <button className='border w-16 text-xs' onClick={() =>{setEditAsset(true)}}>Edit</button>
+          <button className='border w-16 text-xs' onClick={handleEditClick}>Edit</button>
         </div>
 
         <div className='grid grid-cols-2 w-2/4 text-sm px-4 space-y-3 relative'>
@@ -1362,18 +1383,17 @@ const completeStage = async (stageId) => {
                       linksCount={11}
                     />
                 </SheetTrigger>
-                <SheetContent  className='flex flex-col overflow-scroll px-2'> 
+                <SheetContent  className='flex flex-col overflow-scroll px-2 [&>button]:hidden'> 
                   <div className="flex items-center justify-between border-b px-4 py-2">
                     {/* Left Close Button */}
                      <SheetClose asChild>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="rounded-lg h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </SheetClose>
+                      <Button 
+                        variant="outline" 
+                        size="icon" 
+                        className="rounded-lg h-8 w-8" >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </SheetClose>
 
                     {/* Right Action Icons */}
                     <div className="flex items-center gap-4 text-gray-500">
