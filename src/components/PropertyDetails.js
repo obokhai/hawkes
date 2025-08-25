@@ -339,26 +339,6 @@ const completeStage = async (stageId) => {
   await api.patch(`/stage/update-stage/${stageId}`)
 }
 
-  // const getStageTasks = async (stageId) => {
-  //   setStageTaskId(stageId)
-  //   setTasksLoading(true)
-  //   console.log("This is the Stage ID for adding a new task ", stageTaskId)
-  //   console.log(stageId)
-  //   try {
-  //     const response = await api.get(`/stage/tasks/${stageId}`);
-
-  //     const data = await response.data;
-  //     setGetStageData(data.data.tasks)
-  //     console.log("Curent Stage Id", stageId)
-
-  //   } catch (error) {
-  //     console.error("Failed to fetch Tasks:", error);
-  //     // setUsers([]);
-  //   }finally{
-  //     setTasksLoading(false)
-  //   }
-  // };
-
   const getStageTasks = async (stageId) => {
   setStageTaskId(stageId)
   setTasksLoading(true)
@@ -506,7 +486,6 @@ const completeStage = async (stageId) => {
 
 
   const getStages = async () => {
-    // https://propertyapi-monolithic.onrender.com/api/v1/stage/
     if (!id) console.log("missing Id ")
     try {
       const response = await api.get(`/stage/${id}`);
@@ -559,10 +538,12 @@ const completeStage = async (stageId) => {
 
   const handleSubmit = async (e) => {
       const emptyFields = requiredFields.filter(
-    (field) => !formState[field] || formState[field].toString().trim() === ""
-  );
+    (field) => !formState[field] || formState[field].toString().trim() === "");
 
-
+    if (emptyFields) {
+      console.log("Empty fields:", emptyFields);
+      return
+    } 
     // console.log(formState)
     e.preventDefault();
     const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dfna08jzi/auto/upload";

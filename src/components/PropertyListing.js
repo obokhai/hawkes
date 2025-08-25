@@ -52,6 +52,9 @@ const handleFileChange = (e) => {
   const [roleData, setRoleData] = useState([]);
 
 
+  
+const sortedProperties = [...properties].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   const handleAssetChange = (e) => {
     const { name, value } = e.target;
     setAssetData((prev) => ({ ...prev, [name]: value }));
@@ -142,6 +145,8 @@ const handleFileChange = (e) => {
      setLoading(true)
     setMounted(true);
 
+    
+
 async function fetchPosts() {  
   try {
     const token = localStorage.getItem("token")
@@ -176,6 +181,9 @@ async function fetchPosts() {
       });
 
       setProperties(assetsWithStagePercent);
+
+
+      
 
     } else {
       console.error("No activeAsset found in the response");
@@ -278,7 +286,7 @@ fetchPosts();
                             {/* <input name="dateAdded" type="date" onChange={handleAssetChange} value={assetData.dateAdded} className="border p-2 rounded w-full" /> */}
                             <select name="status" onChange={handleAssetChange} value={assetData.status} placeholder="Select Status" className="border p-2 rounded w-full">
                               <option value="">Select Status</option>
-                              <option value="active">active</option>
+                              <option value="completed">completed</option>
                               <option value="pending">pending</option>
                             </select>
                         </div>
@@ -331,7 +339,7 @@ fetchPosts();
               <p className=''>Get started by adding an asset.</p>
             </div>
           ) : (
-              properties.map(property => (
+              sortedProperties.map(property => (
             <div  className="flex justify-between items-center py-4 w-full px-6 my-3 bg-gray-200 rounded"
               key={property.id}
             >
