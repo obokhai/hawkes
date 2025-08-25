@@ -516,7 +516,7 @@ const completeStage = async (stageId) => {
       console.log("Stage Steps Data", data.data.stages)
 
     } catch (error) {
-
+      console.error("Failed to fetch Stages:", error);
     } 
 
     console.log("Stage Steps", stageSteps)
@@ -625,7 +625,7 @@ const completeStage = async (stageId) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     console.log(formData)
-    router.push(`/dashboard?property=${id}`)
+    // router.push(`/dashboard?property=${id}`)
   };
 
   const assignAsset = async () => {
@@ -653,6 +653,14 @@ const completeStage = async (stageId) => {
       const result = await response.data
       console.log("Asset successfully assigned:", result);
     } catch (error) {
+      if(error?.response?.data.errors[0] === "userId must be a string"){
+        toast.error("Please select a user to assign the asset")
+        return
+      }
+      else if(error?.response?.data?.message === "Asset already assigned to user"){
+        toast.error("Asset already assigned to user")
+        return
+      }
       toast.error(error?.response?.data?.message)
       console.error("Error assigning asset:", error);
     }
