@@ -167,6 +167,7 @@ const PropertyDetails = ({initialStages }) => {
     setUserId(prev => ({ ...prev, [name]: value }));
     console.log("Changed:", name, value);
   };
+  const requiredFields = ['firstName', 'lastName', 'email', 'phoneNumber', 'roleId', 'state'];
   const handleAssetChange = (e) => {
     const { name, value } = e.target;
     setAssetData((prev) => ({ ...prev, [name]: value }));
@@ -202,11 +203,15 @@ const PropertyDetails = ({initialStages }) => {
     stagePosition: 0,
     assetId: id
   });
+  function getTodayDate() {
+  const today = new Date();
+  return today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+}
   const [tasks, setTasks] = useState({
 
     taskName: '',
     description: '',
-    dueDate: '',
+    dueDate: getTodayDate(),
     status: 'pending',
     stageId: '',
     priority: ''
@@ -242,6 +247,7 @@ const PropertyDetails = ({initialStages }) => {
   const [companyFiles, setCompanyFiles] = useState([])
   const [roleIdSet, setRoleIdSet] = useState(1)
   const [editAsset, setEditAsset] = useState(false)
+  const [errorMessage, setErrorMessage] = useState({}); 
   const handleTaskUpdate = (e) => {
     const { name, value } = e.target;
     setEditedTask(prev => ({ ...prev, [name]: value }));
@@ -280,22 +286,16 @@ const handleUserRoleChange = async (e) => {
 
   getAllUsers(selectedRoleId); // Pass it here
 };
-
- const getCurrentAsset =() =>{
-  const res =api.get(`assets/${assignedAssetId}`)
-  console.log(res.data)
-
- }
-     const handleEditClick = () =>{
-        setAssetData({
-          propertyName: property.propertyName || "",
-          address: property.address || "",
-          authorizedUse: property.authorizedUse || "",
-          size: property.size || "",
-          status: property.status || "",
-        });
-        setEditAsset(true);
-     }
+    const handleEditClick = () =>{
+      setAssetData({
+        propertyName: property.propertyName || "",
+        address: property.address || "",
+        authorizedUse: property.authorizedUse || "",
+        size: property.size || "",
+        status: property.status || "",
+      });
+      setEditAsset(true);
+    }
 
   const handleUpdateSubmit = async () => {
     const id = assignedAssetId
@@ -310,7 +310,6 @@ const handleUserRoleChange = async (e) => {
     } catch (error) {
       toast.error("Error Submitting Asset")
       console.error("Submission Error:", error);
-      // alert("Submission failed. Check console for details.");
     }
     finally{
       setEditAsset(false)
@@ -382,6 +381,7 @@ const completeStage = async (stageId) => {
       // router.push(`/dashboard?property=${id}`)
     } catch (err) {
       console.log(addNewStage)
+      setErrorMessage(err?.response?.data?.errors || err.message);
       console.error("Error:", err);
     }
   }
@@ -415,14 +415,23 @@ const completeStage = async (stageId) => {
   }
 
   const addTask = async (e) => {
+
     e.preventDefault()
     console.log(stageTaskId)
+    const errors = {};
     const preparedTask = {
       ...tasks,
       dueDate: new Date(tasks.dueDate).toISOString(),
       stageId: stageTaskId
+   };
 
-    };
+     if (!preparedTask.taskName) errors.taskName = "Task name is required";
+    if (!preparedTask.description) errors.description = "Description is required";
+    if (!preparedTask.dueDate) errors.dueDate = "Due date is required";
+    if (!preparedTask.status) errors.status = "Status is required";
+    setErrorMessage(errors);
+    if (Object.keys(errors).length > 0) return;
+
 
     console.log("Prepared Traning", preparedTask);
     try {
@@ -432,6 +441,7 @@ const completeStage = async (stageId) => {
 
     } catch (err) {
       console.error("Error:", err.response?.data?.errors || err.message);
+      setErrorMessage(err?.response?.data?.errors || err.message);
     }
   }
 
@@ -1282,60 +1292,79 @@ const completeStage = async (stageId) => {
             <h3 className='text-xl'>Tasks</h3>
             <Dialog className="min-w-[1200px]">
               <DialogTrigger asChild>
-                <PlusIcon />
+                <PlusIcon className='cursor-pointer' />
               </DialogTrigger>
               <DialogContent className=''>
                 <DialogHeader>
                   Add Task
                 </DialogHeader>
                 <div className="px-4 mx-auto bg-white rounded-xl">
-                  <form onSubmit={addTask} >
-                    <div className="space-y-4">
-                      <div className="flex-col gap-x-5">
-                        <label className="text-xs w-full">Task name
-                          <input name="taskName"
-                            value={tasks.taskName}
-                            onChange={handleTaskChange}
-                            placeholder="Enter Name" className="w-full mb-2 border p-3 rounded" />
-                          {/* <input type="file" accept="image/*" capture="enviroment" /> */}
+                 <form onSubmit={addTask}>
+                  <div className="space-y-4">
+                    <div className="flex-col gap-x-5 gap-y-6">
+                      
+                      <label className="text-xs w-full">Task name
+                        <input
+                          name="taskName"
+                          value={tasks.taskName}
+                          onChange={handleTaskChange}
+                          placeholder="Enter Name"
+                          className={`w-full mb-2 border p-3 rounded ${errorMessage.taskName ? 'border-red-400' : ''}`}
+                        />
+                       
+                      </label>
+
+                      <label className="text-xs w-full">Description
+                        <textarea
+                          name="description"
+                          value={tasks.description}
+                          rows={2}
+                          onChange={handleTaskChange}
+                          placeholder="Enter Description"
+                          className={`w-full mb-2 border p-3 rounded ${errorMessage.description ? 'border-red-400' : ''}`}
+                        />
+                        
+                      </label>
+
+                      <label className="text-xs w-full">Due Date
+                        <input
+                          name="dueDate"
+                          type='date'
+                          value={tasks.dueDate}
+                          onChange={handleTaskChange}
+                          placeholder="Enter due date"
+                          className={`w-full mb-2 border p-3 rounded ${errorMessage.dueDate ? 'border-red-400' : ''}`}
+                        />
+                        
+                      </label>
+
+                      <div className='flex gap-x-8'>
+                        <label className="text-xs w-full">Status
+                          <select
+                            name="status"
+                            value={tasks.status}
+                            onChange={e => setTasks({ ...tasks, [e.target.name]: e.target.value })}
+                            placeholder="Enter Position"
+                            className={`w-full mb-2 border p-3 rounded ${errorMessage.status ? 'border-red-400' : ''}`}
+                          >
+                            <option value=''>Select</option>
+                            <option value='pending'>pending</option>
+                            <option value='in_progress'>In progress</option>
+                            <option value='completed'>completed</option>
+                          </select>
+                         
                         </label>
-
-                        <label className="text-xs w-full">Description
-                          <textarea name="description"
-                            value={tasks.description}
-                            rows={2}
-                            onChange={handleTaskChange}
-                            placeholder="Enter Description" className="w-full mb-2 border p-3 rounded" />
-                        </label>
-
-                        <label className="text-xs w-full">Due Date
-                          <input name="dueDate"
-                            type='date'
-                            value={tasks.dueDate}
-                            onChange={handleTaskChange}
-                            placeholder="Enter due date " className="w-full mb-2 border p-3 rounded" />
-                        </label>
-                        <div className='flex gap-x-8'>
-
-                          <label className="text-xs w-full">Status
-                            <select name="status"
-
-                              value={tasks.status}
-                              onChange={(e) => setTasks({ ...tasks, [e.target.name]: e.target.value })}
-                              placeholder="Enter Position" className="w-full mb-2 border p-3 rounded" >
-                              <option value=''>Select</option>
-                              <option value='pending'>pending</option>
-                              <option value='in_progress'>In progress</option>
-                              <option value='completed'>completed</option>
-                            </select>
-                          </label>
-                          <input type='hidden' value={stageTaskId} name='stageID' onChange={(e) => setTasks({ ...tasks, [e.target.name]: e.target.value })} />
-                        </div>
-
+                        <input
+                          type='hidden'
+                          value={stageTaskId}
+                          name='stageID'
+                          onChange={e => setTasks({ ...tasks, [e.target.name]: e.target.value })}
+                        />
                       </div>
-                      <button type='submit' className='w-44 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Save</button>
                     </div>
-                  </form>
+                    <button type='submit' className='w-44 h-10 rounded-full bg-[#312787] flex text-center justify-self-end justify-center items-center text-white'>Save</button>
+                  </div>
+                </form>
                 </div>
               </DialogContent>
             </Dialog>

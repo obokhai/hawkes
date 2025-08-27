@@ -17,7 +17,7 @@ const Deadlines = ({id, taskName, dueDate, time, priority, stage, status, descri
                 <span className='flex flex-col gap-y-1 justify-center w-'>
                   <h5> Stage {stage}</h5>
                   <span className='bg-gray-200 rounded-full'>
-                  <div className={`h-1 rounded-full z-10 ${status==='completed'?'bg-red-400 w-1/3': status===pending ?'bg-red-400 w-1/4':'bg-amber-400 w-1/2'}`} />
+                  <div className={`h-1 rounded-full z-10 ${status==='completed'?'bg-red-green-400 w-1/3': status==="pending" ?'bg-red-400 w-1/4':'bg-amber-400 w-1/2'}`} />
                   </span>
                   </span>
                 <span className={`min-w-[100px] gap-x-2 capitalize flex ${status ==='completed' ?'border-green-400 border-[1px] text-green-400 text-xs ': status === 'in_progress'? 'border-orange-400 border-[1px] text-orange-400 text-xs': 'text-red-400 text-xs border-[1px] border-red-400 '} items-center justify-center rounded-full p-2`}>

@@ -103,12 +103,7 @@ const [file, setFile] = useState(null);
 const [companyState, setCompanyState] = useState('');
 const userName = localStorage.getItem("userName")
 useEffect(() => {
-   const token = localStorage.getItem("token")
-
-   if (!token) {
-    console.log("there is no token available")
-   }
-        async function fetchPosts() {  
+   async function fetchPosts() {  
      try {
        const res = await api.get('/dashboard/admin?clientId=3&JvId=2');
       
@@ -139,7 +134,7 @@ useEffect(() => {
      address: "",
      authorizedUse: "",
      size: "",
-     status: "",
+     status: "pending",
    });
    const [roleData, setRoleData] = useState([]);
  
@@ -357,52 +352,11 @@ const handleJVSubmit = async (e) => {
                 ))}
               </div>
             </aside>
-            {/* <aside className='w-2/8 bg-[#5A48F9] shadow-xl flex flex-col gap-y-6 rounded-xl p-6'>
-              <span className='flex justify-between'>
-                <h5 className='font-bold text-white'>Messages</h5>
-                <p className='font-extralight text-xs text-white underline '>View All</p>
-              </span>
-              <div className='space-y-1'>
-              {messages.map((item, index) => (
-                <div key={index} className="flex items-center space-x-4 text-white p-3 border-b-0 border-white">
-                  <img
-                    src={item.avatar}
-                    alt={item.name}
-                    className="w-12 h-12 rounded-full"
-                  />
-                  <div>
-                    <div className="font-semibold">{item.name}</div>
-                    <div className="text-sm">{item.message}</div>
-                  </div>
-                </div>
-              ))}
-              </div>
-            </aside> */}
+
         </div>
 
     {/* Add Property */}
-      {/* <Dialog open={propertyOpen} onOpenChange={setPropertyOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add Property</DialogTitle>
-          </DialogHeader>
-          <form className="space-y-4">
-            <input
-              type="text"
-              placeholder="Property Name"
-              className="w-full border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Location"
-              className="w-full border p-2 rounded"
-            />
-            <Button type="submit" className="w-full">
-              Save
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog> */}
+    
    <Dialog open={propertyOpen} onOpenChange={setPropertyOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>

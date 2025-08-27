@@ -25,10 +25,9 @@ export default function TaskCard(props) {
     <Card className="rounded-xl flex flex-col justify-start min-w-60 shadow-sm -py-3 cursor-pointer">
       <CardContent className="p-4 space-y-4 flex flex-col">
         <div className="w-full flex justify-start">
-        <Badge className={`px-2 py-0.5  text-xs rounded ${badgeClasses}`}>
+        <Badge className={`px-2 py-0.5 text-xs rounded ${badgeClasses}`}>
           {status}
         </Badge>
-
         </div>
 
         <div className="text-left space-y-2">
