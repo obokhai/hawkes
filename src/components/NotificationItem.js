@@ -1,18 +1,28 @@
 import Image from 'next/image'
 import React from 'react'
 
-const NotificationItem = ({src, desc,time, note, day}) => {
+function NotificationItem({ name, action, target, time, icon }) {
   return (
-    <>
-    <p className='flex-1 font-bold text-xs my-2 capitalize'>{day}</p>
-    <div className='flex items-center gap-x-2 w-full h-12'>
-        <Image src={`/${src}`} height={30} width={30} className='rounded-full' />
-        <span className='flex flex-col gap-y-3 justify-center'>
-            <p className='text-[10px]'>{desc} "<span className='font-bold'>{note}</span>"</p>
-            <p className='text-gray-400 text-xs'>{time}</p>
-        </span>
+    <div className="flex items-start space-x-3 text-sm">
+      {/* Avatar or icon */}
+      <div className="flex-shrink-0">
+        {icon === "plus" ? (
+          <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+            <span className="text-lg font-bold">+</span>
+          </div>
+        ) : (
+          <div className="h-8 w-8 rounded-full bg-gray-300"></div>
+        )}
+      </div>
+
+      {/* Text */}
+      <div className="flex-1 leading-snug">
+        {name && <span className="font-medium">{name} </span>}
+        {action && <span>{action} </span>}
+        <span className="font-medium text-blue-600">"{target}"</span>
+        <div className="text-xs text-gray-500">{time}</div>
+      </div>
     </div>
-    </>
   )
 }
 

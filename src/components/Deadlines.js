@@ -6,8 +6,8 @@ const Deadlines = ({id, taskName, dueDate, time, priority, stage, status, descri
   return (
     <div id={id}>
         <div className='flex flex-col border-2 mt-6 rounded-xl'>
-            <div className='flex border-l-4  border-[#5A48F9] h-14 rounded-lg '>
-                <div className='w-1/6 bg-gray-300 flex justify-between items-center p-2 flex-col'>
+            <div className='flex border-l-4  border-[#5A48F9] h-16 rounded-lg '>
+                <div className='w-1/6 bg-gray-100 flex justify-between items-center p-2 flex-col'>
                     <span className='text-xs font-semibold text-black'>{dueDate}</span>
                     <span className='text-xs text-gray-600 flex gap-x-1 items-center'><Clock3 className='size-3'/>  {time}</span>
                 </div>

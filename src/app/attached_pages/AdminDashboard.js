@@ -3,14 +3,11 @@ import { Airplay, ArrowUp, Monitor, SquarePlus, TrendingDown, UserRoundCheck, Us
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import { TrendingUp } from "lucide-react";
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+
+import { CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import api from '../api';
 import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+
 import {
   Card,
   CardContent,
@@ -29,10 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from 'sonner';
 import {
-  ChartConfig,
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart"
 import {
   Dialog,
@@ -47,12 +41,12 @@ import {
 import { message } from 'antd';
 import Deadlines from '@/components/Deadlines';
 const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
+  { month: "January", completed: 186, notCompleted: 80 },
+  { month: "February", completed: 305, notCompleted: 200 },
+  { month: "March", completed: 237, notCompleted: 120 },
+  { month: "April", completed: 73, notCompleted: 190 },
+  { month: "May", completed: 209, notCompleted: 130 },
+  { month: "June", completed: 214, notCompleted: 140 },
 ]
 
 const messages = [
@@ -102,6 +96,7 @@ const [deadlines, setDeadlines] = useState([])
 const [file, setFile] = useState(null);
 const [companyState, setCompanyState] = useState('');
 const userName = localStorage.getItem("userName")
+
 useEffect(() => {
    async function fetchPosts() {  
      try {
@@ -216,7 +211,7 @@ useEffect(() => {
        toast.error(`Submission failed, ${error?.response?.data?.message}`);
      }
    };
-   const [formDataJV, setFormDataJV] = useState({
+  const [formDataJV, setFormDataJV] = useState({
   firstName: '',
   lastName: '',
   address: '',
@@ -244,9 +239,8 @@ const handleJVSubmit = async (e) => {
       companyState,
       document: file ? file.name : '',
     };
-
-
-     const response= await api.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload)
+  
+    const response= await api.post("https://propertyapi-monolithic.onrender.com/api/v1/user/create",payload)
 
     // const result = await response.json();
     console.log("Submitted:", response.data);
@@ -265,10 +259,10 @@ const handleJVSubmit = async (e) => {
   return (
     <section className="mt-18 ms-28 me-10 min-h-screen flex flex-col gap-y-4 px-4 py-12 rounded-2xl mb-4" >
         <div className='lg:flex-row  flex flex-col gap-5'>
-            <aside className=' lg:w-3/5 max-lg:block p-8 flex flex-col shadow-xl justify-around gap-y-14 rounded-2xl bg-white'>
+            <aside className=' lg:w-3/5 lg:h-80 max-lg:block p-8 flex flex-col shadow-xl justify-around gap-y-14 rounded-2xl bg-white'>
                 <div className='flex justify-between items-center'>
-                  <span className='flex-col flex text-3xl font-bold capitalize'>Hello {userName || 'Admin'}!
-                    <p className='text-lg mt-3 font-normal'>Here's Your Overview</p>
+                  <span className='flex-col flex text-xl font-bold capitalize'>Hello {userName || 'Admin'}!
+                    <p className='text-xs mt-3 font-normal'>Here's Your Overview</p>
                   </span>
                   <DropdownMenu className=" ">
                       <DropdownMenuTrigger> 
@@ -290,46 +284,69 @@ const handleJVSubmit = async (e) => {
                 </div>
                 <div className='flex justify-between items-center gap-x-4 w-full'>
                   <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 w-60'>
-                      <span className='flex justify-between items-center w-full'>
-                        <p className='text-xs text-gray-600'> Total Properties</p>
-                        <span className='bg-green-200 rounded-full h-10 w-10 font-light flex justify-center items-center'><Monitor size={16}/></span>
+                      <span className='flex justify-between items-center w-full -my-3'>
+                        <p className='text-[9px] tracking-wide text-gray-400'> Total Properties</p>
+                        <Image src='/property_admin.svg' width={35} height={35} />
                       </span>
-                      <h4 className='text-6xl'>{totalProperties}</h4>
-                      {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
+                      <h4 className='text-4xl font-semibold'>{totalProperties}</h4>
+                       <p className='text-[10px] flex items-center gap-x-2'><span className='flex  items-center text-green-400'><ArrowUp size={12}/>  11%</span><span> this month</span></p>
                   </div>
                   <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 w-60'>
-                      <span className='flex justify-between items-center w-full'>
-                        <p className='text-xs text-gray-600'> Total Clients</p>
-                        <span className='bg-green-200 rounded-full h-10 w-10 font-light flex justify-center items-center'><UserRoundCheck size={16}/></span>
-                      </span>
-                      <h4 className='text-6xl'>{totalClients}</h4>
-                      {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
+                      <span className='flex justify-between items-center w-full -my-3'>
+                        <p className='text-[9px] text-gray-400'> Total Clients</p>
+                       <Image src='/user_admin.svg' width={35} height={35} />                      
+                       </span>
+                      <h4 className='text-4xl font-semibold'>{totalClients}</h4>
+                       <p className='text-[10px] flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp size={12}/> 11%</span><span> this month</span></p>
                   </div>
                   <div className='flex flex-1 flex-col rounded-xl shadow-lg justify-between min-h-36 p-4 w-60'>
-                      <span className='flex justify-between items-center w-full'>
-                        <p className='text-xs text-gray-600'> Total JV Partners</p>
-                        <span className='bg-green-200 rounded-full h-10 w-10 font-light flex justify-center items-center'><UsersRound size={16}/></span>
+                      <span className='flex justify-between items-center w-full -my-3'>
+                        <p className='text-[9px] text-gray-400'> Total JV Partners</p>
+                       <Image src='/jv_admin.svg' width={35} height={35} />
                       </span>
-                      <h4 className='text-6xl'>{totalJV}</h4>
-                      {/* <p className='text-xs flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp/> 11%</span><span> this month</span></p> */}
+                      <h4 className='text-4xl font-semibold'>{totalJV}</h4>
+                      <p className='text-[10px] flex items-center gap-x-2'><span className='flex items-center text-green-400'><ArrowUp size={12}/> 11%</span><span> this month</span></p>
                   </div>
                 </div>
             </aside>  
-            <aside className='lg:w-2/5 max-lg:block p-8 rounded-2xl bg-white'>
-            <Card>
-              <CardHeader>
-                <CardTitle className='flex justify-between items-center'>Task Completion Rate <Image src='/thisweek.svg' className='' width={111} height={60} /> </CardTitle>
-                <CardDescription>72%</CardDescription>
-              </CardHeader>
-              <CardContent className='relative'>
-                  <Image src='/chartdata.svg' className='' width={499} height={600} />
-                  <Image src='chart1.svg' className='absolute top-10 left-12 ' width={320} height={120} />
-                  <Image src='/chartover.svg' className='absolute top-0 left-12 ' width={320} height={120} />
-              </CardContent>
-              <CardFooter>
-                
-              </CardFooter>
-            </Card></aside>
+            <aside className='lg:w-2/5 max-lg:block lg:h-60 rounded-2xl'>
+                  <Card className="h-80 bg-white shadow-xl">
+                    <CardHeader>
+                      <CardTitle className="flex justify-between items-center">
+                        Task Completion Rate
+                        <Image src="/thisweek.svg" className="" width={111} height={60} />
+                      </CardTitle>
+                      <CardDescription>72%</CardDescription>
+                    </CardHeader>
+                    <CardContent className="relative">
+                      <ChartContainer
+                        config={chartConfig}
+                        className="mx-auto w-full max-w-xl"
+                      >
+                        <LineChart width={250} height={120} data={chartData}>
+                          {/* <CartesianGrid strokeDasharray="3 3" />
+                          <Tooltip /> */}
+                          {/* <Legend /> */}
+                          <Line
+                            type="monotone"
+                            dataKey="completed"
+                            stroke="#4f46e5"
+                            strokeWidth={2}
+                            dot={{ r: 3 }}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="notCompleted"
+                            stroke="#06b6d4"
+                            strokeWidth={2}
+                            dot={{ r: 3 }}
+                          />
+                        </LineChart>
+                      </ChartContainer>
+                    </CardContent>
+                    <CardFooter></CardFooter>
+                  </Card>
+                </aside>
 
 
         </div>

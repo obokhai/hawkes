@@ -13,7 +13,15 @@ import Message from "../attached_pages/Message";
 import Calendar from "../attached_pages/Calendar";
 import Settings from "../attached_pages/Settings";
 import AdminDashboard from "../attached_pages/AdminDashboard";
-import Client from "../attached_pages/Client";
+import Client from "../attached_pages/Client"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -141,20 +149,87 @@ useEffect(() => {
                                   
                                   </DropdownMenuContent>
                                 </DropdownMenu>          
-                             <Popover>
-                             <button className="text-gray-500"> 
-                              <PopoverTrigger>
-                             <Image src="/notification.svg" alt="" width={30} height={20} />
-                             </PopoverTrigger>
-                             </button>
+                             <Sheet>
+                              <SheetTrigger asChild>
+                                <button className="text-gray-500">
+                                  <Image src="/notification.svg" alt="" width={20} height={20} />
+                                </button>
+                              </SheetTrigger>
+                              <SheetContent side="right" className="w-[380px] sm:w-[420px] p-0">
+        <SheetHeader className="p-4 border-b">
+          <SheetTitle>Notifications</SheetTitle>
+        </SheetHeader>
 
-                             <PopoverContent className='flex flex-col jutify-center'>
-                              <div className="py-2 border-b-[1px]">Notifications</div>
-                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on "note='Update Requirement list' day='today' />
-                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' day='yesterday' />
-                              <NotificationItem src='yoyin.svg' desc="Ray Arnold replies to Arnold’s comment on" note='Update Requirement list' day='last week' />
-                             </PopoverContent>
-                             </Popover>
+        <div className="overflow-y-auto max-h-[calc(100vh-80px)]">
+          {/* Section: Today */}
+          <div className="p-4">
+            <p className="text-xs uppercase text-gray-500 mb-2">Today</p>
+            <div className="space-y-3">
+              <NotificationItem
+                name="Ray Arnold"
+                action="left 3 comments on"
+                target="Update Requirement list"
+                time="2h"
+              />
+            </div>
+          </div>
+
+          {/* Section: Yesterday */}
+          <div className="p-4 border-t">
+            <p className="text-xs uppercase text-gray-500 mb-2">Yesterday</p>
+            <div className="space-y-3">
+              <NotificationItem
+                icon="plus"
+                target="New Account created"
+                time="6d"
+              />
+              <NotificationItem
+                name="Ray Arnold"
+                action="replies to Arnold’s comment on"
+                target="Update Requirement list"
+                time="19h"
+              />
+              <NotificationItem
+                name="Ray Arnold"
+                action="replies to Arnold’s comment on"
+                target="Update Requirement list"
+                time="19h"
+              />
+            </div>
+          </div>
+
+          {/* Section: Last 7 days */}
+          <div className="p-4 border-t">
+            <p className="text-xs uppercase text-gray-500 mb-2">Last 7 days</p>
+            <div className="space-y-3">
+              <NotificationItem
+                name="Ray Arnold"
+                action="left 3 comments on"
+                target="Update Requirement list"
+                time="2h"
+              />
+              <NotificationItem
+                icon="plus"
+                target="New Account created"
+                time="6d"
+              />
+              <NotificationItem
+                name="Ray Arnold"
+                action="replies to Arnold’s comment on"
+                target="Update Requirement list"
+                time="19h"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 border-t text-center">
+          <button className="text-sm text-blue-600 hover:underline">
+            Show more
+          </button>
+        </div>
+      </SheetContent>
+                            </Sheet>
                              <div href="#" className="flex items-center space-x-4">
                               {/* <Image src="/caret_down.svg" alt="" width={20} height={20} />  */}
                                 <DropdownMenu className=" ">
